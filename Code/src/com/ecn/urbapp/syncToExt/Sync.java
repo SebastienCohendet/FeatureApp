@@ -20,6 +20,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,6 +31,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.Project;
 import com.google.gson.Gson;
@@ -62,11 +64,13 @@ public class Sync
 	 * 
 	 * @return Boolean if success of not
 	 */
-	public Boolean getProjectsFromExt()
+	public boolean getProjectsFromExt(List<Project> refreshedValues, List<GpsGeom> allGpsGeom)
 	{
 		Boolean success = false;
 			try
 			{
+				BaProjectSync = new BackTaskImportProject(List<Project> refreshedValues, List<GpsGeom> allGpsGeom);
+				BaProjectSync.execute().get();
 				success = true;
 			}
 			catch (Exception e)
@@ -376,6 +380,123 @@ public class Sync
 		    // specify the URL you want to post to
 		    HttpPost httppost = new HttpPost(MainActivity.serverURL+"maxID.php");
 		    try {
+			    // send the variable and value, in other words post, to the URL
+			    HttpResponse response = httpclient.execute(httppost);
+			    
+			    StringBuilder sb = new StringBuilder();
+			    try {
+			    	BufferedReader reader = 
+			    			new BufferedReader(new InputStreamReader(response.getEntity().getContent()), 65728);
+			    	String line = null;
+
+			    	while ((line = reader.readLine()) != null) {
+			    		sb.append(line);
+			    	}
+			    }
+			    catch (IOException e) { e.printStackTrace(); }
+			    catch (Exception e) { e.printStackTrace(); }
+			    
+			    return sb.toString();
+				
+	        } catch (ClientProtocolException e) {
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        } ;
+	        return "error";
+	    }
+
+		
+		/**
+		 * The things to execute after the backTask 
+		 */
+	    protected void onPostExecute(HashMap<String, Integer> result) {	
+	    	if (!result.isEmpty()){
+	    		//TODO change the message so not to be in debug mode :)
+	    		Toast.makeText(mContext, result.toString(), Toast.LENGTH_SHORT).show();
+	    	}
+	    	else {
+		        Toast.makeText(mContext, "Erreur dans la communication avec le serveur", Toast.LENGTH_SHORT).show();
+	    	}
+	    }
+	}
+	
+	
+	/**
+	 * The additional threat to get the Max id of each tables on server
+	 * @author Sebastien
+	 *
+	 */
+	public static class BackTaskImportProject extends AsyncTask<Void, Void, Void> {
+			
+		private Context mContext;
+		
+		/**
+		 * Contains all the projects on server
+		 */
+		List<Project> refreshedValues;
+		
+		/**
+		 * Contains all the GpsGeom from Server
+		 */
+		List<GpsGeom> allGpsGeom;
+		
+		public BackTaskImportProject(List<Project> refreshedValues, List<GpsGeom> allGpsGeom){			
+			this.refreshedValues = refreshedValues;
+			this.allGpsGeom = allGpsGeom;
+			this.mContext = MainActivity.baseContext;
+		}
+
+		/**
+		 * Pre Execution orders
+		 */
+		protected void onPreExecute(){
+			super.onPreExecute();
+			Toast.makeText(MainActivity.baseContext,  "Début de la synchro", Toast.LENGTH_SHORT).show();
+		}
+
+		/**
+		 * Ask the server and save project and gpsGeom on the var
+		 */
+		protected Void doInBackground(Void... params) { 
+			
+			String JSON = getData();
+			 try {
+			    	JSONObject jObj = new JSONObject(JSON); 
+			    	refreshedValues = new ArrayList<Project>();
+			    	allGpsGeom = new ArrayList<GpsGeom>();
+			    	
+			    	//TODO for lengh of jsonarray
+			    	JSONObject projects = jObj.getJSONObject("Project");
+			    	JSONObject gpsGeom = jObj.getJSONObject("GpsGeom");
+			    	
+			    	for (JSONArray aray : projects){
+			    		
+			    	}
+			    	return maxID;
+			    	
+			        } catch (JSONException e) {
+			           Log.e("JSON Parser", "Error parsing data " + e.toString());
+			           return (HashMap<String, Integer>) null;
+			        }  
+		}
+	 
+
+		/**
+		 * The request method to server
+		 * @return the string of the server response
+		 */
+	    public String getData() {
+		    HttpClient httpclient = new DefaultHttpClient();
+		    // specify the URL you want to post to
+		    HttpPost httppost = new HttpPost(MainActivity.serverURL+"import.php");
+		    try {
+		    	
+		    	// create a list to store HTTP variables and their values
+			    List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
+			    // add an HTTP variable and value pair
+			    nameValuePairs.add(new BasicNameValuePair("Project", "all"));
+			    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
 			    // send the variable and value, in other words post, to the URL
 			    HttpResponse response = httpclient.execute(httppost);
 			    
