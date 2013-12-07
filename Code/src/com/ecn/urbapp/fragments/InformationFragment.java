@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ToggleButton;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.GeoActivity;
@@ -34,7 +36,9 @@ import com.ecn.urbapp.utils.GetId;
 
 public class InformationFragment extends Fragment implements OnClickListener{
 
-	private Button geo = null;
+	private ToggleButton geo;
+	
+	private Button next;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -45,18 +49,31 @@ public class InformationFragment extends Fragment implements OnClickListener{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_information, null);
 
-		geo = (Button) v.findViewById(R.id.info_button_geo);
-	    geo.setOnClickListener(this);
+		geo = (ToggleButton) v.findViewById(R.id.info_button_geo);
+		geo.setOnClickListener(this);
 		
-	    /*Intent i = getActivity().getIntent();
-	    EditText txt = (EditText) v.findViewById(R.id.info_edit_adress);
-	    txt.setText(i.getStringExtra("addr"));*/
+		next = (Button) v.findViewById(R.id.info_button_next);
+		next.setOnClickListener(this);
+
 		return v;
 	}
 		@Override
 		public void onClick(View v) {
-			Intent i = new Intent(this.getActivity(), GeoActivity.class);
-			startActivityForResult(i, 10);
+			switch(v.getId()){
+				case R.id.info_button_geo:
+					if(MainActivity.photo.getGpsGeom_id()==0){
+						geo.setChecked(false);
+					}
+					else{
+						geo.setChecked(true);
+					}
+					Intent i = new Intent(this.getActivity(), GeoActivity.class);
+					startActivityForResult(i, 10);
+				break;
+				case R.id.info_button_next:
+					this.getActivity().getActionBar().setSelectedNavigationItem(2);
+				break;
+			}
 		}
 
 		/**
@@ -65,30 +82,14 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		@Override
 		public void onStop(){
 			super.onStop();
-			//TODO supress the following code
-			/*
-		    EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
-		    MainActivity.author = txt.getText().toString();
-		    txt = (EditText) getView().findViewById(R.id.info_edit_deviceName);
-		    MainActivity.device = txt.getText().toString();
-		    txt = (EditText) getView().findViewById(R.id.info_edit_project);
-		    MainActivity.sproject = txt.getText().toString();
-		    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
-		    MainActivity.address = txt.getText().toString();*/
-		    
-		    //TODO verificate the case of multi project (cf maybe get the project selected in the list)
-		    //need to verificate if the project is already defined or not
-		    if(MainActivity.projectSet){
-		    	//Obtaining teh last define project
-		    	if(!MainActivity.project.isEmpty()){
-			    	Project pro = MainActivity.project.get(MainActivity.project.size()-1);
-			    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
-				    pro.setProjectName(txt.getText().toString());
-				    txt = (EditText) getView().findViewById(R.id.info_edit_description);
-				    MainActivity.photo.setPhoto_description(txt.getText().toString());
-				    txt = (EditText) getView().findViewById(R.id.info_edit_author);
-				    MainActivity.photo.setPhoto_author(txt.getText().toString());
-		    	}
+		    if(!MainActivity.project.isEmpty()){
+		    	Project pro = MainActivity.project.get(MainActivity.project.size()-1);
+		    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_project);
+				pro.setProjectName(txt.getText().toString());
+				txt = (EditText) getView().findViewById(R.id.info_edit_description);
+				MainActivity.photo.setPhoto_description(txt.getText().toString());
+				txt = (EditText) getView().findViewById(R.id.info_edit_author);
+				MainActivity.photo.setPhoto_author(txt.getText().toString());
 		    }
 		    else{
 			    Project pro = new Project();
@@ -103,7 +104,6 @@ public class InformationFragment extends Fragment implements OnClickListener{
 			    MainActivity.photo.setPhoto_author(txt.getText().toString());
 			    
 			    MainActivity.project.add((int)pro.getGpsGeom_id(), pro);
-			    MainActivity.projectSet=true;
 			    comp.setPhoto_id(MainActivity.photo.getPhoto_id());
 			    comp.setProject_id(pro.getProjectId());
 			    MainActivity.composed.add(comp);
@@ -117,30 +117,28 @@ public class InformationFragment extends Fragment implements OnClickListener{
 		@Override
 		public void onStart(){
 			super.onStart();
-			//TODO supress the following code
-			/*
-		    EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
-		    txt.setText(MainActivity.author);
-		    txt = (EditText) getView().findViewById(R.id.info_edit_deviceName);
-		    txt.setText(MainActivity.device);
-		    txt = (EditText) getView().findViewById(R.id.info_edit_project);
-		    txt.setText(MainActivity.sproject);
-		    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
-		    txt.setText(MainActivity.address);*/
-		    
-		    //if the project is already set
-		    if(MainActivity.projectSet){
-		    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
-			    txt.setText(MainActivity.photo.getPhoto_author());
-			    txt = (EditText) getView().findViewById(R.id.info_edit_project);
-			    txt.setText(MainActivity.project.get(MainActivity.project.size()-1).getProjectName());
-			    txt = (EditText) getView().findViewById(R.id.info_edit_description);
-			    txt.setText(MainActivity.photo.getPhoto_description());
-			    txt = (EditText) getView().findViewById(R.id.info_edit_adress);
-			    txt.setText("");
-		    }
-		    else{
-		    	EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
+			
+			if(MainActivity.photo.getGpsGeom_id()==0){
+				geo.setChecked(false);
+				next.setVisibility(View.GONE);
+			}
+			else{
+				geo.setChecked(true);
+				next.setVisibility(View.VISIBLE);
+			}
+			
+			if(!MainActivity.project.isEmpty()){
+				EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
+				txt.setText(MainActivity.photo.getPhoto_author());
+				txt = (EditText) getView().findViewById(R.id.info_edit_project);
+				txt.setText(MainActivity.project.get(MainActivity.project.size()-1).getProjectName());
+				txt = (EditText) getView().findViewById(R.id.info_edit_description);
+				txt.setText(MainActivity.photo.getPhoto_description());
+				txt = (EditText) getView().findViewById(R.id.info_edit_adress);
+				txt.setText("");
+			}
+			else{
+				EditText txt = (EditText) getView().findViewById(R.id.info_edit_author);
 			    txt.setText("");
 			    txt = (EditText) getView().findViewById(R.id.info_edit_project);
 			    txt.setText("");

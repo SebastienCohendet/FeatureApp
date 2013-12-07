@@ -103,10 +103,6 @@ public class SummaryDialogFragment extends DialogFragment {
 		return builder.create();
 	}
 
-	/**
-	 * Action realized when the user cancel the dialog (touch outside the dialog
-	 * or press the back button)
-	 */
 	@Override
 	public void onCancel(DialogInterface dialog) {
 	}

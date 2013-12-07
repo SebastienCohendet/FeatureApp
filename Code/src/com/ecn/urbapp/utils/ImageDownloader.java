@@ -21,8 +21,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.ecn.urbapp.activities.MainActivity;
-
 /**
  * Download a picture from the web and prints it on screen
  * @author Sebastien

@@ -8,6 +8,7 @@ import android.graphics.Point;
 import android.util.Log;
 
 import com.ecn.urbapp.R;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -113,25 +114,6 @@ public class Zone {
 	 public Polygon getPolygon() {
 		 return poly;
 	 }
-
-	 public void createHole(Polygon polygon) {
-		LinearRing shell = gf.createLinearRing(poly.getExteriorRing()
-				.getCoordinates());
-		int nbrHoles = poly.getNumInteriorRing();
-		LinearRing[] holes = new LinearRing[nbrHoles + 1];
-		for (int i = 0; i < nbrHoles; i++) {
-			holes[i] = gf.createLinearRing(poly.getInteriorRingN(i).getCoordinates());
-		}
-		Coordinate[] coordinates = polygon.getExteriorRing().getCoordinates();
-		LinearRing lr = gf.createLinearRing(coordinates);
-		if ((coordinates[0].x - coordinates[1].x) * (coordinates[2].y - coordinates[0].y)
-				-  (coordinates[0].y - coordinates[1].y) * (coordinates[2].x - coordinates[0].x) > 0) {
-			lr = gf.createLinearRing(lr.reverse().getCoordinates());
-		}
-		holes[nbrHoles] = lr;
-		
-		poly = gf.createPolygon(shell, holes);
-	}
 	
 	/**
 	 * Move a point to its new coordinates
@@ -295,15 +277,6 @@ public class Zone {
 		}
 
 		return contain;
-	}
-
-	/**
-	 * The method return the area of the zone in pixels*pixels
-	 * 
-	 * @return the area
-	 */
-	public float area() {
-		return (float) poly.getArea();
 	}
 
 	/**

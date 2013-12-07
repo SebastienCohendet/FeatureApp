@@ -1,10 +1,5 @@
 package com.ecn.urbapp.activities;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -16,15 +11,12 @@ import android.app.AlertDialog.Builder;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.widget.Toast;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.Composed;
@@ -36,7 +28,6 @@ import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.db.Project;
-import com.ecn.urbapp.dialogs.ConfirmPhotoDialogFragment;
 import com.ecn.urbapp.fragments.CharacteristicsFragment;
 import com.ecn.urbapp.fragments.HomeFragment;
 import com.ecn.urbapp.fragments.InformationFragment;
@@ -44,6 +35,8 @@ import com.ecn.urbapp.fragments.SaveFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
 import com.ecn.urbapp.listener.MyTabListener;
 import com.ecn.urbapp.utils.ConnexionCheck;
+import com.ecn.urbapp.utils.Cst;
+import com.ecn.urbapp.utils.Utils;
 
 /**
  * @author	COHENDET Sébastien
@@ -59,6 +52,8 @@ import com.ecn.urbapp.utils.ConnexionCheck;
  * It contains an action bar filled with the different fragments
  * 			
  */
+//TODO pass photo into data bundle
+//TODO verify for the local save
 
 public class MainActivity extends Activity {
 
@@ -72,17 +67,18 @@ public class MainActivity extends Activity {
 	 */
 	public static LocalDataSource datasource;
 
-	
 	/**
 	 * BaseContext to get the static context of app anywhere (for file)
 	 */
     public static Context baseContext;
 
-	//TODO add description for javadoc
+	/**
+	 * Dialog box displayed in the entire screen
+	 */
 	private static Builder alertDialog;
 
 	/**
-	 * Link to ask google to create a specific Connexion code to chck if there is no portal between android and server
+	 * Link to ask google to create a specific connexion code to check if there is no portal between android and server
 	 */
     public static final String CONNECTIVITY_URL="http://clients3.google.com/generate_204";
     
@@ -90,45 +86,53 @@ public class MainActivity extends Activity {
      * Server address
      */
     public static String serverURL="http://192.168.177.1/";
-    
-    /**
-	 * Attributs for the project information
-	 */
-	//TODO add description for javadoc
-	public static String pathImage=null;
-	//TODO add description for javadoc
-	public static String pathTampon=null;
-	//TODO add description for javadoc
-	public static File sphoto=null;
-	//TODO add the set of this bool into each function loading a photo
-	public static boolean isPhoto=false;
-	//TODO add description for javadoc
-	public static boolean start = true;
-	//TODO add description for javadoc
-	public static boolean local = false;
 
-	//TODO add description for javadoc
+	/**
+	 * List of all the fragments displayed in the action bar
+	 */
 	private Vector<Fragment> fragments=null;
 	
 	/**ArrayList for the elements of the database**/
 
+	/**
+	 * ArrayList of the database element Composed
+	 */
 	public static ArrayList<Composed> composed=null;
+	/**
+	 * ArrayList of the database element Element
+	 */
 	public static ArrayList<Element> element=null;
+	/**
+	 * ArrayList of the database element ElementType
+	 */
 	public static ArrayList<ElementType> elementType=null;
+	/**
+	 * ArrayList of the database element GpsGeom
+	 */
 	public static ArrayList<GpsGeom> gpsGeom=null;
+	/**
+	 * ArrayList of the database element Material
+	 */
 	public static ArrayList<Material> material=null;
+	/**
+	 * ArrayList of the database element PixelGeom
+	 */
 	public static ArrayList<PixelGeom> pixelGeom=null;
+	/**
+	 * ArrayList of the database element Project
+	 */
 	public static ArrayList<Project> project=null;
-	public static boolean projectSet = false;
+	/**
+	 * Database element Photo
+	 */
 	public static Photo photo=null;
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-
+		super.onCreate(savedInstanceState);		
 		
+		//Instanciation of the elements  for the database
 		composed = new ArrayList<Composed>();
 		element = new ArrayList<Element>();
 		elementType = new ArrayList<ElementType>();
@@ -138,7 +142,6 @@ public class MainActivity extends Activity {
 		project = new ArrayList<Project>();
 		photo = new Photo();
 		
-		
 		fragments=new Vector<Fragment>();
 		
 		//Setting the Context of app
@@ -147,18 +150,16 @@ public class MainActivity extends Activity {
 		alertDialog = new AlertDialog.Builder(MainActivity.this);
 		isInternetOn();
 		
-		//Setting the Activity bar
-		bar = getActionBar();
-		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		bar.setDisplayHomeAsUpEnabled(true);
-		
 		//Setting the Context of app
 		baseContext = getBaseContext();
 		
 		//initialization of the local database
 		datasource = new LocalDataSource(this);
 		
-		//Setting of the different tab of the bar
+		//Setting the Activity bar
+		bar = getActionBar();
+		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		bar.setDisplayHomeAsUpEnabled(true);
 		
 		//Home tab
 		Tab tabHome =  bar.newTab();
@@ -202,13 +203,10 @@ public class MainActivity extends Activity {
 		
 		//TODO coordinate with the remote database
 		datasource.open();
-		
 		datasource.createElementTypeInDB("Toit");
 		datasource.createElementTypeInDB("Façade");
 		datasource.createElementTypeInDB("Sol");
-		
 		datasource.getAllElementType();
-
 		datasource.createMaterialInDB("Acier");
 		datasource.createMaterialInDB("Ardoises");
 		datasource.createMaterialInDB("Bois");
@@ -220,9 +218,7 @@ public class MainActivity extends Activity {
 		datasource.createMaterialInDB("Terre");
 		datasource.createMaterialInDB("Tuiles");
 		datasource.createMaterialInDB("Verre");
-
 		datasource.getAllMaterial();
-		
 		datasource.close();
 	}
 
@@ -238,20 +234,19 @@ public class MainActivity extends Activity {
 	 * Method to check if internet is available (and no portal !)
 	 */
 	public final void isInternetOn() {
-
 		ConnectivityManager con=(ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
-        boolean wifi=con.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnectedOrConnecting();
-        boolean mobile = false;
-        
-        try {
-         mobile=con.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnectedOrConnecting();
-        }
-        catch (NullPointerException e){
-        	mobile=false;
-        }
-        boolean internet=wifi|mobile;
-        if (internet)
-        	 new ConnexionCheck().Connectivity();
+		boolean wifi=con.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnectedOrConnecting();
+		boolean mobile = false;
+
+		try{
+			mobile=con.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnectedOrConnecting();
+		}
+		catch (NullPointerException e){
+			mobile=false;
+		}
+		boolean internet=wifi|mobile;
+		if (internet)
+			new ConnexionCheck().Connectivity();
 	}
 
 	/**
@@ -263,80 +258,53 @@ public class MainActivity extends Activity {
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-            if (resultCode == RESULT_OK) {
-            	confirm();
-            	//Setting the photo path from the pathImage
-            	MainActivity.photo.setPhoto_url(pathImage.split("/")[pathImage.split("/").length-1]);
-            	MainActivity.photo.setPhoto_id(1);
-                getActionBar().setSelectedNavigationItem(1);
-                MainActivity.isPhoto=true;
-            }
-        }
-        if (requestCode == 1) {
-            if (pathImage != null) {
-        	//TODO check that this is not a crash
-            	MainActivity.local=true;
-            	confirm();
-                getActionBar().setSelectedNavigationItem(2);
-                MainActivity.isPhoto=true;
-                datasource.instanciateAllElement();
-                datasource.instanciateAllGpsGeom();
-                datasource.instanciateAllProject();
-                datasource.instanciateAllpixelGeom(); //load pixelGeom linked to the photo in the relative public static arrayList
-                MainActivity.projectSet=true;
-                MainActivity.photo.setRegistredInLocal(true);
-                Log.w("papa","p");
-            }
-        }
-        if (requestCode == 2) {
-            if (resultCode == RESULT_OK) {
-            	confirm();
-            	//Setting the photo path
-            	String url = getRealPathFromURI(baseContext, data.getData());
-            	MainActivity.photo.setPhoto_url(url.split("/")[url.split("/").length-1]);
-            	MainActivity.photo.setPhoto_id(1);
-            	try {
-            		if(!url.equals(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url())){
-            			copy(new File(url), new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url()));
-            		}
-            	} catch (IOException e) {
-					e.printStackTrace();
-				}
-                getActionBar().setSelectedNavigationItem(1);
-                MainActivity.isPhoto=true;
-            }
-        }
-        if (requestCode == 10) {
-            if (resultCode == RESULT_OK) {
-                getActionBar().setSelectedNavigationItem(1);
-            }
+		//TODO verify resultcode for local projectload
+		Utils.showToast(MainActivity.baseContext, "Retour à l'application", Toast.LENGTH_SHORT);
+		if (resultCode == RESULT_OK) {
+			switch(requestCode){
+				case Cst.CODE_TAKE_PICTURE:
+					Utils.confirm(getFragmentManager());
+	
+					String pathImage = MainActivity.photo.getUrlTemp();
+					MainActivity.photo.setPhoto_url(pathImage.split("/")[pathImage.split("/").length-1]);
+					MainActivity.photo.setPhoto_id(1);
+					MainActivity.photo.setUrlTemp(null);
+					
+					getActionBar().setSelectedNavigationItem(1);
+				break;
+				case Cst.CODE_LOAD_LOCAL_PROJECT:
+					if(MainActivity.project.isEmpty()){
+						datasource.instanciateAllElement();
+						datasource.instanciateAllGpsGeom();
+						datasource.instanciateAllProject();
+						datasource.instanciateAllpixelGeom();
+						
+						MainActivity.photo.setRegistredInLocal(true);
+						MainActivity.photo.setUrlTemp(null);
+						
+						getActionBar().setSelectedNavigationItem(2);
+					}
+				break;
+				case Cst.CODE_LOAD_PICTURE:
+					Utils.confirm(getFragmentManager());
+	
+					String url = Utils.getRealPathFromURI(baseContext, data.getData());
+					MainActivity.photo.setPhoto_url(url.split("/")[url.split("/").length-1]);
+					MainActivity.photo.setPhoto_id(1);
+					MainActivity.photo.setUrlTemp(null);
+					
+					if(!url.equals(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url())){
+						Utils.copy(new File(url), new File(Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url()));
+					}
+					
+					getActionBar().setSelectedNavigationItem(1);
+				break;
+				case 10:
+					getActionBar().setSelectedNavigationItem(1);
+				break;
+			}
         }
     }
-
-	//TODO add description for javadoc
-	public void confirm(){
-		if(MainActivity.pathTampon!=null){
-			ConfirmPhotoDialogFragment typedialog = new ConfirmPhotoDialogFragment();
-			typedialog.show(getFragmentManager(), "CharacteristicsDialogFragment");
-		}
-	}
-
-	//TODO add description for javadoc
-	public String getRealPathFromURI(Context context, Uri contentUri) {
-		Cursor cursor = null;
-		try{ 
-		    String[] proj = { MediaStore.Images.Media.DATA };
-		    cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
-		    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		    cursor.moveToFirst();
-		    return cursor.getString(column_index);
-		}finally{
-		    if (cursor != null) {
-		    	cursor.close();
-		    }
-		}
-	}
 	
 	/**
 	 * Function called when the back button of the screen is called. It will display the previous fragment.
@@ -355,19 +323,5 @@ public class MainActivity extends Activity {
 			getActionBar().selectTab(getActionBar().getTabAt(i-1));
 		}
 
-	}
-	
-	public void copy(File src, File dst) throws IOException {
-	    InputStream in = new FileInputStream(src);
-	    OutputStream out = new FileOutputStream(dst);
-
-	    // Transfer bytes from in to out
-	    byte[] buf = new byte[1024];
-	    int len;
-	    while ((len = in.read(buf)) > 0) {
-	        out.write(buf, 0, len);
-	    }
-	    in.close();
-	    out.close();
 	}
 }

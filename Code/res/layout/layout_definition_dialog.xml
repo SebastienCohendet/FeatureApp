@@ -35,15 +35,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/type" />
-        
-        <EditText
-            android:id="@+id/typeZone_custom"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:inputType= "text"
-            android:visibility="gone"
-            android:hint="@string/other"
-            android:textColor="#000000" />
     </LinearLayout>
 
     <LinearLayout
@@ -65,15 +56,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/frontagematerial" />
-        
-        <EditText
-            android:id="@+id/materialZone_custom"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:inputType= "text"
-            android:visibility="gone"
-            android:hint="@string/other"
-            android:textColor="#000000" />
     </LinearLayout>
     
     <LinearLayout
@@ -95,7 +77,8 @@
         	android:layout_width="150dp"
         	android:layout_height="30dp"
         	android:layout_marginLeft="80dip"
-        	android:layout_marginBottom="30dip" />
+        	android:layout_marginBottom="30dip"
+            android:src="@drawable/back" />
         
     </LinearLayout>
     

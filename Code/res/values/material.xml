@@ -7,8 +7,6 @@
         <item> Béton </item>
         <item> Bois </item>
         <item> Verre </item>
-        <item>@string/other</item>
-        <item>@string/more</item>
     </array>
     <array name="groundmaterial">
         <item>@string/nullString</item>
@@ -16,30 +14,23 @@
         <item> Goudron </item>
         <item> Herbe </item>
         <item> Terre </item>
-        <item>@string/other</item>
-        <item>@string/more</item>
     </array>
     <array name="roofmaterial">
         <item>@string/nullString</item>
         <item> Ardoises </item>
         <item> Cuivre </item>
         <item> Tuiles </item>
-        <item>@string/other</item>
-        <item>@string/more</item>
     </array>
     <array name="type">
         <item>@string/nullString</item>
         <item>@string/frontage</item>
         <item>@string/ground</item>
         <item>@string/roof</item>
-        <item>@string/other</item>
     </array>
 
     <string name="frontage">Façade</string>
     <string name="ground">Sol</string>
     <string name="roof">Toit</string>
-    <string name="other">Autre</string>
-    <string name="more">Afficher plus de possibilités&#8230;</string>
     <string name="nullString"></string>
 
 </resources>

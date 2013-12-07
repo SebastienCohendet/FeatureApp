@@ -810,8 +810,9 @@ public class LocalDataSource {
 	GETALLPROJECTFROMAPHOTO = 
 		"SELECT "
 		+ MySQLiteHelper.TABLE_PROJECT+"."+MySQLiteHelper.COLUMN_PROJECTID+", "
-		+ MySQLiteHelper.TABLE_PROJECT+"."+MySQLiteHelper.COLUMN_GPSGEOMID+", "
-		+ MySQLiteHelper.TABLE_PROJECT+"."+MySQLiteHelper.COLUMN_PROJECTNAME
+		
+		+ MySQLiteHelper.TABLE_PROJECT+"."+MySQLiteHelper.COLUMN_PROJECTNAME+", "
+		+ MySQLiteHelper.TABLE_PROJECT+"."+MySQLiteHelper.COLUMN_GPSGEOMID
 		+" FROM "
 		+ MySQLiteHelper.TABLE_PROJECT
 		+" INNER JOIN " + MySQLiteHelper.TABLE_COMPOSED 

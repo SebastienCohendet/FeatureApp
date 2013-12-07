@@ -45,7 +45,11 @@ import android.graphics.drawable.Drawable;
 
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
-import com.ecn.urbapp.zones.Zone;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * This class is used to draw the zones on the image
@@ -83,9 +87,7 @@ public class DrawImageView extends Drawable {
 		// For all the zones
 		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
 			// If the zone is not selected, only draw the lines
-
-			Zone zone = new Zone(ConvertGeom.pixelGeomToZone(MainActivity.pixelGeom.get(i)));
-
+			try {
 			Element el=null;
 			for(Element e : MainActivity.element){
 				if(e.getPixelGeom_id()==MainActivity.pixelGeom.get(i).getPixelGeomId()){
@@ -93,6 +95,9 @@ public class DrawImageView extends Drawable {
 					break;
 				}
 			}
+			WKTReader wktr = new WKTReader();
+			Polygon poly = (Polygon) wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom());
+			Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
 			
 			if (!MainActivity.pixelGeom.get(i).selected) {
 				if(el!=null){
@@ -103,35 +108,26 @@ public class DrawImageView extends Drawable {
 						finishedPaint.setColor(Color.RED);
 					}
 				}
-					// Add all the lines of the polygon
-					for (int j = 0; j < zone.points
-							.size() - 1; j++) {
-						canvas.drawLine(
-								zone.points.get(j).x,
-								zone.points.get(j).y,
-								zone.points.get(j + 1).x,
-								zone.points.get(j + 1).y,
-								finishedPaint);
+				// Add all the lines of the polygon
+					for (int j = 0; j < points2.length - 1; j++) {
+						canvas.drawLine((int) points2[j].x, (int) points2[j].y,
+								(int) points2[j+1].x, (int) points2[j+1].y, finishedPaint);
 					}
 
 				// If the zone is selected, draw a filled polygon
 			} else {
 				// Create a closed path for the polygon
 				Path polyPath = new Path();
-				polyPath.moveTo(
-						zone.points.get(0).x,
-						zone.points.get(0).y);
-				for (int j = 0; j < zone.points.size(); j++) {
-					polyPath.lineTo(
-							zone.points.get(j).x,
-							zone.points.get(j).y);
+				polyPath.moveTo((int) points2[0].x, (int) points2[0].y);
+				for(int j=0; j<points2.length; j++){
+					polyPath.lineTo((int) points2[j].x, (int) points2[j].y);
 				}
-				for (int k = 0; k < zone.getPolygon().getNumInteriorRing(); k++) {
+				for (int k = 0; k < poly.getNumInteriorRing(); k++) {
 					polyPath.close();
-					for (int j = 0; j < zone.getPolygon().getInteriorRingN(k).getNumPoints(); j++) {
+					for (int j = 0; j < poly.getInteriorRingN(k).getNumPoints(); j++) {
 						polyPath.lineTo(
-								(int) zone.getPolygon().getInteriorRingN(k).reverse().getCoordinateN(j).x,
-								(int) zone.getPolygon().getInteriorRingN(k).reverse().getCoordinateN(j).y);
+								(int) poly.getInteriorRingN(k).reverse().getCoordinateN(j).x,
+								(int) poly.getInteriorRingN(k).reverse().getCoordinateN(j).y);
 					}
 				}
 
@@ -151,6 +147,8 @@ public class DrawImageView extends Drawable {
 				canvas.drawPath(polyPath, fillPaint);
 				//fillPaint.setColor(Color.RED);
 				fillPaint.setAlpha(50);
+			}
+			} catch (ParseException e) {
 			}
 		}
 	}

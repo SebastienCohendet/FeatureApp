@@ -22,6 +22,7 @@ import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.CustomListViewAdapter;
 import com.ecn.urbapp.utils.MathOperation;
 import com.ecn.urbapp.utils.RowItem;
+import com.ecn.urbapp.utils.Utils;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
@@ -127,7 +128,7 @@ public class LoadLocalPhotosActivity extends Activity{
 				MainActivity.datasource.instanciatePhoto(refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_id());
 				
 				//TODO do a better way to have the path !
-				MainActivity.pathImage=Environment.getExternalStorageDirectory()+"/featureapp/"+refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_url();
+				MainActivity.photo.setUrlTemp(Environment.getExternalStorageDirectory()+"/featureapp/"+refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_url());
 				
 				finish();
 
@@ -137,6 +138,7 @@ public class LoadLocalPhotosActivity extends Activity{
 
 	protected void onClose() {      
 		datasource.close();
+		Utils.confirm(getFragmentManager());
 	}
 
 	//TODO add description for javadoc

@@ -9,8 +9,8 @@ import java.util.Map;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -18,9 +18,11 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.ElementType;
+import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.fragments.CharacteristicsFragment;
 import com.ecn.urbapp.utils.colorpicker.AmbilWarnaDialog;
 import com.ecn.urbapp.utils.colorpicker.AmbilWarnaDialog.OnAmbilWarnaListener;
@@ -35,18 +37,30 @@ import com.ecn.urbapp.zones.UtilCharacteristicsZone;
  */
 public class CharacteristicsDialogFragment extends DialogFragment {
 
-	//TODO Adddescription for javadoc
+	/**
+	 * The Dialog instance that allow the user to characterize Elements.
+	 */
 	private Dialog box;
-	//TODO Adddescription for javadoc
+	/**
+	 * The Spinner instance used to select the type of the Element(s) to characterize.
+	 */
 	private Spinner spinType;
-	//TODO Adddescription for javadoc
+	/**
+	 * The Spinner instance used to select the material of the Element(s) to characterize.
+	 */
 	private Spinner spinMaterial;
-	//TODO Adddescription for javadoc
-	private TextView typeCustom;
-	//TODO Adddescription for javadoc
-	private TextView materialCustom;
-	//TODO Adddescription for javadoc
+	/**
+	 * The View instance used to show the color of the Element(s) to characterize.
+	 */
 	private View colorView;
+	/**
+	 * Dialog used to choose a color.
+	 */
+	private AmbilWarnaDialog colorDialog;
+	/**
+	 * The Color chosen in the colorView.
+	 */
+	private int chosenColor;
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -55,87 +69,65 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		box.setTitle(R.string.definition_dialog_title);
 		box.setCanceledOnTouchOutside(true);
 		spinType = (Spinner) box.findViewById(R.id.typeZone);
-		typeCustom = (TextView) box.findViewById(R.id.typeZone_custom);
 		spinMaterial = (Spinner) box.findViewById(R.id.materialZone);
-		materialCustom = (TextView) box.findViewById(R.id.materialZone_custom);
 		Button validate = (Button) box.findViewById(R.id.validation);
 		spinType.setOnItemSelectedListener(itemSelectedListenerType);
 		spinMaterial.setOnItemSelectedListener(itemSelectedListenerMaterial);
 		validate.setOnClickListener(validation);
 		colorView = box.findViewById(R.id.color);
-		colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedZones());
-		colorView.setOnClickListener(chooseColor);
+		chosenColor = -1;
+		if (UtilCharacteristicsZone.getColorForSelectedZones() != 0) {
+			colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedZones());
+		} else {
+			colorView.setBackgroundColor(Color.RED);
+			//colorView.setBackgroundDrawable(getResources().getDrawable(R.drawable.back));
+		}
+		colorView.setOnClickListener(openColorDialog);
 		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
 		HashMap<String, Float> types = summary.get(getString(R.string.type));
 		HashMap<String, Float> materials = summary.get(getString(R.string.materials));
-		List<String> list;
+		List<String> list = //c
+				new ArrayList<String>();
+		for (ElementType et : MainActivity.elementType) {
+			list.add(et.getElementType_name());
+		}
+		list = getMaterialList(R.array.type);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
+		spinType.setAdapter(adapter);
 		int position = -1;
+		String type;
 		if (types.keySet().size() == 1) {
-			String type = (String) types.keySet().toArray()[0];
+			type = (String) types.keySet().toArray()[0];
 			if (type.equals(getResources().getString(R.string.not_defined))) {
 				type = "";
 			}
-			list = getMaterialList(false, R.array.type);
-			position = list.indexOf(type);
-			if (position != -1) {
-				spinType.setSelection(position);
-			} else {
-				spinType.setVisibility(View.GONE);
-				typeCustom.setVisibility(View.VISIBLE);
-				typeCustom.setText(type);
-			}
 		} else {
-			list = getMaterialList(false, R.array.type);
-			position = list.indexOf(getResources().getString(R.string.nullString));
+			type = getResources().getString(R.string.nullString);
+		}
+		position = list.indexOf(type);
+		if (position != -1) {
 			spinType.setSelection(position);
 		}
 		position = -1;
+		list = new ArrayList<String>();
+		for (Material mat : MainActivity.material) {
+			list.add(mat.getMaterial_name());
+		}
+		list = getMaterialList(R.array.frontagematerial, R.array.groundmaterial, R.array.roofmaterial);
+		String material;
 		if (materials.keySet().size() == 1) {
-			String material = (String) materials.keySet().toArray()[0];
+			material = (String) materials.keySet().toArray()[0];
 			if (material.equals(getResources().getString(R.string.not_defined))) {
 				material = "";
 			}
-			if (getResources().getString(R.string.frontage).equals(spinType.getSelectedItem())) {
-				list = getMaterialList(true, R.array.frontagematerial);
-				position = list.indexOf(material);
-			} else if (getResources().getString(R.string.ground).equals(spinType.getSelectedItem())) {
-				list = getMaterialList(true, R.array.groundmaterial);
-				position = list.indexOf(material);
-			} else if (getResources().getString(R.string.roof).equals(spinType.getSelectedItem())) {
-				list = getMaterialList(true, R.array.roofmaterial);
-				position = list.indexOf(material);
-			}
-			if (position == -1) {
-				list = getMaterialList(false, R.array.frontagematerial, R.array.groundmaterial, R.array.roofmaterial);
-				position = list.indexOf(material);
-			}
-			if (position != -1) {
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
-				spinMaterial.setAdapter(adapter);
-				spinMaterial.setSelection(position);
-			} else {
-				spinMaterial.setVisibility(View.GONE);
-				materialCustom.setVisibility(View.VISIBLE);
-				materialCustom.setText(material);
-			}
 		} else {
-			if (getResources().getString(R.string.frontage).equals(spinType.getSelectedItem())) {
-				list = getMaterialList(true, R.array.frontagematerial);
-				position = list.indexOf(getResources().getString(R.string.nullString));
-			} else if (getResources().getString(R.string.ground).equals(spinType.getSelectedItem())) {
-				list = getMaterialList(true, R.array.groundmaterial);
-				position = list.indexOf(getResources().getString(R.string.nullString));
-			} else if (getResources().getString(R.string.roof).equals(spinType.getSelectedItem())) {
-				list = getMaterialList(true, R.array.roofmaterial);
-				position = list.indexOf(getResources().getString(R.string.nullString));
-			}
-			if (position == -1) {
-				list = getMaterialList(false, R.array.frontagematerial, R.array.groundmaterial, R.array.roofmaterial);
-				position = list.indexOf(getResources().getString(R.string.nullString));
-			}
-			if (position != -1) {
-				spinMaterial.setSelection(position);
-			}
+			material = getResources().getString(R.string.nullString);
+		}
+		adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
+		spinMaterial.setAdapter(adapter);
+		position = list.indexOf(material);
+		if (position != -1) {
+			spinMaterial.setSelection(position);
 		}
 		return box;
 
@@ -147,25 +139,6 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		@Override
 		public void onItemSelected(AdapterView<?> parent, View view, int position,
 				long id) {
-			if (spinType.getItemAtPosition(position).equals(getResources().getString(R.string.frontage))) {
-				List<String> list = getMaterialList(true, R.array.frontagematerial);
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
-				spinMaterial.setAdapter(adapter);
-			} else if (spinType.getItemAtPosition(position).equals(getResources().getString(R.string.ground))) {
-				List<String> list = getMaterialList(true, R.array.groundmaterial);
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
-				spinMaterial.setAdapter(adapter);
-			} else if (spinType.getItemAtPosition(position).equals(getResources().getString(R.string.roof))) {
-				List<String> list = getMaterialList(true, R.array.roofmaterial);
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
-				spinMaterial.setAdapter(adapter);
-			} else if (spinType.getItemAtPosition(position).equals(getResources().getString(R.string.other))) {
-				List<String> list = getMaterialList(false, R.array.frontagematerial, R.array.groundmaterial, R.array.roofmaterial);
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
-				spinMaterial.setAdapter(adapter);
-				spinType.setVisibility(View.GONE);
-				typeCustom.setVisibility(View.VISIBLE);
-			}
 		}
 
 		@Override
@@ -174,24 +147,17 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 	};
 
 	//TODO Adddescription for javadoc
-	private List<String> getMaterialList(boolean addMore, int... arrayIds) {
+	private List<String> getMaterialList(int... arrayIds) {
 		List<String> list = new ArrayList<String>();
 		for (int arrayId : arrayIds) {
 			String[] array = getResources().getStringArray(arrayId);
 			List<String> subList = new ArrayList<String>(Arrays.asList(array));
 			subList.remove(getResources().getString(R.string.nullString));
-			subList.remove(getResources().getString(R.string.other));
-			subList.remove(getResources().getString(R.string.more));
 			java.util.Collections.sort(subList);
 			list = fusionSortedList(list, subList);
 		}
 		list.add(0, getResources().getString(R.string.nullString));
-		list.add(getResources().getString(R.string.other));
-		if (addMore) {
-			list.add(getResources().getString(R.string.more));
-		}
 		return list;
-		//return new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
 	}
 
 	//TODO Adddescription for javadoc
@@ -200,14 +166,6 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		@Override
 		public void onItemSelected(AdapterView<?> parent, View view, int position,
 				long id) {
-			if (spinMaterial.getItemAtPosition(position).equals(getResources().getString(R.string.other))) {
-				spinMaterial.setVisibility(View.GONE);
-				materialCustom.setVisibility(View.VISIBLE);
-			} else if (spinMaterial.getItemAtPosition(position).equals(getResources().getString(R.string.more))) {
-				List<String> list = getMaterialList(false, R.array.frontagematerial, R.array.groundmaterial, R.array.roofmaterial);
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
-				spinMaterial.setAdapter(adapter);
-			}
 		}
 
 		@Override
@@ -215,29 +173,25 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		}
 	};
 
-	//TODO Adddescription for javadoc
+	/**
+	 * Listener that add the chosen characteristics to all the selected elements
+	 * and close the dialog.
+	 */
 	private OnClickListener validation = new OnClickListener() {
 		
 		@Override
 		public void onClick(View v) {
 			String selection;
-			if (spinType.getVisibility() == View.VISIBLE) {
-				selection = (String) spinType.getSelectedItem();
-				if (!selection.equals("")) {
-					UtilCharacteristicsZone.setTypeForSelectedZones(selection);
-				}
-			} else {
-				UtilCharacteristicsZone.setTypeForSelectedZones(
-						((SpannableStringBuilder) typeCustom.getText()).toString());
+			selection = (String) spinType.getSelectedItem();
+			if (!selection.equals("")) {
+				UtilCharacteristicsZone.setTypeForSelectedZones(selection);
 			}
-			if (spinMaterial.getVisibility() == View.VISIBLE) {
-				selection = (String) spinMaterial.getSelectedItem();
-				if (!selection.equals("")) {
-					UtilCharacteristicsZone.setMaterialForSelectedZones(selection);
-				}
-			} else {
-				UtilCharacteristicsZone.setMaterialForSelectedZones(
-						((SpannableStringBuilder) materialCustom.getText()).toString());
+			selection = (String) spinMaterial.getSelectedItem();
+			if (!selection.equals("")) {
+				UtilCharacteristicsZone.setMaterialForSelectedZones(selection);
+			}
+			if (chosenColor != 0) {
+				UtilCharacteristicsZone.setColorForSelectedZones(chosenColor);
 			}
 			CharacteristicsFragment.getMyImage().invalidate();
 			box.dismiss();
@@ -266,40 +220,41 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		return result;
 	}
 
-	//TODO Adddescription for javadoc
-	private OnClickListener chooseColor = new OnClickListener() {
+	/**
+	 * Listener that open an AmbilWarnaDialog to chose a color.
+	 */
+	private OnClickListener openColorDialog = new OnClickListener() {
 		
 		@Override
 		public void onClick(View v) {
 			// Create the color picker dialog (with the actual color of the selected zone)
-			AmbilWarnaDialog dialog = new AmbilWarnaDialog(getActivity(),
+			colorDialog = new AmbilWarnaDialog(getActivity(),
 					UtilCharacteristicsZone.getColorForSelectedZones(),
-					new OnAmbilWarnaListener() {
-						@Override
-						public void onOk(AmbilWarnaDialog dialog, int color) {
-							// Modify the color of the zone
-							UtilCharacteristicsZone
-									.setColorForSelectedZones(color);
-							colorView.setBackgroundColor(UtilCharacteristicsZone
-									.getColorForSelectedZones());
-						}
-
-						@Override
-						public void onCancel(AmbilWarnaDialog dialog) {
-						}
-					});
+					colorListener);
 
 			// Add a title to the dialog
-			dialog.getDialog().setTitle(R.string.definition_dialog_color);
+			colorDialog.getDialog().setTitle(R.string.definition_dialog_color);
 
-			dialog.getDialog().show();
+			colorDialog.getDialog().show();
+		}
+	};
+	
+	/**
+	 * Listener for AmbilWarnaListener that save the chosen color in the attribute chosenColor and change the color of the colorView.
+	 */
+	OnAmbilWarnaListener colorListener = new OnAmbilWarnaListener() {
+		@Override
+		public void onOk(AmbilWarnaDialog dialog, int color) {
+			// Modify the color of the zone
+			chosenColor = color;
+			colorView.setBackgroundColor(color);
+		}
+
+		@Override
+		public void onCancel(AmbilWarnaDialog dialog) {
 		}
 	};
 
-	/**
-	 * Action realized when the user cancel the dialog (touch outside the dialog
-	 * or press the back button)
-	 */
 	@Override
 	public void onCancel(DialogInterface dialog) {
 	}

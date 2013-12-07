@@ -16,23 +16,27 @@
  -->
 
 <!-- Load image action -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        
-        <RelativeLayout
-            android:id="@+id/home_layout_newProject"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content">
-                
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:layout_gravity="center">
+
+	<RelativeLayout
+		android:id="@+id/home_layout_newProject"
+		android:layout_width="400dp"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"
+		android:layout_marginLeft="20dp">
+		
                 <ImageView
                 android:id="@+id/home_image_newProject"
                 android:layout_width="wrap_content"
                 android:layout_height="400dp"
                 android:layout_alignParentTop="true"
                 android:contentDescription="@string/image_newProject"
-        		android:src="@drawable/image"/>
+        		android:src="@drawable/city"/>
             
             <Button
                 android:id="@+id/home_takePicture"
@@ -56,53 +60,59 @@
         <RelativeLayout
             android:id="@+id/home_layout_localProject"
             android:layout_width="400dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true">
             
-         <ImageView
-         android:id="@+id/home_image_loadLocalProject"
-         android:layout_width="wrap_content"
-         android:layout_height="400dp"
-         android:layout_alignParentTop="true"
-         android:contentDescription="@string/image_loadLocalProject"
-         android:src="@drawable/image"/>
-        
-         <Button
-         android:id="@+id/home_loadLocalProject"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/home_image_loadLocalProject"
-         android:layout_alignParentLeft="true"
-         android:text="@string/loadLocalProject"/>
-         
-         <Button
-         android:id="@+id/home_test"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/home_loadLocalProject"
-         android:layout_alignParentLeft="true"
-         android:text="test"/>
-         
-                  <Button
-         android:id="@+id/home_test_photo"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_below="@+id/home_test"
-         android:layout_alignParentLeft="true"
-         android:text="test photo"/>
+	         <ImageView
+	         android:id="@+id/home_image_loadLocalProject"
+	         android:layout_width="wrap_content"
+	         android:layout_height="400dp"
+	         android:layout_alignParentTop="true"
+	         android:contentDescription="@string/image_loadLocalProject"
+	         android:src="@drawable/city"/>
+	        
+	         <Button
+	         android:id="@+id/home_loadLocalProject"
+	         android:layout_width="match_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_below="@+id/home_image_loadLocalProject"
+	         android:layout_alignParentLeft="true"
+	         android:text="@string/loadLocalProject"/>
+	         
+	         <Button
+	         android:id="@+id/home_test"
+	         android:layout_width="match_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_below="@+id/home_loadLocalProject"
+	         android:layout_alignParentLeft="true"
+	         android:text="test"/>
+	         
+	                  <Button
+	         android:id="@+id/home_test_photo"
+	         android:layout_width="match_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_below="@+id/home_test"
+	         android:layout_alignParentLeft="true"
+	         android:text="test photo"/>
             
         </RelativeLayout>
         
         <RelativeLayout
             android:id="@+id/home_layout_distantProject"
             android:layout_width="400dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+			android:layout_marginRight="20dp">
          
                  <ImageView
                  android:id="@+id/home_image_loadDistantProject"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
+	        	 android:layout_height="400dp"
+                 android:layout_width="400dp"
                  android:layout_alignParentTop="true"
-                 android:contentDescription="@string/image_loadDistantProject"/>
+                 android:contentDescription="@string/image_loadDistantProject"
+	         	android:src="@drawable/city"/>
                 
                  <Button
                  android:id="@+id/home_loadDistantlProject"
@@ -114,4 +124,4 @@
 
     </RelativeLayout>
     
-</LinearLayout>
+</RelativeLayout>

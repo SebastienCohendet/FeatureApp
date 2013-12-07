@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.fragments.HomeFragment;
+import com.ecn.urbapp.utils.Utils;
 
 /**
  * @author	COHENDET S�bastien
@@ -56,30 +57,25 @@ public class MyTabListener implements TabListener{
 
         
         if(f.getClass()==HomeFragment.class && MainActivity.photo.getPhoto_url()!=null){
-        	MainActivity.pathTampon=MainActivity.photo.getPhoto_url();
+        	MainActivity.photo.setUrlTemp(MainActivity.photo.getPhoto_url());
         	MainActivity.photo.setPhoto_url(null);
-        	MainActivity.start=true;
+        	//TODO delete
+        	//MainActivity.start=true;
         }
         else if(MainActivity.photo.getPhoto_url()==null){
-        	String url =  MainActivity.pathTampon;
+        	String url =  MainActivity.photo.getUrlTemp();
         	if(url!=null){
         		MainActivity.photo.setPhoto_url(url.split("/")[url.split("/").length-1]);
         	}
         }
         
         
-		if (MainActivity.photo.getPhoto_url() != null || MainActivity.start /*|| f.getClass()==HomeFragment.class*/){
+		if (f.getClass()==HomeFragment.class && !f.isVisible() || MainActivity.photo.getPhoto_id()!=0){
 			ft.replace(android.R.id.content, f);
-			MainActivity.start=false;
 		}
-		else if(f.getClass()!=HomeFragment.class){
-			Context context = a.getApplicationContext();
+		else{
 			CharSequence text = "Veuillez charger une image ou un projet avant de commencer à travailler";
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
-			a.getActionBar().setSelectedNavigationItem(1);
+			Utils.showToast(MainActivity.baseContext, text, Toast.LENGTH_SHORT);
 		}
 	}
 

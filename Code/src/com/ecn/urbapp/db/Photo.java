@@ -21,6 +21,7 @@ public class Photo extends DataObject  {
 	 * attributes that declare the name of the picture for instance : img1.png
 	 */
 	private String photo_url;
+	private String photo_urlTemp;
 	private long gpsGeom_id;
 
 	
@@ -33,6 +34,14 @@ public class Photo extends DataObject  {
 
 	
 
+	//TODO Adddescription for javadoc
+	public String getUrlTemp() {
+		return photo_urlTemp;
+	}
+	//TODO Adddescription for javadoc
+	public void setUrlTemp(String s) {
+		photo_urlTemp=s;
+	}
 	//TODO Adddescription for javadoc
 	public long getPhoto_id() {
 		return photo_id;

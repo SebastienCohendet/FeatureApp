@@ -1,8 +1,7 @@
 package com.ecn.urbapp.utils;
 
 import java.util.List;
-import com.ecn.urbapp.R;
-import com.ecn.urbapp.utils.RowItem;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.ecn.urbapp.R;
+import com.ecn.urbapp.utils.RowItem;
  
 public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
 

@@ -207,7 +207,7 @@ public class LoadLocalProjectsActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
-        	if(MainActivity.pathImage != null){
+        	if(MainActivity.photo.getUrlTemp() != null){
             //TODO vérifier que l'activité s'est bien terminée
             	finish();
         	}

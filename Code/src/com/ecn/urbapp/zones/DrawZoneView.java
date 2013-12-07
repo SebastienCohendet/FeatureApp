@@ -48,7 +48,11 @@ import android.util.Log;
 
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.PixelGeom;
-import com.ecn.urbapp.utils.ConvertGeom;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * This class is used to draw the zones on the image
@@ -180,26 +184,23 @@ public class DrawZoneView extends Drawable {
 				canvas.drawCircle(intersections.get(i+1).x, intersections.get(i+1).y, 13/ratio, paintIntersections);
 			}
 		}
-		
+		try {
 		// Create a closed path for the polygon
-			Vector<Zone> zones = new Vector<Zone>();
-			for(PixelGeom pg : MainActivity.pixelGeom){
-				zones.add(ConvertGeom.pixelGeomToZone(pg));
-			}
-			if(!zones.isEmpty()){
-				for(Zone polygon : zones){
+				for(PixelGeom pgeom : MainActivity.pixelGeom){
 					Path polyPath = new Path();
-					Vector<Point> points2 = polygon.getPoints();
-					if(! points2.isEmpty()){
-						polyPath.moveTo(points2.get(0).x, points2.get(0).y);			
-						for(int i=1; i<points2.size(); i++){
-							polyPath.lineTo(points2.get(i).x, points2.get(i).y);
+					WKTReader wktr = new WKTReader();
+					Coordinate[] points2 = ((Polygon) wktr.read(pgeom.getPixelGeom_the_geom())).getExteriorRing().getCoordinates();
+					if(points2.length != 0){
+						polyPath.moveTo((float) points2[0].x, (float) points2[0].y);
+						for(int i=1; i<points2.length; i++){
+							polyPath.lineTo((float) points2[i].x, (float) points2[i].y);
 						}
 					// Draw the polygon
 					canvas.drawPath(polyPath, paintFillZone);
 					}
 				}
-			}
+		} catch (ParseException e) {
+		}
 	}
 
 	//TODO Add description for javadoc
