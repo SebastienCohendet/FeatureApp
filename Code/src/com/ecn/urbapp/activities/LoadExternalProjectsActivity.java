@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -164,7 +165,12 @@ public class LoadExternalProjectsActivity extends Activity {
     	
     	Sync Synchro = new Sync();
     	if (Synchro.getProjectsFromExt(refreshedValues, allGpsGeom))
+    		try{
     		Toast.makeText(MainActivity.baseContext, refreshedValues.toString(), Toast.LENGTH_LONG).show();
+    		}
+    		catch (Exception e){
+    			Log.e("DFHUPLOAD", "Heu, rien dans Refreshed, fuck it");
+    		}
     	
     	
         ArrayAdapter<Project> adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_list_item_1, refreshedValues);

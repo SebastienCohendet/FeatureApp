@@ -474,13 +474,14 @@ public class Sync
 				refreshedValues = new ArrayList<Project>();
 				allGpsGeom = new ArrayList<GpsGeom>();
 
-				JSONArray projects = jArr.getJSONArray(0);
-				JSONArray gpsGeom = jArr.getJSONArray(1);
+				JSONObject projects = jArr.getJSONObject(0);
+				JSONArray projectsInner = projects.getJSONArray("Project");
+				JSONObject gpsGeom = jArr.getJSONObject(1);
+				JSONArray gpsGeomInner = gpsGeom.getJSONArray("GpsGeom");
 
-
-				for(int i=0;i<projects.length();i++)
+				for(int i=0;i<projectsInner.length();i++)
 				{
-					JSONObject project = jArr.getJSONObject(i);
+					JSONObject project = projectsInner.getJSONObject(i);
 					long project_id = project.getLong("project_id");
 					String project_name = project.getString("project_name");
 					long gpsgeom_id = project.getLong("gpsgeom_id");
@@ -494,7 +495,7 @@ public class Sync
 				}
 				for(int i=0;i<gpsGeom.length();i++)
 				{
-					JSONObject gpsgeom = jArr.getJSONObject(i);
+					JSONObject gpsgeom = gpsGeomInner.getJSONObject(i);
 					long gpsGeom_id = gpsgeom.getLong("gpsGeom_id");
 					String gpsGeom_the_geom = gpsgeom.getString("gpsGeom_the_geom");
 					
@@ -525,7 +526,7 @@ public class Sync
 		    	// create a list to store HTTP variables and their values
 			    List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
 			    // add an HTTP variable and value pair
-			    nameValuePairs.add(new BasicNameValuePair("Project", "all"));
+			    nameValuePairs.add(new BasicNameValuePair("project", "all"));
 			    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
 			    // send the variable and value, in other words post, to the URL
 			    HttpResponse response = httpclient.execute(httppost);

@@ -4,57 +4,29 @@ error_reporting(E_ALL);
 include("DBConnect.php");
 
  //GETTING THE SENT PROJECT_ID FROM POST, and related table ids
- if(isset($_POST["project_id"])) { 
-	 $arr=$_POST["myHttpData"];
-	 $decarr = json_decode($arr,true); 
-	 $project_id = $decarr[0];
- }
- else{
- 	 $project_id = 1;
- }
- 
- if(isset($_POST['project'])){
- 
- //GETTING PROJECT TABLE INFO
- $project_query = "SELECT * FROM project";
- $project_result = pg_query($project_query);
- $project_resultarr = array();
- $count_project = 0;
- while ($row = pg_fetch_row($project_result)) {
- 	 $project_resultarr[$count_project] = array('project_id' => $row[0], 'project_name' => $row[1], 'gpsgeom_id' => $row[2]);
- 	 $count_project++;
-}
-
-  //GETTING GPSGEOM TABLE INFO
- $gpsgeom_query = "SELECT DISTINCT ON (g.gpsGeom_id) * FROM gpsgeom g INNER JOIN element e ON e.gpsGeom_id = g.gpsGeom_id
- INNER JOIN composed c ON c.photo_id = e.photo_id";
- $gpsgeom_result = pg_query($gpsgeom_query);
- $gpsgeom_resultarr = array();
- $count_gpsgeom = 0;
- while ($row = pg_fetch_row($gpsgeom_result)) {
- 	 $gpsgeom_resultarr[$count_gpsgeom] = array('gpsGeom_id' => $row[0], 'gpsGeom_the_geom' => $row[1]);
- 	 $count_gpsgeom++;
-}
- }
- 
- //GETTING PROJECT TABLE INFO
+ if(isset($_POST["project_id"])) 
+ { 
+         $arr=$_POST["myHttpData"];
+         $decarr = json_decode($arr,true); 
+         $project_id = $decarr[0];
+         //GETTING PROJECT TABLE INFO
  $project_query = "SELECT * FROM project WHERE project_id = ".$project_id;
  $project_result = pg_query($project_query);
  $project_resultarr = array();
  $count_project = 0;
  while ($row = pg_fetch_row($project_result)) {
- 	 $project_resultarr[$count_project] = array('project_id' => $row[0], 'project_name' => $row[1], 'gpsgeom_id' => $row[2]);
- 	 $count_project++;
+          $project_resultarr[$count_project] = array('project_id' => $row[0], 'project_name' => $row[1], 'gpsgeom_id' => $row[2]);
+          $count_project++;
 }
  
- // GETTIN COMPOSED TABLE INFO	
+ // GETTIN COMPOSED TABLE INFO        
  $composed_query = "SELECT * FROM composed WHERE project_id = ".$project_id;
  $composed_result = pg_query($composed_query);
  $composed_resultarr = array();
  $count_composed = 0;
  while ($row = pg_fetch_row($composed_result)){
- 	 $composed_resultarr[$count_composed] = array('project_id' => $row[0], 'photo_id' => $row[1]);
- 	 $count_composed++;
+          $composed_resultarr[$count_composed] = array('project_id' => $row[0], 'photo_id' => $row[1]);
+          $count_composed++;
  }
  
  //GETTING PHOTO TABLE INFO
@@ -63,8 +35,8 @@ include("DBConnect.php");
  $photo_resultarr = array();
  $count_photo = 0;
  while ($row = pg_fetch_row($photo_result)) {
- 	 $photo_resultarr[$count_photo] = array('photo_id' => $row[0], 'photo_description' => $row[1], 'photo_author' => $row[2], 'photo_url' => $row[3], 'gpsGeom_id' => $row[4]);
- 	 $count_photo++;
+          $photo_resultarr[$count_photo] = array('photo_id' => $row[0], 'photo_description' => $row[1], 'photo_author' => $row[2], 'photo_url' => $row[3], 'gpsGeom_id' => $row[4]);
+          $count_photo++;
  }
  
  //GETTIN ELEMENT TABLE INFO
@@ -73,8 +45,8 @@ include("DBConnect.php");
  $element_resultarr = array();
  $count_element = 0;
  while ($row = pg_fetch_row($element_result)){
- 	 $element_resultarr[$count_element] = array('element_id' => $row[0], 'photo_id' => $row[1] , 'material_id' => $row[2] , 'gpsGeom_id' => $row[3] , 'pixelGeom_id' => $row[4] , 'elementType_id' => $row[5] , 'element_color' => $row[6]);
- 	 $count_element++;
+          $element_resultarr[$count_element] = array('element_id' => $row[0], 'photo_id' => $row[1] , 'material_id' => $row[2] , 'gpsGeom_id' => $row[3] , 'pixelGeom_id' => $row[4] , 'elementType_id' => $row[5] , 'element_color' => $row[6]);
+          $count_element++;
  }
  
   //GETTING GPSGEOM TABLE INFO
@@ -85,8 +57,8 @@ include("DBConnect.php");
  $gpsgeom_resultarr = array();
  $count_gpsgeom = 0;
  while ($row = pg_fetch_row($gpsgeom_result)) {
- 	 $gpsgeom_resultarr[$count_gpsgeom] = array('gpsGeom_id' => $row[0], 'gpsGeom_the_geom' => $row[1]);
- 	 $count_gpsgeom++;
+          $gpsgeom_resultarr[$count_gpsgeom] = array('gpsGeom_id' => $row[0], 'gpsGeom_the_geom' => $row[1]);
+          $count_gpsgeom++;
 }
  
  //GETTING PIXELGEOM TABLE INFO
@@ -97,8 +69,8 @@ include("DBConnect.php");
  $pixelgeom_resultarr = array();
  $count_pixelgeom = 0;
  while ($row = pg_fetch_row($pixelgeom_result)){
- 	 $pixelgeom_resultarr[$count_pixelgeom] = array('pixelGeom_id' => $row[0], 'pixelGeom_the_geom' => $row[1]);
- 	 $count_pixelgeom++;
+          $pixelgeom_resultarr[$count_pixelgeom] = array('pixelGeom_id' => $row[0], 'pixelGeom_the_geom' => $row[1]);
+          $count_pixelgeom++;
  }
  
  //GETTING ELEMENTTYPE TABLE INFO
@@ -109,8 +81,8 @@ include("DBConnect.php");
  $elementtype_resultarr = array();
  $count_elementtype = 0;
  while ($row = pg_fetch_row($elementtype_result)){
- 	 $elementtype_resultarr[$count_elementtype] = array('elementType_id' => $row[0], 'elementType_name' => $row[1]);
- 	 $count_elementtype++;
+          $elementtype_resultarr[$count_elementtype] = array('elementType_id' => $row[0], 'elementType_name' => $row[1]);
+          $count_elementtype++;
  } 
  
  
@@ -122,8 +94,8 @@ include("DBConnect.php");
  $material_resultarr = array();
  $count_material = 0;
  while ($row = pg_fetch_row($material_result)){
- 	 $material_resultarr[$count_material] = array('material_id' => $row[0], 'material_name' => $row[1]);
- 	 $count_material++;
+          $material_resultarr[$count_material] = array('material_id' => $row[0], 'material_name' => $row[1]);
+          $count_material++;
  }
  
  //PUTING ALL THE INFO IN ONE JSON
@@ -141,5 +113,40 @@ include("DBConnect.php");
  $finaljSon = json_encode($globaljSon);
  
 echo $finaljSon;
+}
+
+
+ 
+ if(isset($_POST['project'])){
+ 
+ //GETTING PROJECT TABLE INFO
+ $project_query = "SELECT * FROM project";
+ $project_result = pg_query($project_query);
+ $project_resultarr = array();
+ $count_project = 0;
+ while ($row = pg_fetch_row($project_result)) {
+          $project_resultarr[$count_project] = array('project_id' => $row[0], 'project_name' => $row[1], 'gpsgeom_id' => $row[2]);
+          $count_project++;
+}
+
+  //GETTING GPSGEOM TABLE INFO
+ $gpsgeom_query = "SELECT DISTINCT ON (g.gpsGeom_id) * FROM gpsgeom g INNER JOIN element e ON e.gpsGeom_id = g.gpsGeom_id
+ INNER JOIN composed c ON c.photo_id = e.photo_id";
+ $gpsgeom_result = pg_query($gpsgeom_query);
+ $gpsgeom_resultarr = array();
+ $count_gpsgeom = 0;
+ while ($row = pg_fetch_row($gpsgeom_result)) {
+          $gpsgeom_resultarr[$count_gpsgeom] = array('gpsGeom_id' => $row[0], 'gpsGeom_the_geom' => $row[1]);
+          $count_gpsgeom++;
+}
+
+ $globaljSon = array();
+ $globaljSon[0] = array('Project' => $project_resultarr);
+ $globaljSon[3] = array('GpsGeom' => $gpsgeom_resultarr);
+ 
+ $finaljSon = json_encode($globaljSon);
+ 
+ echo $finaljSon;
+ }
  
  ?>
