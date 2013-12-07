@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	private Button loadLocal = null ;
 	private Button test = null ;
 	private Button testPhoto = null ;
-	private Button downloadImage;
+	private Button loadExt;
 	private ImageDownloader imageDownloader = new ImageDownloader();
 	private ImageView image;
 	private String imageStoredUrl;
@@ -85,8 +85,8 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		
 		Intent i = getActivity().getIntent();
 		
-		downloadImage = (Button) v.findViewById(R.id.home_loadDistantlProject);
-		downloadImage.setOnClickListener(getImage);
+		loadExt = (Button) v.findViewById(R.id.home_loadDistantlProject);
+		loadExt.setOnClickListener(load);
 
 		image = (ImageView) v.findViewById(R.id.home_image_loadDistantProject);
 

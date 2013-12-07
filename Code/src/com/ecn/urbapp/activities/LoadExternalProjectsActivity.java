@@ -28,6 +28,11 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+/**
+ * 
+ * @author Sebastien
+ *
+ */
 public class LoadExternalProjectsActivity extends Activity {
 
 	/**

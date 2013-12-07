@@ -68,18 +68,6 @@ public class GpsGeom extends DataObject{
 	}
 
 	@Override
-	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long setId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public void saveToLocal(LocalDataSource datasource) {
 		ContentValues values = new ContentValues(); 
 		
@@ -142,5 +130,17 @@ public class GpsGeom extends DataObject{
 			
 		}
 		
+	}
+
+	@Override
+	public long getId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public long setId() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

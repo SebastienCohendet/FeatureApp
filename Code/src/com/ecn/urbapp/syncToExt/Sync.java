@@ -34,6 +34,7 @@ import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.Project;
+import com.google.android.gms.internal.n;
 import com.google.gson.Gson;
 
 public class Sync
@@ -69,12 +70,13 @@ public class Sync
 		Boolean success = false;
 			try
 			{
-				BaProjectSync = new BackTaskImportProject(List<Project> refreshedValues, List<GpsGeom> allGpsGeom);
+				BackTaskImportProject BaProjectSync = new BackTaskImportProject(refreshedValues, allGpsGeom);
 				BaProjectSync.execute().get();
 				success = true;
 			}
 			catch (Exception e)
 			{
+				
 			}
 		
 		return success;
@@ -440,10 +442,15 @@ public class Sync
 		 * Contains all the GpsGeom from Server
 		 */
 		List<GpsGeom> allGpsGeom;
+
 		
-		public BackTaskImportProject(List<Project> refreshedValues, List<GpsGeom> allGpsGeom){			
-			this.refreshedValues = refreshedValues;
+		/**
+		 * To get the informations of project and gpsGeom for all the projects on external DB server
+		 * @param refreshedValues Project info
+		 * @param allGpsGeom GpsGeom info
+		 */		public BackTaskImportProject(List<Project> refreshedValues, List<GpsGeom> allGpsGeom){			
 			this.allGpsGeom = allGpsGeom;
+			this.refreshedValues = refreshedValues;
 			this.mContext = MainActivity.baseContext;
 		}
 
@@ -457,28 +464,51 @@ public class Sync
 
 		/**
 		 * Ask the server and save project and gpsGeom on the var
+		 * @return 
 		 */
 		protected Void doInBackground(Void... params) { 
-			
+
 			String JSON = getData();
-			 try {
-			    	JSONObject jObj = new JSONObject(JSON); 
-			    	refreshedValues = new ArrayList<Project>();
-			    	allGpsGeom = new ArrayList<GpsGeom>();
-			    	
-			    	//TODO for lengh of jsonarray
-			    	JSONObject projects = jObj.getJSONObject("Project");
-			    	JSONObject gpsGeom = jObj.getJSONObject("GpsGeom");
-			    	
-			    	for (JSONArray aray : projects){
-			    		
-			    	}
-			    	return maxID;
-			    	
-			        } catch (JSONException e) {
-			           Log.e("JSON Parser", "Error parsing data " + e.toString());
-			           return (HashMap<String, Integer>) null;
-			        }  
+			try {
+				JSONArray jArr = new JSONArray(JSON); 
+				refreshedValues = new ArrayList<Project>();
+				allGpsGeom = new ArrayList<GpsGeom>();
+
+				JSONArray projects = jArr.getJSONArray(0);
+				JSONArray gpsGeom = jArr.getJSONArray(1);
+
+
+				for(int i=0;i<projects.length();i++)
+				{
+					JSONObject project = jArr.getJSONObject(i);
+					long project_id = project.getLong("project_id");
+					String project_name = project.getString("project_name");
+					long gpsgeom_id = project.getLong("gpsgeom_id");
+					
+					Project projectEnCours = new Project();
+					projectEnCours.setProjectId(project_id);
+					projectEnCours.setProjectName(project_name);
+					projectEnCours.setGpsGeom_id(gpsgeom_id);
+					
+					refreshedValues.add(projectEnCours);
+				}
+				for(int i=0;i<gpsGeom.length();i++)
+				{
+					JSONObject gpsgeom = jArr.getJSONObject(i);
+					long gpsGeom_id = gpsgeom.getLong("gpsGeom_id");
+					String gpsGeom_the_geom = gpsgeom.getString("gpsGeom_the_geom");
+					
+					GpsGeom gpsGeomEnCours = new GpsGeom();
+					gpsGeomEnCours.setGpsGeomId(gpsGeom_id);
+					gpsGeomEnCours.setGpsGeomCoord(gpsGeom_the_geom);
+					
+					allGpsGeom.add(gpsGeomEnCours);
+				}
+                 
+             } catch (JSONException e) {
+                Log.e("JSON Parser", "Error parsing data " + e.toString());
+             }
+			return null;
 		}
 	 
 
