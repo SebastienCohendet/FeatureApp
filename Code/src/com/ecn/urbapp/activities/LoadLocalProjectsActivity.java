@@ -19,11 +19,11 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Project;
-import com.ecn.urbapp.fragments.GeoFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.MathOperation;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -58,7 +58,7 @@ public class LoadLocalProjectsActivity extends Activity {
     /**
      * The instance of GeoActivity for map activity
      */
-    private GeoFragment displayedMap;
+    private GeoActivity displayedMap;
     /**
      * The button for switching to satellite view
      */
@@ -83,10 +83,11 @@ public class LoadLocalProjectsActivity extends Activity {
         datasource=MainActivity.datasource;
         datasource.open();
                 
-        displayedMap = (GeoFragment) getFragmentManager().findFragmentById(R.id.GeoFragment);
+        map = ((MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map)).getMap();
         
-        map = displayedMap.getMap();
-
+        displayedMap = new GeoActivity(true, GeoActivity.defaultPos, map);
+        
         /**
          * Define the listeners for switch satellite/plan/hybrid
          */
@@ -199,7 +200,7 @@ public class LoadLocalProjectsActivity extends Activity {
         		}
         	}
 
-			displayedMap = new GeoFragment(false, coordProjet, map);
+			displayedMap = new GeoActivity(false, coordProjet, map);
     		Toast.makeText(getApplicationContext(), coordProjet.toString(), Toast.LENGTH_LONG).show();                  
 		}
     };
