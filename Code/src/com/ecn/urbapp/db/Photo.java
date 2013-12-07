@@ -1,5 +1,7 @@
 package com.ecn.urbapp.db;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import android.content.ContentValues;
@@ -21,6 +23,12 @@ public class Photo extends DataObject  {
 	 * attributes that declare the name of the picture for instance : img1.png
 	 */
 	private String photo_url;
+	
+	private String photo_adresse;
+	private long photo_nbrPoints;
+	private String photo_derniereModif;
+	
+	
 	private String photo_urlTemp;
 	private long gpsGeom_id;
 
@@ -76,7 +84,26 @@ public class Photo extends DataObject  {
 		public String getExt_GpsGeomCoord() {
 			return Ext_GpsGeomCoord;
 		}
+		
+		
+		//TODO Adddescription for javadoc
+		public String getPhoto_derniereModif() {
+			return photo_derniereModif;
+		}
+		
+		//TODO Adddescription for javadoc
+		public long getPhoto_nbrPoints() {
+			return photo_nbrPoints;
+		}
+		
+		//TODO Adddescription for javadoc
+		public String getPhoto_adresse() {
+			return photo_adresse;
+		}
 	
+		
+		
+		
 	//Setters
 	//TODO Adddescription for javadoc
 	public void setExt_GpsGeomCoord(String ext_GpsGeomCoord) {
@@ -102,6 +129,21 @@ public class Photo extends DataObject  {
 	//TODO Adddescription for javadoc
 	public void setPhoto_author(String photo_author) {
 		this.photo_author = photo_author;
+	}
+	
+	//TODO Adddescription for javadoc
+	public void setPhoto_derniereModif(String d) {
+		this.photo_derniereModif=d;
+	}
+	
+	//TODO Adddescription for javadoc
+	public void setPhoto_nbrPoints(long nbr) {
+		this.photo_nbrPoints=nbr;
+	}
+	
+	//TODO Adddescription for javadoc
+	public void setPhoto_adresse(String adresse) {
+		this.photo_adresse=adresse;
 	}
 
 
@@ -138,14 +180,11 @@ public class Photo extends DataObject  {
 		values.put(MySQLiteHelper.COLUMN_PHOTOURL, this.photo_url);
 		values.put(MySQLiteHelper.COLUMN_PHOTODESCRIPTION,this.photo_description);
 		values.put(MySQLiteHelper.COLUMN_PHOTOAUTHOR, this.photo_author);
-		
+		values.put(MySQLiteHelper.COLUMN_PHOTOADRESSE, this.photo_adresse);
+		values.put(MySQLiteHelper.COLUMN_PHOTONBRPOINTS,this.photo_nbrPoints);
+		values.put(MySQLiteHelper.COLUMN_PHOTODERNIEREMODIF, this.photo_derniereModif);
 		
 		if(this.registredInLocal){
-			/*String[] s=new String[1];
-			s[0]= ""+this.photo_id;
-			datasource.getDatabase().update(MySQLiteHelper.TABLE_PHOTO, values, MySQLiteHelper.COLUMN_PHOTOID,s );
-			*/
-
 			String str = "photo_id "+"="+this.photo_id;
 			datasource.getDatabase().update(MySQLiteHelper.TABLE_PHOTO, values, str, null);
 		}

@@ -185,6 +185,7 @@ public class LoadLocalPhotosActivity extends Activity{
 
 		rowItems = new ArrayList<RowItem>();
 		for (Photo image:refreshedValues) {
+			//TODO ajouter date
 			RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(), image.getPhoto_url(), image.getPhoto_description());
 			rowItems.add(item);
 		}

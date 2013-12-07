@@ -253,6 +253,15 @@ public class Zone {
 		points.add(point);
 	}
 	
+	public void addPoint2(Point point) {
+	if(points.size()==0){
+		points.add(point);
+		points.add(point);
+	}else{
+		points.add(points.size()-1, point);
+	}
+}
+	
 	/**
 	 * This method return true if the point in parameter is inside the polygon
 	 * of the zone
@@ -307,7 +316,7 @@ public class Zone {
 	 */
 	public Vector<Point> isSelfIntersecting(){
 		Vector<Point> result = new Vector<Point>();
-		points.add(points.get(0));//temporarily copying the first point at the end to avoid bounds' problems
+		//points.add(points.get(0));//temporarily copying the first point at the end to avoid bounds' problems
 		for(int i=0; i<points.size()-2 ; i++){
 			for(int j=i+2; j<points.size()-1 ; j++){
 				Log.d("Intersection : test","("+i+","+(i+1)+");("+j+","+(j+1)+")");
@@ -320,7 +329,7 @@ public class Zone {
 					}
 				}
 		}
-		points.remove(points.size()-1);
+		//points.remove(points.size()-1);
 		return result;//possibly null
 	}
 	

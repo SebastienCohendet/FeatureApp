@@ -57,7 +57,17 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	private int TOUCH_RADIUS_TOLERANCE = 30;//only for catching points in edit mode
 	
 	/**
-	 * Field definding tha actual sate of definition of zones
+	 * Constant field defining the reference height to correct the size of point for the zone creation
+	 */
+	private final int REFERENCE_HEIGHT = 600;
+	
+	/**
+	 * Constant field defining the reference width to correct the size of point for the zone creation
+	 */
+	private final int REFERENCE_WIDTH = 1200;
+	
+	/**
+	 * Field defining the actual sate of definition of zones
 	 */
 	private int state;
 
@@ -243,10 +253,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 						e.printStackTrace();
 					}
 				}
-				else{
-					exitAction();
-				}
 				state = IMAGE_SELECTION;
+				exitAction();
 				break;
 			}
 			break;
@@ -291,6 +299,10 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				
 		myImage.setImageDrawable(new LayerDrawable(drawables));
 		myImage.setOnTouchListener(this);
+		
+		SetCharactFragment scf = (SetCharactFragment)getFragmentManager().findFragmentById(R.id.fragmentCaract);
+		
+		
 		return v;
 	}
 	
@@ -303,8 +315,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		imageHeight = myImage.getDrawable().getIntrinsicHeight(); 
 		imageWidth = myImage.getDrawable().getIntrinsicWidth();
 		
-		float ratioW =((float)this.getResources().getDisplayMetrics().widthPixels/imageWidth);
-		float ratioH =((float)this.getResources().getDisplayMetrics().widthPixels/imageHeight);
+		float ratioW =((float)REFERENCE_WIDTH/imageWidth);
+		float ratioH =((float)REFERENCE_HEIGHT/imageHeight);
 		float ratio = ratioW < ratioH ? ratioW : ratioH ;
 			
 		drawzoneview.setRatio(ratio);
@@ -330,9 +342,53 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	}
 	
 	/** Declarations for create zone **/
+	/*private OnTouchListener imageCreateTouchListener = new ImageView.OnTouchListener() {
+		Point selected;
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			if(event.getAction() == MotionEvent.ACTION_DOWN){
+				Log.d("Move","Action Down");
+				selected = new Point(0, 0);
+				Point touch = getTouchedPoint(event);
+				for(Point p : zone.getPoints()){//is the touched point a normal point ?
+					float dx=Math.abs(p.x-touch.x);
+					float dy=Math.abs(p.y-touch.y);
+					if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
+						selected.set(p.x,p.y);
+					}
+				}
+			}
+			if (event.getAction() == MotionEvent.ACTION_UP) {
+				Log.d("Move","Action Up");
+				if(selected.x==0 && selected.y==0){
+					zone.addPoint2(getTouchedPoint(event));				
+				}
+				else{
+					Point touch = getTouchedPoint(event);
+					if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
+						zone.updateMiddle(selected, touch);	//If not it's a "middle" point, and it's upgraded to normal
+						//TODO transfer to zone
+					}
+					selected.set(0, 0);//No selected point anymore
+				}
+			}
+			if (event.getAction() == MotionEvent.ACTION_MOVE) {
+				Log.d("Move","Action Move");
+				if(selected.x!=0 || selected.y!=0){
+					Point touch = getTouchedPoint(event);
+					zone.updatePoint(selected, touch);
+					selected.set(touch.x,touch.y);
+				}
+			}
+			refreshCreate();//display new point, refresh buttons' availabilities	
+			return true;
+		}
+	};*/
+	
 	public Point getTouchedPoint(MotionEvent event){
 		float[] coord = {event.getX(),event.getY()};//get touched point coord
 
+		getMatrix();
 		matrix.mapPoints(coord);//apply matrix transformation on points coord
 		int pointX = (int)coord[0]; int pointY = (int)coord[1];
 		Log.d("Touch","x:"+pointX+" y:"+pointY);
@@ -402,22 +458,58 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			getMatrix();
-			Point touch = getTouchedPoint(event);
-			
-			Vector<Zone> zones = new Vector<Zone>();
-			for(PixelGeom pg: MainActivity.pixelGeom){
-				zones.add(ConvertGeom.pixelGeomToZone(pg));
-			}
 			switch(state){
 			case IMAGE_CREATION:
-	    		getMatrix();
+	    		/*getMatrix();
 				zone.addPoint(getTouchedPoint(event));
 				refreshCreate();
+				break;*/
+				if(event.getAction() == MotionEvent.ACTION_DOWN){
+					Log.d("Move","Action Down");
+					selected = new Point(0, 0);
+					Point touch = getTouchedPoint(event);
+					for(Point p : zone.getPoints()){//is the touched point a normal point ?
+						float dx=Math.abs(p.x-touch.x);
+						float dy=Math.abs(p.y-touch.y);
+						if((dx*dx+dy*dy)<TOUCH_RADIUS_TOLERANCE*TOUCH_RADIUS_TOLERANCE){//10 radius tolerance
+							selected.set(p.x,p.y);
+						}
+					}
+				}
+				if (event.getAction() == MotionEvent.ACTION_UP) {
+					Log.d("Move","Action Up");
+					if(selected.x==0 && selected.y==0){
+						zone.addPoint2(getTouchedPoint(event));				
+					}
+					else{
+						Point touch = getTouchedPoint(event);
+						if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
+							zone.updateMiddle(selected, touch);	//If not it's a "middle" point, and it's upgraded to normal
+							//TODO transfer to zone
+						}
+						selected.set(0, 0);//No selected point anymore
+					}
+				}
+				if (event.getAction() == MotionEvent.ACTION_MOVE) {
+					Log.d("Move","Action Move");
+					if(selected.x!=0 || selected.y!=0){
+						Point touch = getTouchedPoint(event);
+						zone.updatePoint(selected, touch);
+						selected.set(touch.x,touch.y);
+					}
+				}
+				refreshCreate();//display new point, refresh buttons' availabilities	
 				break;
 			case IMAGE_EDITION:
-					//If one of its points was, it's a point move
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					getMatrix();
+					Point touch = getTouchedPoint(event);
+					
+					Vector<Zone> zones = new Vector<Zone>();
+					for(PixelGeom pg: MainActivity.pixelGeom){
+						zones.add(ConvertGeom.pixelGeomToZone(pg));
+					}
+				//If one of its points was, it's a point move
 					if(selected.x != 0 && selected.y != 0){
 						if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
 							zone.updateMiddle(selected, touch);	//If not it's a "middle" point, and it's upgraded to normal
@@ -444,46 +536,56 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 							}
 						}
 					}
+				}
 				refreshEdit();
 				break;
 				
 			case IMAGE_SELECTION:
-				boolean flag=false;
-				Zone z=null;
-				for(Zone test : zones){
-					if(test.containPoint(touch)){
-						flag=true;
-						z=test;
-						break;
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					getMatrix();
+					Point touch = getTouchedPoint(event);
+					
+					Vector<Zone> zones = new Vector<Zone>();
+					for(PixelGeom pg: MainActivity.pixelGeom){
+						zones.add(ConvertGeom.pixelGeomToZone(pg));
 					}
-				}
-				if(flag){
-					zoneCache = z;
-					zone.setZone(z);
-
-					for(PixelGeom pg : MainActivity.pixelGeom){
-						if(pg.getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
-							geomCache = pg;
+					boolean flag=false;
+					Zone z=null;
+					for(Zone test : zones){
+						if(test.containPoint(touch)){
+							flag=true;
+							z=test;
+							break;
 						}
 					}
-					state = IMAGE_EDITION;
-					validate.setEnabled(true);
-					back.setEnabled(false);
-					cancel.setEnabled(true);
-					help.setEnabled(true);
-					delete.setEnabled(true);
-					refreshEdit();
-				}
-				else{
-		    		getMatrix();
-					zone.addPoint(getTouchedPoint(event));
-					refreshCreate();
-					state = IMAGE_CREATION;
-					validate.setEnabled(false);
-					back.setEnabled(false);
-					cancel.setEnabled(true);
-					help.setEnabled(true);
-				}
+					if(flag){
+						zoneCache = z;
+						zone.setZone(z);
+	
+						for(int i=0; i<MainActivity.pixelGeom.size(); i++){
+							if(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom().equals(zoneCache.getPolygon().toString())){
+								geomCache = MainActivity.pixelGeom.get(i);
+								MainActivity.pixelGeom.get(i).selected=true;
+							}
+						}
+						state = IMAGE_EDITION;
+						validate.setEnabled(true);
+						back.setEnabled(false);
+						cancel.setEnabled(true);
+						help.setEnabled(true);
+						delete.setEnabled(true);
+						refreshEdit();
+					}
+					else{
+			    		getMatrix();
+						zone.addPoint(getTouchedPoint(event));
+						refreshCreate();
+						state = IMAGE_CREATION;
+						validate.setEnabled(false);
+						back.setEnabled(false);
+						cancel.setEnabled(true);
+						help.setEnabled(true);
+					}
 				break;
 			}
 				

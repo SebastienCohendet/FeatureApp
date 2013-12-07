@@ -43,12 +43,12 @@ public class LoadExternalProjectsActivity extends Activity {
 	/**
 	 * Contains all the projects attributes
 	 */
-	private List<Project> refreshedValues;
+	public List<Project> refreshedValues;
 	
 	/**
 	 * COntains all GPSInfo from all Project
 	 */
-	private List<GpsGeom> allGpsGeom;
+	public List<GpsGeom> allGpsGeom;
 	
 	/**
 	 * Hashmap between unique id of markers and the relative project_id
@@ -164,8 +164,10 @@ public class LoadExternalProjectsActivity extends Activity {
     public void refreshList(){      
     	
     	Sync Synchro = new Sync();
-    	if (Synchro.getProjectsFromExt(refreshedValues, allGpsGeom))
+    	if (Synchro.getProjectsFromExt())
     		try{
+    			refreshedValues=Sync.refreshedValues;
+    			allGpsGeom=Sync.allGpsGeom;
     		Toast.makeText(MainActivity.baseContext, refreshedValues.toString(), Toast.LENGTH_LONG).show();
     		}
     		catch (Exception e){

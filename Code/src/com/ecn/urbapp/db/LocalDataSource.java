@@ -34,7 +34,7 @@ public class LocalDataSource {
 
 	//TODO Adddescription for javadoc
 	private String[] allColumnsProject = {MySQLiteHelper.COLUMN_PROJECTID, MySQLiteHelper.COLUMN_PROJECTNAME, MySQLiteHelper.COLUMN_GPSGEOMID};
-	private String[] allColumnsPhoto = {MySQLiteHelper.COLUMN_PHOTOID, MySQLiteHelper.COLUMN_PHOTODESCRIPTION, MySQLiteHelper.COLUMN_PHOTOAUTHOR, MySQLiteHelper.COLUMN_PHOTOURL, MySQLiteHelper.COLUMN_GPSGEOMID};
+	private String[] allColumnsPhoto = {MySQLiteHelper.COLUMN_PHOTOID, MySQLiteHelper.COLUMN_PHOTODESCRIPTION, MySQLiteHelper.COLUMN_PHOTOAUTHOR, MySQLiteHelper.COLUMN_PHOTOURL, MySQLiteHelper.COLUMN_PHOTOADRESSE, MySQLiteHelper.COLUMN_PHOTONBRPOINTS, MySQLiteHelper.COLUMN_PHOTODERNIEREMODIF, MySQLiteHelper.COLUMN_GPSGEOMID};
 	private String[] allColumnsGpsGeom = {MySQLiteHelper.COLUMN_GPSGEOMID, MySQLiteHelper.COLUMN_GPSGEOMCOORD};
 	private String[] allColumnsPixelGeom = {MySQLiteHelper.COLUMN_PIXELGEOMID, MySQLiteHelper.COLUMN_PIXELGEOMCOORD};
 	private String[] allColumnsMaterial = {MySQLiteHelper.COLUMN_MATERIALID, MySQLiteHelper.COLUMN_MATERIALNAME};
@@ -366,10 +366,13 @@ public class LocalDataSource {
 	    p1.setPhoto_description(cursor.getString(1));
 	    p1.setPhoto_author(cursor.getString(2)); 
 	    p1.setPhoto_url(cursor.getString(3)); 
-	    p1.setGpsGeom_id(cursor.getLong(4)); 
+	    p1.setPhoto_adresse(cursor.getString(4)); 
+	    p1.setPhoto_nbrPoints(cursor.getLong(5)); 
+	    p1.setPhoto_derniereModif(cursor.getString(6)); 
+	    p1.setGpsGeom_id(cursor.getLong(7)); 
 	    //TODO créer 2 fonctions, une pour l'instanciation du projet, une pour la recopie des gpsgeom
 	    try{
-	    	p1.setExt_GpsGeomCoord(cursor.getString(6));
+	    	p1.setExt_GpsGeomCoord(cursor.getString(9));
 	    }
 	    catch (Exception e){};
 	    return p1;

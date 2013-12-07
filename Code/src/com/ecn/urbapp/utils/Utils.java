@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.app.FragmentManager;
 import android.content.Context;
@@ -83,4 +85,15 @@ public class Utils{
 			typedialog.show(fm, "CharacteristicsDialogFragment");
 		}
 	}
+	
+	/**
+	 * methodes that give a String with the current date YYYY-MM-DD HH:MM:SS
+	 */
+	//TODO recuperer du serveur
+	public static String getCurrentDate(){
+		Date actual = new Date();
+		SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		return (String) formater.format(actual);
+	}
+	
 }

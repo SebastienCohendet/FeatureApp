@@ -87,6 +87,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		public static final String COLUMN_PHOTODESCRIPTION = "photo_description";
 		public static final String COLUMN_PHOTOAUTHOR = "photo_author";
 		public static final String COLUMN_PHOTOURL = "photo_url";
+		public static final String COLUMN_PHOTOADRESSE = "photo_adresse";
+		public static final String COLUMN_PHOTONBRPOINTS = "photo_nbrPoints";
+		public static final String COLUMN_PHOTODERNIEREMODIF = "photo_derniereModif";
 		//PHOTOGPSGEOM refers to GPSGEOM
 		
 		public static final String COLUMN_MATERIALID = "material_id";
@@ -140,6 +143,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 					    + COLUMN_PHOTODESCRIPTION + " text not null, " 
 					    + COLUMN_PHOTOAUTHOR + " text not null, " 
 					    + COLUMN_PHOTOURL + " text not null, " 
+					    + COLUMN_PHOTOADRESSE+ " text not null, " 
+					    + COLUMN_PHOTONBRPOINTS + " INTEGER, " 
+					    + COLUMN_PHOTODERNIEREMODIF + " DATETIME, "
 					    + COLUMN_GPSGEOMID + " INTEGER, " 
 					    + "FOREIGN KEY("+ COLUMN_GPSGEOMID +") REFERENCES "+TABLE_GPSGEOM+" ("+COLUMN_GPSGEOMID+")"
 					    +");"

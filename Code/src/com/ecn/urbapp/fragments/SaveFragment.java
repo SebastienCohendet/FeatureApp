@@ -22,6 +22,7 @@ import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.db.Project;
 import com.ecn.urbapp.syncToExt.Sync;
+import com.ecn.urbapp.utils.Utils;
 
 
 /**
@@ -73,6 +74,13 @@ public class SaveFragment extends Fragment{
 	
     private OnClickListener OnClickSaveToLocal = new OnClickListener(){
     	public void onClick(View view){
+			/**
+			 * first we need to put the date in Photo
+			 */
+			MainActivity.photo.setPhoto_derniereModif(Utils.getCurrentDate());
+			/**
+			 * now we create the connection with the database
+			 */
     		if(verificationBeforeSave()){
         		MainActivity.datasource.open();
         		saveGpsGeomListToLocal(MainActivity.gpsGeom);
@@ -104,7 +112,7 @@ public class SaveFragment extends Fragment{
     	
     private OnClickListener OnClickSaveToExt = new OnClickListener(){
     	public void onClick(View view){
-    		
+    		//TODO add date
     		Sync synchroExt = new Sync();
     		synchroExt.doSyncToExt();
     		

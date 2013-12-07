@@ -34,12 +34,21 @@ import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.Project;
-import com.google.android.gms.internal.n;
 import com.google.gson.Gson;
 
 public class Sync
 {
 	public static HashMap<String, Integer> maxId = new HashMap<String, Integer>();
+	/**
+	 * Contains all the projects on server
+	 */
+	public static List<Project> refreshedValues;
+	
+	/**
+	 * Contains all the GpsGeom from Server
+	 */
+	public static List<GpsGeom> allGpsGeom;
+
 
 	/**
 	 * Launch the sync to external DB (export mode)
@@ -65,12 +74,12 @@ public class Sync
 	 * 
 	 * @return Boolean if success of not
 	 */
-	public boolean getProjectsFromExt(List<Project> refreshedValues, List<GpsGeom> allGpsGeom)
+	public boolean getProjectsFromExt()
 	{
 		Boolean success = false;
 			try
 			{
-				BackTaskImportProject BaProjectSync = new BackTaskImportProject(refreshedValues, allGpsGeom);
+				BackTaskImportProject BaProjectSync = new BackTaskImportProject();
 				BaProjectSync.execute().get();
 				success = true;
 			}
@@ -432,25 +441,12 @@ public class Sync
 	public static class BackTaskImportProject extends AsyncTask<Void, Void, Void> {
 			
 		private Context mContext;
-		
-		/**
-		 * Contains all the projects on server
-		 */
-		List<Project> refreshedValues;
-		
-		/**
-		 * Contains all the GpsGeom from Server
-		 */
-		List<GpsGeom> allGpsGeom;
-
-		
+			
 		/**
 		 * To get the informations of project and gpsGeom for all the projects on external DB server
 		 * @param refreshedValues Project info
 		 * @param allGpsGeom GpsGeom info
-		 */		public BackTaskImportProject(List<Project> refreshedValues, List<GpsGeom> allGpsGeom){			
-			this.allGpsGeom = allGpsGeom;
-			this.refreshedValues = refreshedValues;
+		 */		public BackTaskImportProject(){			
 			this.mContext = MainActivity.baseContext;
 		}
 
@@ -493,7 +489,7 @@ public class Sync
 					
 					refreshedValues.add(projectEnCours);
 				}
-				for(int i=0;i<gpsGeom.length();i++)
+				for(int i=0;i<gpsGeomInner.length();i++)
 				{
 					JSONObject gpsgeom = gpsGeomInner.getJSONObject(i);
 					long gpsGeom_id = gpsgeom.getLong("gpsGeom_id");
@@ -554,18 +550,5 @@ public class Sync
 	        return "error";
 	    }
 
-		
-		/**
-		 * The things to execute after the backTask 
-		 */
-	    protected void onPostExecute(HashMap<String, Integer> result) {	
-	    	if (!result.isEmpty()){
-	    		//TODO change the message so not to be in debug mode :)
-	    		Toast.makeText(mContext, result.toString(), Toast.LENGTH_SHORT).show();
-	    	}
-	    	else {
-		        Toast.makeText(mContext, "Erreur dans la communication avec le serveur", Toast.LENGTH_SHORT).show();
-	    	}
-	    }
 	}
 }

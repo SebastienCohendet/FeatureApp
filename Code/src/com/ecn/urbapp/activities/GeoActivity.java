@@ -813,20 +813,20 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
             polygon = map.addPolygon(rectOptions);
        }
     }
-    
+
     /**
-*
-* @param markers
-*/
+     *
+     * @param markers
+     */
     public void markerToArray(ArrayList<Marker> markers){
-            ArrayList<LatLng> points = new ArrayList<LatLng>();
-        for (Marker mark:markers){
-                if(mark!=null){
-                        points.add(mark.getPosition());
-                }
-        }
-        
-        drawPolygon(points, true);
-            
+    	ArrayList<LatLng> points = new ArrayList<LatLng>();
+    	for (Marker mark:markers){
+    		if(mark!=null){
+    			points.add(mark.getPosition());
+    		}
+    	}
+
+    	drawPolygon(points, true);
+
     }
 }
