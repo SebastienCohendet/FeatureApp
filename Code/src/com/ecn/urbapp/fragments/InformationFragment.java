@@ -7,13 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 
 import com.ecn.urbapp.R;
-import com.ecn.urbapp.activities.GeoActivity;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Composed;
 import com.ecn.urbapp.db.GpsGeom;
@@ -67,7 +64,7 @@ public class InformationFragment extends Fragment implements OnClickListener{
 					else{
 						geo.setChecked(true);
 					}
-					Intent i = new Intent(this.getActivity(), GeoActivity.class);
+					Intent i = new Intent(this.getActivity(), GeoFragment.class);
 					startActivityForResult(i, 10);
 				break;
 				case R.id.info_button_next:

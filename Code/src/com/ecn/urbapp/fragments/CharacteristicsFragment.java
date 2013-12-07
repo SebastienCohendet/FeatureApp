@@ -1,7 +1,5 @@
 package com.ecn.urbapp.fragments;
 
-import java.io.File;
-
 import android.app.Fragment;
 import android.graphics.Matrix;
 import android.graphics.Point;

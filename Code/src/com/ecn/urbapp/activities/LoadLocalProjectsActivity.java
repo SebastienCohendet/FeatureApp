@@ -19,11 +19,11 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Project;
+import com.ecn.urbapp.fragments.GeoFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.MathOperation;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -58,7 +58,7 @@ public class LoadLocalProjectsActivity extends Activity {
     /**
      * The instance of GeoActivity for map activity
      */
-    private GeoActivity displayedMap;
+    private GeoFragment displayedMap;
     /**
      * The button for switching to satellite view
      */
@@ -74,18 +74,19 @@ public class LoadLocalProjectsActivity extends Activity {
      */
     private Button hybrid = null;
     
+    
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_loadlocaldb);
         datasource=MainActivity.datasource;
         datasource.open();
+                
+        displayedMap = (GeoFragment) getFragmentManager().findFragmentById(R.id.GeoFragment);
         
-        map = ((MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map)).getMap();
-        
-        displayedMap = new GeoActivity(true, GeoActivity.defaultPos, map);
-        
+        map = displayedMap.getMap();
+
         /**
          * Define the listeners for switch satellite/plan/hybrid
          */
@@ -127,10 +128,10 @@ public class LoadLocalProjectsActivity extends Activity {
     }
     
 
-	//TODO add description for javadoc
+
     /**
      * loading the different projects of the local db
-     * @return
+     * @return the list of project on the local db
      */
     public List<Project> recupProject() {
          
@@ -140,10 +141,9 @@ public class LoadLocalProjectsActivity extends Activity {
           
      }
     
-	//TODO add description for javadoc
     /**
      * loading the different projects of the local db
-     * @return
+     * @return the list of all GpsGeom in 
      */
     public List<GpsGeom> recupGpsGeom() {
          
@@ -199,7 +199,7 @@ public class LoadLocalProjectsActivity extends Activity {
         		}
         	}
 
-			displayedMap = new GeoActivity(false, coordProjet, map);
+			displayedMap = new GeoFragment(false, coordProjet, map);
     		Toast.makeText(getApplicationContext(), coordProjet.toString(), Toast.LENGTH_LONG).show();                  
 		}
     };

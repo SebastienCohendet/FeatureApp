@@ -18,6 +18,7 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Photo;
+import com.ecn.urbapp.fragments.GeoFragment;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.CustomListViewAdapter;
 import com.ecn.urbapp.utils.MathOperation;
@@ -53,9 +54,9 @@ public class LoadLocalPhotosActivity extends Activity{
 	 */
 	private GoogleMap map = null;
 	/**
-	 * The instance of GeoActivity for map activity
+	 * The instance of GeoFragment for map activity
 	 */
-	GeoActivity displayedMap;
+	GeoFragment displayedMap;
 	/**
 	 * The button for switching to satellite view
 	 */
@@ -101,7 +102,7 @@ public class LoadLocalPhotosActivity extends Activity{
 		project_barycenter = getIntent().getExtras().getString("PROJECT_COORD");
 		GpsGeom barycenter = new GpsGeom();
 		barycenter.setGpsGeomCoord(project_barycenter);
-		displayedMap = new GeoActivity(false, MathOperation.barycenter(ConvertGeom.gpsGeomToLatLng(barycenter)), map);
+		displayedMap = new GeoFragment(false, MathOperation.barycenter(ConvertGeom.gpsGeomToLatLng(barycenter)), map);
 
 		/**
 		 * Define the listeners for switch satellite/plan/hybrid
@@ -239,7 +240,7 @@ public class LoadLocalPhotosActivity extends Activity{
 			}
 
 			LatLng GPSCentered = MathOperation.barycenter(photoGPS);
-			displayedMap = new GeoActivity(false, GPSCentered, map);
+			displayedMap = new GeoFragment(false, GPSCentered, map);
 			Toast.makeText(getApplicationContext(), refreshedValues.get(position).getPhoto_url(), Toast.LENGTH_LONG).show();                  
 		}
 	};

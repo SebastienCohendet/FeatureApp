@@ -1,14 +1,14 @@
-package com.ecn.urbapp.activities;
+package com.ecn.urbapp.fragments;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,13 +26,16 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.ecn.urbapp.R;
+import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Project;
@@ -65,7 +68,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 * @author Sébastien
 *
 */
-public class GeoActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
+public class GeoFragment extends Fragment implements GooglePlayServicesClient.ConnectionCallbacks,
 													 GooglePlayServicesClient.OnConnectionFailedListener,
 													 OnClickListener{
 
@@ -150,6 +153,15 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 			R.drawable.marker_green,
 			R.drawable.marker_purple,
 		};
+		
+	/**
+	 * Return the map displayed
+	 * @return the map
+	 */
+	public GoogleMap getMap(){
+		return map;
+		
+	}
 	
 	/**
 	* Define a DialogFragment that displays the error dialog
@@ -194,7 +206,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
         // Get the error dialog from Google Play services
         Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
             errorCode,
-            this,
+            this.getActivity(),
             CONNECTION_FAILURE_RESOLUTION_REQUEST);
 
         // If Google Play services can provide an error dialog
@@ -215,26 +227,26 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	* Handle results returned to the FragmentActivity
 	* by Google Play services
 	*/
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    
+  /*  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Decide what to do based on the original request code
         switch (requestCode) {
             case CONNECTION_FAILURE_RESOLUTION_REQUEST :
             /*
 			* If the result code is Activity.RESULT_OK, try
 			* to connect again
-			*/
+			
                 switch (resultCode) {
                     case Activity.RESULT_OK :
                     /*
 					* Try the request again
-					*/
+					
                     break;
                 }
                 //TODO do the GPS centered !!
         }
      }
-
+*/
     /**
 	* To check if Google Play Services is installed and up to date ! Propose to update if needed
 	* @return boolean if is really connected
@@ -254,7 +266,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
             // Get the error dialog from Google Play services
             Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
                     resultCode,
-                    this,
+                    this.getActivity(),
                     CONNECTION_FAILURE_RESOLUTION_REQUEST);
 
             // If Google Play services can provide an error dialog
@@ -270,22 +282,28 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
                 return false;
     }
 
+    
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
+	
     /**
      * For intern implementation
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-    	super.onCreate(savedInstanceState);
-    	setContentView(R.layout.layout_geo);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+		View v = inflater.inflate(R.layout.layout_geo, null);
 
     	if (servicesConnected()){
 
     		needCurrentPos=true;
 
-    		satellite = (Button)findViewById(R.id.satellite);
-    		plan = (Button)findViewById(R.id.plan);
-    		hybrid = (Button)findViewById(R.id.hybrid);
-    		validate = (Button)findViewById(R.id.validate);
+    		satellite = (Button)v.findViewById(R.id.satellite);
+    		plan = (Button)v.findViewById(R.id.plan);
+    		hybrid = (Button)v.findViewById(R.id.hybrid);
+    		validate = (Button)v.findViewById(R.id.validate);
 
     		//Listeners on switch button
     		satellite.setOnClickListener(toSatellite);
@@ -294,7 +312,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     		validate.setOnClickListener(this);
 
     		//for reverse adresses
-    		mActivityIndicator = (ProgressBar) findViewById(R.id.address_progress);
+    		mActivityIndicator = (ProgressBar) v.findViewById(R.id.address_progress);
 
     		// Get a handle to the Map Fragment
     		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
@@ -316,7 +334,8 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     				getAddress(markerpos);
     			}
     		}
-    	}}
+    	}
+		return v;}
     
     /**
      * Constructor of GeoActivity (needed in case of extern implementation)
@@ -324,7 +343,8 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
      * @param pos
      * @param map
      */
-    public GeoActivity(Boolean needCurrentPos, LatLng pos, GoogleMap map){
+    public GeoFragment(Boolean needCurrentPos, LatLng pos, GoogleMap map){
+    	
     	if (servicesConnected()){
     		this.map = map;
     		this.needCurrentPos = needCurrentPos;
@@ -335,8 +355,12 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     /**
      * Default constructor
      */
+<<<<<<< Updated upstream:Code/src/com/ecn/urbapp/activities/GeoActivity.java
     public GeoActivity(){
     	
+=======
+    public GeoFragment(){
+>>>>>>> Stashed changes:Code/src/com/ecn/urbapp/fragments/GeoFragment.java
     }
     
     /**
@@ -354,9 +378,12 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 
     		mLocationClient = new LocationClient(MainActivity.baseContext, this, this);
 
+<<<<<<< Updated upstream:Code/src/com/ecn/urbapp/activities/GeoActivity.java
     		// Connect the client.
     		//TODO check the threat order
     		//CONNECTION TODO
+=======
+>>>>>>> Stashed changes:Code/src/com/ecn/urbapp/fragments/GeoFragment.java
     	}
 
     	//check
@@ -368,7 +395,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
      * Called when the activity is started.
      */
     @Override
-	protected void onStart() {
+	public void onStart() {
         super.onStart();
         if (servicesConnected())
         	mLocationClient.connect();
@@ -378,7 +405,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	* Called when the Activity is no longer visible.
 	*/
     @Override
-    protected void onStop() {
+    public void onStop() {
         if (needCurrentPos) {
         	// Disconnecting the client invalidates it.
         	mLocationClient.disconnect();
@@ -456,9 +483,9 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
             }
     	}
     	catch (ArrayIndexOutOfBoundsException e) {
-    		Log.e(getLocalClassName(), "Pas de points !");
+    		Log.e("Urbapp", "Pas de points !");
     	}
-    	finish();
+    	this.getActivity().finish();
     }
         
     /**
@@ -491,7 +518,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
                 markerToArray(markers);
             }
             else {
-                Toast.makeText(getApplicationContext(), "Nombre de points maximum atteint", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.baseContext, "Nombre de points maximum atteint", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -519,7 +546,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	         Toast.makeText(MainActivity.baseContext, "Position ok", Toast.LENGTH_LONG).show();
         }
         else {
-            final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+            final LocationManager manager = (LocationManager) this.getActivity().getSystemService( this.getActivity().LOCATION_SERVICE );
 
             if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
                 buildAlertMessageNoGps();
@@ -532,7 +559,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	* Displays a message if user has disabled GPS. Invite to put it on (shortcut to settings)
 	*/
     private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
         builder.setMessage("Votre GPS semble désactivé, souhaitez-vous l'activer ?")
                .setCancelable(false)
                .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
@@ -558,7 +585,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     @Override
     public void onDisconnected() {
         // Display the connection status
-        Toast.makeText(this, "Disconnected. Please re-connect.",Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.baseContext, "Disconnected. Please re-connect.",Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -577,7 +604,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
             try {
                 // Start an Activity that tries to resolve the error
                 connectionResult.startResolutionForResult(
-                        this,
+                        this.getActivity(),
                         CONNECTION_FAILURE_RESOLUTION_REQUEST);
                 /*
 				* Thrown if Google Play services canceled the original
@@ -686,7 +713,6 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
          * the text of the UI element that shows the address. If the
          * lookup failed, display the error message.
          */
-         @SuppressWarnings("null")
 		@Override
          protected void onPostExecute(MarkerPos markpos) {
 	         // Set activity indicator visibility to "gone"
@@ -700,10 +726,9 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
      }
      
     /**
-	*
-	* @param v The view object associated with this method,
-	* in this case a Button.
-	*/
+    * Request postal address to google
+    * @param markpos the marker which need the postal adress
+    */
      public void getAddress(MarkerPos markpos) {
          // Ensure that a Geocoder services is available
          if (Build.VERSION.SDK_INT >=
@@ -719,7 +744,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 			* When the task finishes,
 			* onPostExecute() displays the address.
 			*/
-             (new GetAddressTask(this)).execute(markpos);
+             (new GetAddressTask(this.getActivity())).execute(markpos);
          }
      }
 

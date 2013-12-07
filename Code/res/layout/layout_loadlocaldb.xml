@@ -54,15 +54,12 @@
             android:layout_weight="1" />
         
         <fragment
-                  android:id="@+id/map"
+         android:id="@+id/GeoFragment"
          android:layout_width="0dp"
          android:layout_weight="1"
          android:layout_height="match_parent"
-         android:name="com.google.android.gms.maps.MapFragment"/>
+         android:name="com.ecn.urbapp.fragments.GeoFragment"/>
         </LinearLayout>
-        
-
-        
         
     </LinearLayout>
 
