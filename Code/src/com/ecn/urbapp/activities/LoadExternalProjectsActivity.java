@@ -139,7 +139,7 @@ public class LoadExternalProjectsActivity extends Activity {
     public void refreshList(){      
     	
     	Sync Synchro = new Sync();
-    	if (Synchro.getProjectsFromExt())
+    	if (Synchro.getProjectsFromExt()){
     		try{
     			refreshedValues=Sync.refreshedValues;
     			allGpsGeom=Sync.allGpsGeom;
@@ -147,7 +147,7 @@ public class LoadExternalProjectsActivity extends Activity {
     		catch (Exception e){
     			Log.e("DFHUPLOAD", "Pb de data");
     		}
-    	
+    	}
     	
         ArrayAdapter<Project> adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_list_item_1, refreshedValues);
         listeProjects.setAdapter(adapter);

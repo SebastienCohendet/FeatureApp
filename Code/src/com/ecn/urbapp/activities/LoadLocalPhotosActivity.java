@@ -19,7 +19,6 @@ import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.activities.GeoActivity;
-import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.CustomListViewAdapter;
 import com.ecn.urbapp.utils.MathOperation;
@@ -93,6 +92,8 @@ public class LoadLocalPhotosActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_loadlocalphotos);
+		datasource=MainActivity.datasource;
+		datasource.open();
 
 		/**
 		 * extras that contains the project_id
@@ -166,11 +167,15 @@ public class LoadLocalPhotosActivity extends Activity{
 	
 	/**
 	 * loading the different projects of the local db
-	 * @return all the gpsGeom on web (previously sync at project selector)
+	 * @return
 	 */
 	public List<com.ecn.urbapp.db.GpsGeom> recupGpsGeom() {
 
-		List<com.ecn.urbapp.db.GpsGeom> values = Sync.allGpsGeom;
+		//List<com.ecn.urbapp.db.Photo> values = this.datasource.getAllPhotos();
+
+		//TODO CATCH EXCEPTION
+
+		List<com.ecn.urbapp.db.GpsGeom> values = this.datasource.getAllGpsGeom();
 		return values;
 
 	}

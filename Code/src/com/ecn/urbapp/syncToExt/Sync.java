@@ -38,11 +38,20 @@ import com.google.gson.Gson;
 
 public class Sync
 {
+	/**
+	 * MaxId and timestamp
+	 */
 	public static HashMap<String, Integer> maxId = new HashMap<String, Integer>();
+	
 	/**
 	 * Contains all the projects on server
 	 */
 	public static List<Project> refreshedValues;
+	
+	/**
+	 * Contains all the projects on server
+	 */
+	public static List<Photo> refreshedValuesPhoto;
 	
 	/**
 	 * Contains all the GpsGeom from Server
