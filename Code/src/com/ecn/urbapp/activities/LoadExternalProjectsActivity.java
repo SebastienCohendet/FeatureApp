@@ -112,7 +112,7 @@ public class LoadExternalProjectsActivity extends Activity {
             @Override
             public void onInfoWindowClick(Marker marker) {
                Toast.makeText(MainActivity.baseContext, refreshedValues.get(projectMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
-   				Intent i = new Intent(getApplicationContext(), LoadLocalPhotosActivity.class);
+   				Intent i = new Intent(getApplicationContext(), LoadExternalPhotosActivity.class);
    				i.putExtra("SELECTED_PROJECT_ID", refreshedValues.get(projectMarkers.get(marker.getId())).getProjectId());
    				
    				ArrayList<LatLng> coordProjet = new ArrayList<LatLng>();
@@ -133,31 +133,6 @@ public class LoadExternalProjectsActivity extends Activity {
         datasource.close();
     }
     
-
-    /**
-     * loading the different projects of the local db
-     * @return
-     */
-   // public List<Project> recupProject() {
-         
-    	
-         //List<Project> values = new Sync().;
-         
-      //   return values;
-          
-    // }
-    
-    /**
-     * loading the different projects of the local db
-     * @return
-     */
-    public List<GpsGeom> recupGpsGeom() {
-         
-         List<GpsGeom> values = this.datasource.getAllGpsGeom();
-         
-         return values;
-     }
-    
     /**
      * creating a list of project and loads in the view
      */
@@ -168,10 +143,9 @@ public class LoadExternalProjectsActivity extends Activity {
     		try{
     			refreshedValues=Sync.refreshedValues;
     			allGpsGeom=Sync.allGpsGeom;
-    		Toast.makeText(MainActivity.baseContext, refreshedValues.toString(), Toast.LENGTH_LONG).show();
     		}
     		catch (Exception e){
-    			Log.e("DFHUPLOAD", "Heu, rien dans Refreshed, fuck it");
+    			Log.e("DFHUPLOAD", "Pb de data");
     		}
     	
     	
@@ -206,7 +180,6 @@ public class LoadExternalProjectsActivity extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
 			LatLng coordProjet = null;
-        	List<GpsGeom> allGpsGeom = recupGpsGeom();
         	for(GpsGeom gg : allGpsGeom){
         		if(refreshedValues.get(position).getGpsGeom_id()==gg.getGpsGeomsId()){
         			coordProjet =  MathOperation.barycenter(ConvertGeom.gpsGeomToLatLng(gg));

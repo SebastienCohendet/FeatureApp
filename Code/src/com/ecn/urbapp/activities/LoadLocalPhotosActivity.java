@@ -19,6 +19,7 @@ import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.activities.GeoActivity;
+import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.CustomListViewAdapter;
 import com.ecn.urbapp.utils.MathOperation;
@@ -30,6 +31,11 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+/**
+ * Shows on map all the photos of a project
+ * @author Sebastien, Nicolas
+ *
+ */
 public class LoadLocalPhotosActivity extends Activity{
 
 	/**
@@ -87,8 +93,6 @@ public class LoadLocalPhotosActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_loadlocalphotos);
-		datasource=MainActivity.datasource;
-		datasource.open();
 
 		/**
 		 * extras that contains the project_id
@@ -162,15 +166,11 @@ public class LoadLocalPhotosActivity extends Activity{
 	
 	/**
 	 * loading the different projects of the local db
-	 * @return
+	 * @return all the gpsGeom on web (previously sync at project selector)
 	 */
 	public List<com.ecn.urbapp.db.GpsGeom> recupGpsGeom() {
 
-		//List<com.ecn.urbapp.db.Photo> values = this.datasource.getAllPhotos();
-
-		//TODO CATCH EXCEPTION
-
-		List<com.ecn.urbapp.db.GpsGeom> values = this.datasource.getAllGpsGeom();
+		List<com.ecn.urbapp.db.GpsGeom> values = Sync.allGpsGeom;
 		return values;
 
 	}
@@ -200,14 +200,12 @@ public class LoadLocalPhotosActivity extends Activity{
 		Integer i = Integer.valueOf(0);
 		for (Photo enCours:refreshedValues){
 			
-			//TODO request for GPSGeom
 			ArrayList<LatLng> photoGPS = null;
 			for(GpsGeom gg : allGpsGeom){
 				if(gg.getGpsGeomsId()==enCours.getGpsGeom_id()){
 					photoGPS = ConvertGeom.gpsGeomToLatLng(gg);
 				}
 			}
-			//end of fake photoGPS values
 			
 			LatLng GPSCentered = MathOperation.barycenter(photoGPS);
 					

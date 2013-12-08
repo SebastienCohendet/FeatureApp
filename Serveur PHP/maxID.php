@@ -6,6 +6,7 @@ $maxProject = pg_query($conn,"SELECT max(project_id) FROM project;");
 $maxGPS= pg_query($conn,"SELECT max(gpsgeom_id) FROM gpsgeom;");
 $maxPixel = pg_query($conn,"SELECT max(pixelgeom_id) FROM pixelgeom;");
 $maxElement = pg_query($conn,"SELECT max(element_id) FROM element;");
+$date = pg_query($conn, "current_date");
 
 $JSONArray = array();
 $maxPhoto = pg_fetch_row($maxPhoto);
@@ -22,6 +23,9 @@ $maxPixel = pg_fetch_row($maxPixel);
 
 $maxElement = pg_fetch_row($maxElement);
   $JSONArray['element'] = $maxElement['0'];
+  
+ $dateTime = pg_fetch_row($dateTime);
+  $JSONArray['date'] = $dateTime['0'];
 
 	$resultatsJSON = json_encode($JSONArray);
 	echo $resultatsJSON;

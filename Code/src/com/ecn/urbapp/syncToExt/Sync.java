@@ -92,7 +92,7 @@ public class Sync
 	}
 	
 	/**
-	 * Get the max id of each critical tables in external DB
+	 * Get the max id of each critical tables in external DB AND get current timestamp from database
 	 * @return Hashmap of all max id
 	 */
 	public static HashMap<String, Integer> getMaxId() {
@@ -332,7 +332,7 @@ public class Sync
 	}
 
 	/**
-	 * The additional threat to get the Max id of each tables on server
+	 * The additional threat to get the Max id of each tables on server AND the current timestamp for synchronise purpose
 	 * @author Sebastien
 	 *
 	 */
@@ -373,6 +373,7 @@ public class Sync
 			    	maxID.put("Element", jObj.getInt("element"));
 			    	maxID.put("PixelGeom", jObj.getInt("pixelgeom"));
 			    	maxID.put("Project", jObj.getInt("project"));
+			    	maxID.put("date", jObj.getInt("date"));
 			    	return maxID;
 			    	
 			        } catch (JSONException e) {
@@ -434,7 +435,7 @@ public class Sync
 	
 	
 	/**
-	 * The additional threat to get the Max id of each tables on server
+	 * The additional threat to get projects and gpsgeom data from server
 	 * @author Sebastien
 	 *
 	 */
@@ -447,6 +448,124 @@ public class Sync
 		 * @param refreshedValues Project info
 		 * @param allGpsGeom GpsGeom info
 		 */		public BackTaskImportProject(){			
+			this.mContext = MainActivity.baseContext;
+		}
+
+		/**
+		 * Pre Execution orders
+		 */
+		protected void onPreExecute(){
+			super.onPreExecute();
+			Toast.makeText(MainActivity.baseContext,  "Début de la synchro", Toast.LENGTH_SHORT).show();
+		}
+
+		/**
+		 * Ask the server and save project and gpsGeom on the var
+		 * @return 
+		 */
+		protected Void doInBackground(Void... params) { 
+
+			String JSON = getData();
+			try {
+				JSONArray jArr = new JSONArray(JSON); 
+				refreshedValues = new ArrayList<Project>();
+				allGpsGeom = new ArrayList<GpsGeom>();
+
+				JSONObject projects = jArr.getJSONObject(0);
+				JSONArray projectsInner = projects.getJSONArray("Project");
+				JSONObject gpsGeom = jArr.getJSONObject(1);
+				JSONArray gpsGeomInner = gpsGeom.getJSONArray("GpsGeom");
+
+				for(int i=0;i<projectsInner.length();i++)
+				{
+					JSONObject project = projectsInner.getJSONObject(i);
+					long project_id = project.getLong("project_id");
+					String project_name = project.getString("project_name");
+					long gpsgeom_id = project.getLong("gpsgeom_id");
+					
+					Project projectEnCours = new Project();
+					projectEnCours.setProjectId(project_id);
+					projectEnCours.setProjectName(project_name);
+					projectEnCours.setGpsGeom_id(gpsgeom_id);
+					
+					refreshedValues.add(projectEnCours);
+				}
+				for(int i=0;i<gpsGeomInner.length();i++)
+				{
+					JSONObject gpsgeom = gpsGeomInner.getJSONObject(i);
+					long gpsGeom_id = gpsgeom.getLong("gpsGeom_id");
+					String gpsGeom_the_geom = gpsgeom.getString("gpsGeom_the_geom");
+					
+					GpsGeom gpsGeomEnCours = new GpsGeom();
+					gpsGeomEnCours.setGpsGeomId(gpsGeom_id);
+					gpsGeomEnCours.setGpsGeomCoord(gpsGeom_the_geom);
+					
+					allGpsGeom.add(gpsGeomEnCours);
+				}
+                 
+             } catch (JSONException e) {
+                Log.e("JSON Parser", "Error parsing data " + e.toString());
+             }
+			return null;
+		}
+	 
+
+		/**
+		 * The request method to server
+		 * @return the string of the server response
+		 */
+	    public String getData() {
+		    HttpClient httpclient = new DefaultHttpClient();
+		    // specify the URL you want to post to
+		    HttpPost httppost = new HttpPost(MainActivity.serverURL+"import.php");
+		    try {
+		    	
+		    	// create a list to store HTTP variables and their values
+			    List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
+			    // add an HTTP variable and value pair
+			    nameValuePairs.add(new BasicNameValuePair("project", "all"));
+			    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+			    // send the variable and value, in other words post, to the URL
+			    HttpResponse response = httpclient.execute(httppost);
+			    
+			    StringBuilder sb = new StringBuilder();
+			    try {
+			    	BufferedReader reader = 
+			    			new BufferedReader(new InputStreamReader(response.getEntity().getContent()), 65728);
+			    	String line = null;
+
+			    	while ((line = reader.readLine()) != null) {
+			    		sb.append(line);
+			    	}
+			    }
+			    catch (IOException e) { e.printStackTrace(); }
+			    catch (Exception e) { e.printStackTrace(); }
+			    
+			    return sb.toString();
+				
+	        } catch (ClientProtocolException e) {
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        } ;
+	        return "error";
+	    }
+
+	}
+	
+	/**
+	 * The additional threat to get projects and gpsgeom data from server
+	 * @author Sebastien
+	 *
+	 */
+	public static class BackTaskImportPhoto extends AsyncTask<Void, Void, Void> {
+			
+		private Context mContext;
+					
+		/**
+		 * 
+		 */
+		public BackTaskImportPhoto(){			
 			this.mContext = MainActivity.baseContext;
 		}
 

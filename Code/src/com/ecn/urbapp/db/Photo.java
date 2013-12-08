@@ -31,9 +31,6 @@ public class Photo extends DataObject  {
 	
 	private String photo_urlTemp;
 	private long gpsGeom_id;
-
-	
-	
 	
 	
 	//Getters

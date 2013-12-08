@@ -75,7 +75,9 @@ CREATE TABLE Photo
 	photo_description TEXT,
 	photo_author VARCHAR(60),
 	photo_url TEXT,
-	gpsGeom_id INTEGER references GpsGeom(gpsGeom_id)
+	gpsGeom_id INTEGER references GpsGeom(gpsGeom_id),
+	photo_nbrPoint INTEGER,
+	photo_derniereModif DATE
 );
 
 CREATE FUNCTION merge_photo(key INTEGER, description TEXT, author VARCHAR(60), url TEXT, gpsGeom_id_val INTEGER) RETURNS VOID AS
