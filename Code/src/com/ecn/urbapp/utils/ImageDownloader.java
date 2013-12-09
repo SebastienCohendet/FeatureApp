@@ -18,6 +18,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -28,7 +29,7 @@ import android.widget.ImageView;
  */
 public class ImageDownloader {
 	/** Path of the directory where image is going to be registered	 */
-	private final File path=com.ecn.urbapp.activities.MainActivity.baseContext.getCacheDir();
+	private final String path=Environment.getExternalStorageDirectory()+"/featureapp/";
 	/** Name of the file to be registered */
 	private String name;
 
@@ -36,32 +37,29 @@ public class ImageDownloader {
 	/**
 	 * Method to launch the download of picture from an url
 	 * @param url
-	 * @param imageView
 	 * @param name name of the file to registered in path
-	 * @return
+	 * @return path of image
 	 */
-    public String download(String url, ImageView imageView, String name) {
+    public String download(String url, String name) {
     		this.name=name;
-            BitmapDownloaderTask task = new BitmapDownloaderTask(imageView);
+            BitmapDownloaderTask task = new BitmapDownloaderTask();
             
             //check if file already exists. If so, displays it !
-            File imgFile = new  File(path+"/"+name);
+            File imgFile = new  File(path+name);
         	if(imgFile.exists()){
 
         	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        	    imageView.setImageBitmap(myBitmap);
         	}
         	else
         		task.execute(url); //download image !
-            return path+"/"+name;
+            return path+name;
         }
 
-	//TODO Adddescription for javadoc
 	/**
 	 * Convert a bitmap image to a file (more convenient to manipule)
-	 * Maybe temporaly method !
+	 * Maybe temporally method !
 	 * @param image
-	 * @return
+	 * @return the file
 	 */
 	public File BitmapToFile(Bitmap image){
 		//create a file to write bitmap data
@@ -96,7 +94,11 @@ public class ImageDownloader {
 		return f;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * The task which get the picture on web and save it on memory
+	 * @param url
+	 * @return
+	 */
 static Bitmap downloadBitmap(String url) {
     final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
     final HttpGet getRequest = new HttpGet(url);
@@ -134,14 +136,15 @@ static Bitmap downloadBitmap(String url) {
     }
     return null;
 }
-    /* class BitmapDownloaderTask, see below */
 
-//TODO Adddescription for javadoc
+/**
+ * The AsyncTask to download picture
+ * @author Sebastien
+ *
+ */
 	class BitmapDownloaderTask extends AsyncTask<String, Void, Bitmap> {
-	    private final WeakReference<ImageView> imageViewReference;
 	
-	    public BitmapDownloaderTask(ImageView imageView) {
-	        imageViewReference = new WeakReference<ImageView>(imageView);
+	    public BitmapDownloaderTask() {
 	    }
 	
 	    @Override
@@ -152,21 +155,14 @@ static Bitmap downloadBitmap(String url) {
 	    }
 	
 	    @Override
-	    // Once the image is downloaded, associates it to the imageView
+	    // Once the image is download, associates it to the imageView
 	    protected void onPostExecute(Bitmap bitmap) {
-	        if (isCancelled()) {
-	            bitmap = null;
-	        }
-	
-	        if (imageViewReference != null) {
-	            ImageView imageView = imageViewReference.get();
-	            if (imageView != null) {
-	            	imageView.setImageBitmap(bitmap);
-	                
-	                //save file on cache data of the app
-	                BitmapToFile(bitmap);
-	            }
-	        }
+	    	if (isCancelled()) {
+	    		bitmap = null;
+	    	}               
+	    	//save file on cache data of the app
+	    	BitmapToFile(bitmap);
+
 	    }
 	}
 }

@@ -45,6 +45,8 @@
         android:screenOrientation="landscape"></activity>
         <activity android:name=".activities.LoadExternalProjectsActivity"
         android:screenOrientation="landscape"></activity>
+        <activity android:name=".activities.LoadExternalPhotosActivity"
+        android:screenOrientation="landscape"></activity>
         <activity android:name=".activities.Test"
         android:screenOrientation="landscape"></activity>
         <activity android:name=".activities.TestPhoto"

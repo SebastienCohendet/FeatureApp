@@ -34,6 +34,7 @@ import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.Project;
+import com.google.android.gms.internal.n;
 import com.google.gson.Gson;
 
 public class Sync
@@ -46,19 +47,19 @@ public class Sync
 	/**
 	 * Contains all the projects on server
 	 */
-	public static List<Project> refreshedValues;
+	public static List<Project> refreshedValues = new ArrayList<Project>();
 	
 	/**
-	 * Contains all the projects on server
+	 * Contains all the relative photos on server of a project type
 	 */
 	public static List<Photo> refreshedValuesPhoto;
 	
 	/**
 	 * Contains all the GpsGeom from Server
 	 */
-	public static List<GpsGeom> allGpsGeom;
+	public static List<GpsGeom> allGpsGeom = new ArrayList<GpsGeom>();
 
-
+	
 	/**
 	 * Launch the sync to external DB (export mode)
 	 * @return Boolean if success of not
@@ -100,6 +101,27 @@ public class Sync
 		return success;
 	}
 	
+	/**
+	 * 
+	 * @return Boolean if success of not
+	 */
+	public boolean getPhotosFromExt(long project_id)
+	{
+		Boolean success = false;
+		refreshedValuesPhoto = new ArrayList<Photo>();
+			try
+			{
+				BackTaskImportPhoto BaPhotoSync = new BackTaskImportPhoto(project_id);
+				BaPhotoSync.execute().get();
+				success = true;
+			}
+			catch (Exception e)
+			{
+				
+			}
+		
+		return success;
+	}
 	/**
 	 * Get the max id of each critical tables in external DB AND get current timestamp from database
 	 * @return Hashmap of all max id
@@ -570,12 +592,14 @@ public class Sync
 	public static class BackTaskImportPhoto extends AsyncTask<Void, Void, Void> {
 			
 		private Context mContext;
-					
+		private long project_id = 1;		
+		
 		/**
-		 * 
+		 * Default constructor
 		 */
-		public BackTaskImportPhoto(){			
+		public BackTaskImportPhoto(long project_id){			
 			this.mContext = MainActivity.baseContext;
+			this.project_id = project_id;
 		}
 
 		/**
@@ -587,7 +611,7 @@ public class Sync
 		}
 
 		/**
-		 * Ask the server and save project and gpsGeom on the var
+		 * Ask the server and save all data on the specific var
 		 * @return 
 		 */
 		protected Void doInBackground(Void... params) { 
@@ -600,8 +624,6 @@ public class Sync
 
 				JSONObject projects = jArr.getJSONObject(0);
 				JSONArray projectsInner = projects.getJSONArray("Project");
-				JSONObject gpsGeom = jArr.getJSONObject(1);
-				JSONArray gpsGeomInner = gpsGeom.getJSONArray("GpsGeom");
 
 				for(int i=0;i<projectsInner.length();i++)
 				{
@@ -617,6 +639,36 @@ public class Sync
 					
 					refreshedValues.add(projectEnCours);
 				}
+				
+				JSONObject photos = jArr.getJSONObject(1);
+				JSONArray photoInner = photos.getJSONArray("Photo");
+
+				for(int i=0;i<photoInner.length();i++)
+				{
+					JSONObject photo = photoInner.getJSONObject(i);
+					long photo_id = photo.getLong("photo_id");
+					String photo_descript = photo.getString("photo_description");
+					String photo_url = photo.getString("photo_url");
+					String photo_author = photo.getString("photo_author");
+					long gpsgeom_id = photo.getLong("gpsgeom_id");
+					int photo_nbr = photo.getInt("photo_nbrPoint");
+					String photo_date = photo.getString("photo_date");
+					
+					Photo photoEnCours = new Photo();
+					photoEnCours.setPhoto_id(photo_id);
+					photoEnCours.setPhoto_author(photo_author);
+					photoEnCours.setPhoto_description(photo_descript);
+					photoEnCours.setPhoto_url(photo_url);
+					photoEnCours.setGpsGeom_id(gpsgeom_id);
+					photoEnCours.setPhoto_nbrPoints(photo_nbr);
+					photoEnCours.setPhoto_derniereModif(photo_date);
+					
+					refreshedValuesPhoto.add(photoEnCours);
+				}
+				
+				JSONObject gpsGeom = jArr.getJSONObject(3);
+				JSONArray gpsGeomInner = gpsGeom.getJSONArray("GpsGeom");
+				
 				for(int i=0;i<gpsGeomInner.length();i++)
 				{
 					JSONObject gpsgeom = gpsGeomInner.getJSONObject(i);
@@ -629,6 +681,8 @@ public class Sync
 					
 					allGpsGeom.add(gpsGeomEnCours);
 				}
+				
+				
                  
              } catch (JSONException e) {
                 Log.e("JSON Parser", "Error parsing data " + e.toString());
@@ -650,7 +704,7 @@ public class Sync
 		    	// create a list to store HTTP variables and their values
 			    List<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
 			    // add an HTTP variable and value pair
-			    nameValuePairs.add(new BasicNameValuePair("project", "all"));
+			    nameValuePairs.add(new BasicNameValuePair("project_id", String.valueOf(project_id)));
 			    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
 			    // send the variable and value, in other words post, to the URL
 			    HttpResponse response = httpclient.execute(httppost);
