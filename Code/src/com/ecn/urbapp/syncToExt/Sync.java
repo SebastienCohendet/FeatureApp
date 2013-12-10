@@ -512,7 +512,7 @@ public class Sync
 					JSONObject project = projectsInner.getJSONObject(i);
 					long project_id = project.getLong("project_id");
 					String project_name = project.getString("project_name");
-					long gpsgeom_id = project.getLong("gpsgeom_id");
+					long gpsgeom_id = project.getLong("gpsGeom_id");
 					
 					Project projectEnCours = new Project();
 					projectEnCours.setProjectId(project_id);

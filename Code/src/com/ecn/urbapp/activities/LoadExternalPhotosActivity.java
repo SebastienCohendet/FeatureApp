@@ -150,16 +150,6 @@ public class LoadExternalPhotosActivity extends Activity{
 	}
 
 	
-	/**
-	 * loading the different projects of the external db
-	 * @return all the gpsGeom on web (previously sync at project selector)
-	 */
-	public List<com.ecn.urbapp.db.GpsGeom> recupGpsGeom() {
-
-		List<com.ecn.urbapp.db.GpsGeom> values = Sync.allGpsGeom;
-		return values;
-
-	}
 
 	/**
 	 * creating a list of project and loads in the view
@@ -177,8 +167,6 @@ public class LoadExternalPhotosActivity extends Activity{
     		}
     	}
     	
-		List<com.ecn.urbapp.db.GpsGeom> allGpsGeom = recupGpsGeom();
-
 		rowItems = new ArrayList<RowItem>();
 		for (Photo image:refreshedValues) {
 			/**
@@ -236,7 +224,7 @@ public class LoadExternalPhotosActivity extends Activity{
 				long id) {
 
 
-			List<com.ecn.urbapp.db.GpsGeom> allGpsGeom = recupGpsGeom();
+			List<com.ecn.urbapp.db.GpsGeom> allGpsGeom = Sync.allGpsGeom;
 			ArrayList<LatLng> photoGPS = null;
 			for(GpsGeom gg : allGpsGeom){
 				if(gg.getGpsGeomsId()==refreshedValues.get(position).getGpsGeom_id()){

@@ -1,7 +1,7 @@
 <?php
 //connection to the database
 $conn = pg_connect("host=localhost
-port=5432
+port=5433
 dbname=urbapp
-user=postgres
-password='Nintendo'"); ?>
+user=urbapp
+password='zehirmann'"); ?>
