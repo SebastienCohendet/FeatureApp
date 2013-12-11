@@ -85,7 +85,7 @@ public class MainActivity extends Activity {
     /**
      * Server address
      */
-    public static String serverURL="http://urbapp.ser-info-02.ec-nantes.fr/";
+    public static String serverURL="http://192.168.177.1/";
 
 	/**
 	 * List of all the fragments displayed in the action bar

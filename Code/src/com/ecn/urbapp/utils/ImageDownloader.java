@@ -51,7 +51,7 @@ public class ImageDownloader {
         	    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
         	}
         	else
-        		task.execute(url); //download image !
+        		task.execute(url+name); //download image !
             return path+name;
         }
 

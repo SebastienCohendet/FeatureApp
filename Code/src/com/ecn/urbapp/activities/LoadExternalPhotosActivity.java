@@ -172,7 +172,7 @@ public class LoadExternalPhotosActivity extends Activity{
 			/**
 			 * Download each photo and register it on tablet
 			 */
-			String imageStoredUrl = imageDownloader.download(MainActivity.serverURL+"/images/", image.getPhoto_url());
+			String imageStoredUrl = imageDownloader.download(MainActivity.serverURL+"images/", image.getPhoto_url());
 			
 			
 			//TODO ajouter date
@@ -180,6 +180,7 @@ public class LoadExternalPhotosActivity extends Activity{
 			rowItems.add(item);
 		}
 
+		//TODO Force to wait that all pictures are loaded !
 		CustomListViewAdapter adapter = new CustomListViewAdapter(this,
 				R.layout.layout_photolistview, rowItems);
 		listePhotos.setAdapter(adapter);

@@ -398,14 +398,23 @@ public class Sync
 			 try {
 			    	JSONObject jObj = new JSONObject(JSON); 
 			    	HashMap<String, Integer> maxID = new HashMap<String, Integer>();
-
+			    	try {
 			    	maxID.put("Photo", jObj.getInt("photo"));
 			    	maxID.put("GpsGeom", jObj.getInt("gpsgeom"));
 			    	maxID.put("Element", jObj.getInt("element"));
 			    	maxID.put("PixelGeom", jObj.getInt("pixelgeom"));
 			    	maxID.put("Project", jObj.getInt("project"));
 			    	maxID.put("date", jObj.getInt("date"));
-			    	return maxID;
+			    	} catch (Exception e) {
+			    		maxID.put("Photo", 0);
+				    	maxID.put("GpsGeom", 0);
+				    	maxID.put("Element", 0);
+				    	maxID.put("PixelGeom", 0);
+				    	maxID.put("Project", 0);
+				    	maxID.put("date", jObj.getInt("date"));
+			    	} finally {
+			    		return maxID;
+			    	}
 			    	
 			        } catch (JSONException e) {
 			           Log.e("JSON Parser", "Error parsing data " + e.toString());
@@ -454,11 +463,10 @@ public class Sync
 		 * The things to execute after the backTask 
 		 */
 	    protected void onPostExecute(HashMap<String, Integer> result) {	
-	    	if (!result.isEmpty()){
-	    		//TODO change the message so not to be in debug mode :)
+	    	try{
 	    		Toast.makeText(mContext, result.toString(), Toast.LENGTH_SHORT).show();
 	    	}
-	    	else {
+	    	catch (Exception e) {
 		        Toast.makeText(mContext, "Erreur dans la communication avec le serveur", Toast.LENGTH_SHORT).show();
 	    	}
 	    }
@@ -512,7 +520,7 @@ public class Sync
 					JSONObject project = projectsInner.getJSONObject(i);
 					long project_id = project.getLong("project_id");
 					String project_name = project.getString("project_name");
-					long gpsgeom_id = project.getLong("gpsGeom_id");
+					long gpsgeom_id = project.getLong("gpsgeom_id");
 					
 					Project projectEnCours = new Project();
 					projectEnCours.setProjectId(project_id);
@@ -650,7 +658,7 @@ public class Sync
 					String photo_descript = photo.getString("photo_description");
 					String photo_url = photo.getString("photo_url");
 					String photo_author = photo.getString("photo_author");
-					long gpsgeom_id = photo.getLong("gpsgeom_id");
+					long gpsgeom_id = photo.getLong("gpsGeom_id");
 					int photo_nbr = photo.getInt("photo_nbrPoint");
 					String photo_date = photo.getString("photo_date");
 					
