@@ -63,7 +63,8 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
 /**
- * This class regroup all the zones linked to a photo
+ * This class regroup some useful methods for operation on PixelGeoms and
+ * Elements
  * 
  * @author patrick, Jules Party
  * 
@@ -74,12 +75,12 @@ public final class UtilCharacteristicsZone {
 	private static WKTReader wktr = new WKTReader(gf);
 
 	/**
-	 * Set the type of all the selected zones
+	 * Set the type of all the selected Elements
 	 *
 	 * @param type
 	 *            the type to set
 	 */
-	public static void setTypeForSelectedZones(String type) {
+	public static void setTypeForSelectedElements(String type) {
 		for (Element e : getAllSelectedElements()) {
 			if(type==null){
 				e.setElementType_id(0);
@@ -95,12 +96,12 @@ public final class UtilCharacteristicsZone {
 	}
 
 	/**
-	 * Set the material of all the selected zones
+	 * Set the material of all the selected Elements
 	 *
 	 * @param material
 	 *            the material to set
 	 */
-	public static void setMaterialForSelectedZones(String material) {
+	public static void setMaterialForSelectedElements(String material) {
 		for (Element e : getAllSelectedElements()) {
 			if(material==null){
 				e.setMaterial_id(0);
@@ -116,24 +117,24 @@ public final class UtilCharacteristicsZone {
 	}
 
 	/**
-	 * Set the color of all the selected zones
+	 * Set the color of all the selected Elements
 	 *
 	 * @param color
 	 *            the color to set
 	 */
-	public static void setColorForSelectedZones(int color) {
+	public static void setColorForSelectedElements(int color) {
 		for (Element e : getAllSelectedElements()) {
 			e.setElement_color(""+color);
 		}
 	}
 
 	/**
-	 * Return the color of all the selected zones as an int (or 0 when the zones
-	 * have not the same color)
+	 * Return the color of all the selected Elements as an Integer (or 0 when
+	 * the Elements have not the same color)
 	 * 
-	 * @return the color as an int
+	 * @return the color as an Integer
 	 */
-	public static Integer getColorForSelectedZones() {
+	public static Integer getColorForSelectedElements() {
 		Vector<Element> element = getAllSelectedElements();
 		if (element != null && !element.isEmpty()) {
 			int color=0;
@@ -160,7 +161,7 @@ public final class UtilCharacteristicsZone {
 	 * @return the ID of the smallest PixelGeom that contains the point and -1
 	 *         otherwise
 	 */
-	public static long isInsideZone(Point point) {
+	public static long isInsidePixelGeom(Point point) {
 		long resultID = -1;
 		for (PixelGeom pgeom : MainActivity.pixelGeom) {
 			Coordinate coord = new Coordinate(point.x, point.y);
@@ -181,7 +182,7 @@ public final class UtilCharacteristicsZone {
 	}
 
 	/**
-	 * Unselect all the zones
+	 * Unselect all the Elements
 	 */
 	public static void unselectAll() {
 		for (Element elt : MainActivity.element) {
@@ -194,8 +195,8 @@ public final class UtilCharacteristicsZone {
 	 * parameter (if the ID is positive) and all the linked Elements.
 	 * If the ID is negative, it unselects all the Elements.
 	 * 
-	 * @param zoneNumber
-	 *            the number of the zone to select
+	 * @param pixelGeomID
+	 *            the id of the PixelGeom to select
 	 */
 	public static void select(long pixelGeomID) {
 		if (pixelGeomID >= 0) {
@@ -231,79 +232,63 @@ public final class UtilCharacteristicsZone {
 	 */
 	public static Vector<PixelGeom> getAllSelectedPixelGeoms() {
 		Vector<PixelGeom> selectedPixelGeoms = new Vector<PixelGeom>();
-		for(Element elt: MainActivity.element){
-			if(elt.isSelected()){
-				selectedPixelGeoms.add(UtilCharacteristicsZone.getPixelGeomFromId(elt.getPixelGeom_id()));
-			}
+		for(Element elt: UtilCharacteristicsZone.getAllSelectedElements()){
+			selectedPixelGeoms.add(UtilCharacteristicsZone.getPixelGeomFromId(elt.getPixelGeom_id()));
 		}
 		return selectedPixelGeoms;
 	}
 
 	/**
-	 * This method return a HashMap with two keys :  types and materials,
-	 * and whose values are HashMaps using the kind of materials (or types) as keys and the
-	 * percentage of presence of these materials (or types) along the selected zones as values.
+	 * This method return a HashMap with two keys : type and materials, and
+	 * whose values are the type and material of the selected Elements. If they
+	 * don't have the same definition the String "" is used as value.
 	 * 
 	 * @param res
 	 */
-	public static Map<String, HashMap<String, Float>> getStatsForSelectedZones(Resources res) {
-		Vector<Element> selectedZones = getAllSelectedElements();
-		if (selectedZones.isEmpty()) {
-			selectedZones = new Vector<Element>(MainActivity.element);
-		}
-		float totalArea = 0f;
-		HashMap<String, Float> types = new HashMap<String, Float>();
-		HashMap<String, Float> materials = new HashMap<String, Float>();
-		for (Element e : selectedZones) {
-			PixelGeom pg = new PixelGeom();;
-			for(PixelGeom g : MainActivity.pixelGeom){
-				if(g.getPixelGeomId()==e.getPixelGeom_id()){
-					pg = g;
+	public static Map<String, String> getDefinitionForSelectedElements(Resources res) {
+		Vector<Element> selectedElements = getAllSelectedElements();
+		String type = null;
+		String material = null;
+		for (Element e : selectedElements) {
+			long elementTypeId = e.getElementType_id(); 
+			if (elementTypeId != 0) {
+				for (ElementType et : MainActivity.elementType) {
+					if (et.getElementType_id() == elementTypeId) {
+						if (type == null || type == et.getElementType_name()) {
+							type = et.getElementType_name();
+						} else {
+							type = "";
+							break;
+						}
+					}
 				}
+			} else if (type != null && type != "") {
+				type = "";
 			}
-			float pgArea;
-			try {
-				pgArea = (float) wktr.read(pg.getPixelGeom_the_geom()).getArea();
-			} catch (ParseException e1) {
-				pgArea = 0;
-			}
-			String type="";
-			for(ElementType et : MainActivity.elementType){
-				if(et.getElementType_id()==e.getElementType_id()){
-					type=et.getElementType_name();
+			long materialId = e.getMaterial_id(); 
+			if (materialId != 0) {
+				for (Material  m : MainActivity.material) {
+					if (m.getMaterial_id() == materialId) {
+						if (material == null || material == m.getMaterial_name()) {
+							material = m.getMaterial_name();
+						} else {
+							material = "";
+							break;
+						}
+					}
 				}
+			} else if (material != null && material != "") {
+				material = "";
 			}
-			Float currentArea = types.get(type);
-			if (currentArea != null) {
-				types.put(type, currentArea + pgArea);
-			} else {
-				types.put(type, pgArea);
+			if (type == "" && material == "") {
+				break;
 			}
-			String material="";
-			for(Material  m : MainActivity.material){
-				if(m.getMaterial_id()==e.getMaterial_id()){
-					material=m.getMaterial_name();
-				}
-			}
-			currentArea = materials.get(material);
-			if (currentArea != null) {
-				materials.put(material, currentArea + pgArea);
-			} else {
-				materials.put(material, pgArea);
-			}
-			totalArea += pgArea;
-			
 		}
-		for (String key : materials.keySet()) {
-			materials.put(key, materials.get(key) / totalArea);
-		}
-
-		for (String key : types.keySet()) {
-			types.put(key, types.get(key) / totalArea);
-		}
-		HashMap<String, HashMap<String, Float>> summary = new HashMap<String, HashMap<String, Float>>();
-		summary.put(res.getString(R.string.type), types);
-		summary.put(res.getString(R.string.materials), materials);
+		type = type == null ? "" : type;
+		material = material == null ? "" : material;
+		HashMap<String, String> summary = new HashMap<String, String>();
+		summary.put(res.getString(R.string.type), type);
+		summary.put(res.getString(R.string.materials), material);
 		return summary;
 	}
 
@@ -313,8 +298,8 @@ public final class UtilCharacteristicsZone {
 	 * method calculates the intersections between those PixelGeoms and add them
 	 * so that no PixelGeom covers another one. The method also add the Element
 	 * linked to the PixelGeom. This element will have the same characteristics
-	 * that the Element in parameter, unless the PixelGeom intersects an
-	 * existing zones already characterized.
+	 * that the Element in parameter, unless the PixelGeom intersects the
+	 * PixelGeom from an existing Elements that is already characterized.
 	 * 
 	 * @param pixelGeom
 	 *            the PixelGeom to add
@@ -326,7 +311,7 @@ public final class UtilCharacteristicsZone {
 	 * @throws ParseException
 	 *             when a PixelGeom cannot be interpreted into a Geometry
 	 */
-	public static void addInMainActivityZones(PixelGeom pixelGeom, Element ref)
+	public static void addNewPixelGeom(PixelGeom pixelGeom, Element ref)
 			throws TopologyException, ParseException {
 		List<Long> pixelGeomIdToRemove = new ArrayList<Long>();
 		List<PixelGeom> pixelGeomToAdd = new ArrayList<PixelGeom>();
@@ -507,7 +492,7 @@ public final class UtilCharacteristicsZone {
 	 */
 	private static void addAllPixelGeom(List<PixelGeom> pixelGeomToAdd, Map<PixelGeom, Element> linkedElements) throws TopologyException, ParseException {
 		for (PixelGeom pg : pixelGeomToAdd) {
-			addInMainActivityZones(pg, linkedElements.get(pg));
+			addNewPixelGeom(pg, linkedElements.get(pg));
 		}
 	}
 	

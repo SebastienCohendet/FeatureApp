@@ -74,15 +74,15 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		Button validate = (Button) box.findViewById(R.id.definition_button_validate);
 		validate.setOnClickListener(validation);
 		colorView = box.findViewById(R.id.color);
-		if (UtilCharacteristicsZone.getColorForSelectedZones() != 0) {
-			colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedZones());
+		if (UtilCharacteristicsZone.getColorForSelectedElements() != 0) {
+			colorView.setBackgroundColor(UtilCharacteristicsZone.getColorForSelectedElements());
 		} else {
 			colorView.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_color_definition));
 		}
 		colorView.setOnClickListener(openColorDialog);
-		Map<String, HashMap<String, Float>> summary = UtilCharacteristicsZone.getStatsForSelectedZones(getResources());
-		HashMap<String, Float> types = summary.get(getString(R.string.type));
-		HashMap<String, Float> materials = summary.get(getString(R.string.materials));
+		Map<String, String> summary = UtilCharacteristicsZone.getDefinitionForSelectedElements(getResources());
+		String type = summary.get(getString(R.string.type));
+		String material = summary.get(getString(R.string.materials));
 		List<String> list = new ArrayList<String>();
 		for (ElementType et : MainActivity.elementType) {
 			list.add(et.getElementType_name());
@@ -91,15 +91,6 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
 		spinType.setAdapter(adapter);
 		int position = -1;
-		String type;
-		if (types.keySet().size() == 1) {
-			type = (String) types.keySet().toArray()[0];
-			if (type.equals(getResources().getString(R.string.not_defined))) {
-				type = "";
-			}
-		} else {
-			type = getResources().getString(R.string.nullString);
-		}
 		position = list.indexOf(type);
 		if (position != -1) {
 			spinType.setSelection(position);
@@ -110,15 +101,6 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			list.add(mat.getMaterial_name());
 		}
 		list.add(0, getResources().getString(R.string.nullString));
-		String material;
-		if (materials.keySet().size() == 1) {
-			material = (String) materials.keySet().toArray()[0];
-			if (material.equals(getResources().getString(R.string.not_defined))) {
-				material = "";
-			}
-		} else {
-			material = getResources().getString(R.string.nullString);
-		}
 		adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
 		spinMaterial.setAdapter(adapter);
 		position = list.indexOf(material);
@@ -140,14 +122,14 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			String selection;
 			selection = (String) spinType.getSelectedItem();
 			if (!selection.equals("")) {
-				UtilCharacteristicsZone.setTypeForSelectedZones(selection);
+				UtilCharacteristicsZone.setTypeForSelectedElements(selection);
 			}
 			selection = (String) spinMaterial.getSelectedItem();
 			if (!selection.equals("")) {
-				UtilCharacteristicsZone.setMaterialForSelectedZones(selection);
+				UtilCharacteristicsZone.setMaterialForSelectedElements(selection);
 			}
 			if (newColor) {
-				UtilCharacteristicsZone.setColorForSelectedZones(chosenColor);
+				UtilCharacteristicsZone.setColorForSelectedElements(chosenColor);
 			}
 			UtilCharacteristicsZone.unselectAll();
 			CharacteristicsFragment.getMyImage().invalidate();
@@ -164,7 +146,7 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 		public void onClick(View v) {
 			// Create the color picker dialog (with the actual color of the selected zone)
 			colorDialog = new AmbilWarnaDialog(getActivity(),
-					UtilCharacteristicsZone.getColorForSelectedZones(),
+					UtilCharacteristicsZone.getColorForSelectedElements(),
 					colorListener);
 
 			// Add a title to the dialog
