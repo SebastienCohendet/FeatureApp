@@ -10,7 +10,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		/**
 		 * declaration of tables
 		 */
-	//TODO Adddescription for javadoc
 		public static final String TABLE_PROJECT = "Project";
 		public static final String TABLE_GPSGEOM = "GpsGeom";
 		public static final String TABLE_PIXELGEOM = "PixelGeom";
@@ -23,55 +22,80 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		
 		//creation of tables getters
 
-		//TODO Adddescription for javadoc
+		/**
+		 * get the name of Table project
+		 * @return String which is the name of table project
+		 */
 		public static String getTableProject() {
 			return TABLE_PROJECT;
 		}
 
 
-		//TODO Adddescription for javadoc
+		/**
+		 * get the name of Table pixelgeom
+		 * @return String which is the name of table pixelgeom
+		 */
 		public static String getTablePixelgeom() {
 			return TABLE_PIXELGEOM;
 		}
 
 
-		//TODO Adddescription for javadoc
+		/**
+		 * get the name of Table photo
+		 * @return String which is the name of table photo
+		 */
 		public static String getTablePhoto() {
 			return TABLE_PHOTO;
 		}
 
 
-		//TODO Adddescription for javadoc
+		/**
+		 * get the name f Table material
+		 * @return String which is the name of table material
+		 */
 		public static String getTableMaterial() {
 			return TABLE_MATERIAL;
 		}
 
 
-		//TODO Adddescription for javadoc
+		/**
+		 * get the name f Table elementType
+		 * @return String which is the name of table elementType
+		 */
 		public static String getTableElementtype() {
 			return TABLE_ELEMENTTYPE;
 		}
 
 
-		//TODO Adddescription for javadoc
+		/**
+		 * get the name f Table composed
+		 * @return String which is the name of table composed
+		 */
 		public static String getTableComposed() {
 			return TABLE_COMPOSED;
 		}
 
 
-		//TODO Adddescription for javadoc
+		/**
+		 * get the name f Table element
+		 * @return String which is the name of table element
+		 */
 		public static String getTableElement() {
 			return TABLE_ELEMENT;
 		}
 
 
-		//TODO Adddescription for javadoc
+		/**
+		 * get the name f Table gpsgeom
+		 * @return String which is the name of table gpsgeom
+		 */
 		public static String getTableGpsgeom() {
 			return TABLE_GPSGEOM;
 		}
 
-		//TODO Adddescription for javadoc
-		//creation of columns
+		/**
+		 * names of the columns of the whole database
+		 */
 		
 		public static final String COLUMN_PROJECTID = "project_id";
 		public static final String COLUMN_PROJECTNAME = "project_name";
@@ -101,11 +125,16 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		public static final String COLUMN_ELEMENTID = "element_id";
 		public static final String COLUMN_ELEMENTCOLOR = "element_color";
 		
+		/**
+		 * name of the local database
+		 * upgrading the version force the database to be deleted and recreated
+		 */
 		public static final String DATABASE_NAME = "local3.db";
 		public static final int DATABASE_VERSION = 3;
 
-		//TODO Adddescription for javadoc
-		// query to create the database
+		/**
+		 * query to create table GPSGEOM
+		 */
 		private static final String 
 					DATABASE_CREATE = 		
 						"create table "
@@ -114,7 +143,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 						+ COLUMN_GPSGEOMCOORD + " text not null" 
 						+"); "
 		;
-		//TODO Adddescription for javadoc
+		
+		/**
+		 * query to create table PIXELGEOM
+		 */
 		private static final String 
 				DATABASE_CREATE2 = 	
 					"create table "
@@ -123,7 +155,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 					+ COLUMN_PIXELGEOMCOORD + " text not null" 
 					+"); "
 		;
-		//TODO Adddescription for javadoc
+		
+		/**
+		 * query to create table PROJECT
+		 */
 		private static final String 
 				DATABASE_CREATE3 = 	
 				    "create table "
@@ -134,7 +169,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 					    + "FOREIGN KEY("+ COLUMN_GPSGEOMID +") REFERENCES "+TABLE_GPSGEOM+" ("+COLUMN_GPSGEOMID+")"
 					    +");"
 		;
-		//TODO Adddescription for javadoc
+		/**
+		 * query to create table PHOTO
+		 */
 		private static final String 
 				DATABASE_CREATE4 = 	
 				    "create table "
@@ -150,6 +187,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 					    + "FOREIGN KEY("+ COLUMN_GPSGEOMID +") REFERENCES "+TABLE_GPSGEOM+" ("+COLUMN_GPSGEOMID+")"
 					    +");"
 		;
+		/**
+		 * query to create table MATERIAL
+		 */
 		private static final String 
 				DATABASE_CREATE5 = 	
 				    "create table "
@@ -158,6 +198,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 					    + COLUMN_MATERIALNAME + " text not null " 
 					    +");"
 	    ;
+		/**
+		 * query to create table ELEMENTTYPE
+		 */
 		private static final String 
 				DATABASE_CREATE6 = 	
 				    "create table "
@@ -166,7 +209,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 					    + COLUMN_ELEMENTTYPENAME + " text not null " 
 					    +");"
 		;
-		
+		/**
+		 * query to create table COMPOSED
+		 */
 		private static final String 
 				DATABASE_CREATE7 = 	
 				    "create table "
@@ -178,7 +223,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 					    + " FOREIGN KEY( "+ COLUMN_PHOTOID +" ) REFERENCES "+TABLE_PHOTO+" ( "+COLUMN_PHOTOID+" )"
 					    +");"
 		;
-		
+		/**
+		 * query to create table ELEMENT
+		 */
 		private static final String 
 				DATABASE_CREATE8 = 	
 				    "create table "
@@ -198,17 +245,21 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 					    +");"
 		;
 			     
-
-		//TODO Adddescription for javadoc
-		//constructor
+		/**
+		 * constructor
+		 * @param context of our activity
+		 */
 		public MySQLiteHelper(Context context){
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
 		
 
-		//TODO Adddescription for javadoc
+		
 		@Override
 		public void onCreate(SQLiteDatabase database) {
+			/**
+			 * we call each methods to create every table
+			 */
 			database.execSQL(getDatabaseCreate());	
 			database.execSQL(getDatabaseCreate2());
 			database.execSQL(getDatabaseCreate3());
@@ -220,7 +271,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		}
 
 
-		//TODO Adddescription for javadoc
+		
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.w(MySQLiteHelper.class.getName(), 
@@ -237,28 +288,59 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		}
 
 
-		//TODO Adddescription for javadoc
+		/**
+		 * getter for createquery of related number
+		 * @return the query as String
+		 */
 		public static String getDatabaseCreate() {
 			return DATABASE_CREATE;
 		}
+		/**
+		 * getter for createquery of related number
+		 * @return the query as String
+		 */
 		public static String getDatabaseCreate2() {
 			return DATABASE_CREATE2;
 		}
+		/**
+		 * getter for createquery of related number
+		 * @return the query as String
+		 */
 		public static String getDatabaseCreate3() {
 			return DATABASE_CREATE3;
 		}
+		/**
+		 * getter for createquery of related number
+		 * @return the query as String
+		 */
 		public static String getDatabaseCreate4() {
 			return DATABASE_CREATE4;
 		}
+		/**
+		 * getter for createquery of related number
+		 * @return the query as String
+		 */
 		public static String getDatabaseCreate5() {
 			return DATABASE_CREATE5;
 		}
+		/**
+		 * getter for createquery of related number
+		 * @return the query as String
+		 */
 		public static String getDatabaseCreate6() {
 			return DATABASE_CREATE6;
 		}
+		/**
+		 * getter for createquery of related number
+		 * @return the query as String
+		 */
 		public static String getDatabaseCreate7() {
 			return DATABASE_CREATE7;
 		}
+		/**
+		 * getter for createquery of related number
+		 * @return the query as String
+		 */
 		public static String getDatabaseCreate8() {
 			return DATABASE_CREATE8;
 		}
