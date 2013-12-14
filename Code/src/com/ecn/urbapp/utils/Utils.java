@@ -109,7 +109,7 @@ public class Utils{
 	 * @param id Id of the element that is finded
 	 * @return return the element if it's in the list
 	 */
-	public static DataObject getElementById(List<DataObject> list, long id){
+	public static DataObject getElementById(List<? extends DataObject> list, long id){
 		DataObject ret = null;
 		for(DataObject dobj : list){
 			if(dobj instanceof Element){
