@@ -48,9 +48,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import com.ecn.urbapp.activities.MainActivity;
-import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
-import com.ecn.urbapp.fragments.ZoneFragment;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
@@ -153,15 +151,6 @@ public class DrawZoneView extends Drawable {
 		paintFillZone.setColor(Color.BLUE);
 		paintFillZone.setStyle(Paint.Style.FILL);
 		paintFillZone.setAlpha(20);
-
-		for(Element e : MainActivity.element){
-			if(ZoneFragment.geomCache!=null){
-				if(e.getPixelGeom_id()==ZoneFragment.geomCache.getPixelGeomId()){
-					if(e.getElement_color()!=null)
-						paintFillZone.setColor(Integer.parseInt(e.getElement_color()));
-				}
-			}
-		}
 
 		Paint paintBorderZone = new Paint();
 		paintBorderZone.setColor(Color.WHITE);
