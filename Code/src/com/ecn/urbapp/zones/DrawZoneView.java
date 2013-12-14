@@ -154,15 +154,6 @@ public class DrawZoneView extends Drawable {
 		paintFillZone.setStyle(Paint.Style.FILL);
 		paintFillZone.setAlpha(20);
 
-		for(Element e : MainActivity.element){
-			if(ZoneFragment.geomCache!=null){
-				if(e.getPixelGeom_id()==ZoneFragment.geomCache.getPixelGeomId()){
-					if(e.getElement_color()!=null)
-						paintFillZone.setColor(Integer.parseInt(e.getElement_color()));
-				}
-			}
-		}
-
 		Paint paintBorderZone = new Paint();
 		paintBorderZone.setColor(Color.WHITE);
 		paintBorderZone.setStyle(Paint.Style.STROKE);
@@ -268,7 +259,15 @@ public class DrawZoneView extends Drawable {
 						}
 					}
 					// Draw the polygon
-					canvas.drawPath(polyPath, paintFillZone);
+					Paint finalPaintFillZone = new Paint(paintFillZone);
+					Element e = UtilCharacteristicsZone.getElementFromPixelGeomId(pgeom.getPixelGeomId());
+                    if(e != null){
+                    	if(e.getElement_color()!=null){
+                            finalPaintFillZone.setColor(Integer.parseInt(e.getElement_color()));
+                            finalPaintFillZone.setAlpha(120);//setting color seems to erase alpha
+                    	}                                
+                    }
+					canvas.drawPath(polyPath, finalPaintFillZone);
 				}
 			}
 		} catch (ParseException e) {
