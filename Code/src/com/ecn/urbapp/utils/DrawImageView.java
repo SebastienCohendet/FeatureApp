@@ -86,21 +86,19 @@ public class DrawImageView extends Drawable {
 		fillPaint.setAlpha(50);
 
 		// For all the zones
-		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
+		for (PixelGeom pgeom : MainActivity.pixelGeom) {
 			// If the zone is not selected, only draw the lines
 			try {
 				Element el = null;
 				for (Element e : MainActivity.element) {
-					if (e.getPixelGeom_id() == MainActivity.pixelGeom.get(i)
-							.getPixelGeomId()) {
+					if (e.getPixelGeom_id() == pgeom.getPixelGeomId()) {
 						el = e;
 						break;
 					}
 				}
 				WKTReader wktr = new WKTReader();
 				for (PixelGeom pg : UtilCharacteristicsZone
-								.getPixelGeomsFromGeom(wktr.read(MainActivity.pixelGeom
-								.get(i).getPixelGeom_the_geom()), false)) {
+								.getPixelGeomsFromGeom(wktr.read(pgeom.getPixelGeom_the_geom()), false)) {
 					Polygon poly = (Polygon) wktr.read(pg.getPixelGeom_the_geom());
 					Coordinate[] points2 = poly.getExteriorRing().getCoordinates();
 
@@ -146,7 +144,7 @@ public class DrawImageView extends Drawable {
 						fillPaint.setColor(Color.RED);
 					}
 
-					if (!MainActivity.pixelGeom.get(i).selected) {
+					if (!UtilCharacteristicsZone.getElementFromPixelGeomId(pgeom.getPixelGeomId()).isSelected()) {
 						fillPaint.setAlpha(50);
 					} else {
 						fillPaint.setAlpha(150);

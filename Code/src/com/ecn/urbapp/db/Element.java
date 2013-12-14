@@ -1,5 +1,7 @@
 package com.ecn.urbapp.db;
 
+import java.util.Vector;
+
 import com.ecn.urbapp.syncToExt.Sync;
 
 import android.content.ContentValues;
@@ -37,6 +39,14 @@ public class Element extends DataObject {
 	 * element_color of the element
 	 */
 	private String element_color;
+	/**
+	 * List of the Elements linked to <code>this</code> Element
+	 */
+	private Vector<Element> linkedElement = new Vector<Element>();
+	/**
+	 * True if <code>this</code> Element is selected
+	 */
+	private boolean selected;
 	
 
 	//Getters
@@ -95,6 +105,22 @@ public class Element extends DataObject {
 	public String getElement_color() {
 		return element_color;
 	}
+
+	/**
+	 * getter for the list of the Elements linked to <code>this</code> Element
+	 * @return the list of the Elements linked to <code>this</code> Element
+	 */
+	public Vector<Element> getLinkedElement() {
+		return linkedElement;
+	}
+
+	/**
+	 * Return whether <code>this</code> Element is selected or not
+	 * @return whether <code>this</code> Element is selected or not
+	 */
+	public boolean isSelected() {
+		return selected;
+	}
 	
 
 	//Setters
@@ -152,6 +178,22 @@ public class Element extends DataObject {
 	 */
 	public void setElement_color(String element_color) {
 		this.element_color = element_color;
+	}
+
+	/**
+	 * setter for the list of the Elements linked to <code>this</code> Element
+	 * @param the list of the Elements linked to <code>this</code> Element
+	 */
+	public void setLinkedElement(Vector<Element> selectedElement) {
+		linkedElement = selectedElement;
+	}
+
+	/**
+	 * set whether <code>this</code> Element is selected or not
+	 * @param selected the new state of selection for this Element
+	 */
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 
 	

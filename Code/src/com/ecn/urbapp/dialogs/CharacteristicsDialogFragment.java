@@ -149,6 +149,7 @@ public class CharacteristicsDialogFragment extends DialogFragment {
 			if (newColor) {
 				UtilCharacteristicsZone.setColorForSelectedZones(chosenColor);
 			}
+			UtilCharacteristicsZone.unselectAll();
 			CharacteristicsFragment.getMyImage().invalidate();
 			box.dismiss();
 		}

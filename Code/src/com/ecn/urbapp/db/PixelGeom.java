@@ -17,23 +17,13 @@ public class PixelGeom extends DataObject  {
 	private long pixelGeom_id;
 	private String pixelGeom_the_geom;
 
-	
-	//TODO rendre private et mettre accesseur
-	public boolean selected;
 
-	private Vector<PixelGeom> linkedPixelGeom = new Vector<PixelGeom>();
-	
-	
 
 
 	//Getters
 	//TODO Adddescription for javadoc
 	public long getPixelGeomId(){
 		return pixelGeom_id;
-	}
-	
-	public boolean isSelected() {
-		return selected;
 	}
 	
 	//TODO Adddescription for javadoc
@@ -50,10 +40,6 @@ public class PixelGeom extends DataObject  {
 	//TODO Adddescription for javadoc
 	public void setPixelGeomId(long id) {
 		this.pixelGeom_id = id;
-	}
-	
-	public void setSelected(boolean selected) {
-		this.selected = selected;
 	}
 
 	//TODO Adddescription for javadoc
@@ -122,13 +108,5 @@ public class PixelGeom extends DataObject  {
 			
 		}
 		
-	}
-
-	public void setLinkedPixelGeom(Vector<PixelGeom> selectedPixelGeom) {
-		linkedPixelGeom = selectedPixelGeom;
-	}
-
-	public Vector<PixelGeom> getLinkedPixelGeom() {
-		return linkedPixelGeom;
 	}
 }

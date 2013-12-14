@@ -39,6 +39,7 @@
     <string name="definition_union_weak">Liaison faible</string>
     <string name="definition_union_strong_description">Fusionne les zones sélectionnées en une seule géométrie. Cette opération ne peut pas être annulée. Les caractéristiques des zones seront ré-initialisées</string>
     <string name="definition_union_weak_description">Lie les zones de manière à ce qu\'un changement sur une zone affecte toutes les autres. Les caractéristiques des zones seront conservées tant qu\'elles n\'auront pas été redéfinies.</string>
+    <string name="definition_divide">Dégrouper</string>
     <string name="definition_recap">Récapitulatif</string>
     <string name="definition_select_text">Cliquer sur les zones à sélectionner.</string>
     

@@ -262,9 +262,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					state = IMAGE_SELECTION;
 					exitAction();
 				}
-				for(PixelGeom pg : MainActivity.pixelGeom){
-					pg.selected=false;
-				}
 				break;
 			}
 			break;
@@ -561,7 +558,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			for(int j=0; j<MainActivity.pixelGeom.size(); j++){
 				if(MainActivity.pixelGeom.get(j).getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
 					geomCache = MainActivity.pixelGeom.get(j);
-					MainActivity.pixelGeom.get(j).selected=true;
 				}
 			}
 			state = IMAGE_EDITION;	drawzoneview.onEditMode();

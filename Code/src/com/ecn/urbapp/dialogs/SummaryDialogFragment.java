@@ -59,7 +59,7 @@ import com.ecn.urbapp.zones.UtilCharacteristicsZone;
  */
 public class SummaryDialogFragment extends DialogFragment {
 	
-	private long pgeomIdToSelect;
+	private long eltIdToSelect;
 	private Dialog box;
 	
 	@Override
@@ -68,22 +68,22 @@ public class SummaryDialogFragment extends DialogFragment {
 		box.setContentView(R.layout.layout_definition_dialog_recap);
 		box.setTitle(R.string.definition_recap);
 		LinearLayout recapList = (LinearLayout) box.findViewById(R.id.definition_recap_linear_layout);
-		for (PixelGeom pgeom : MainActivity.pixelGeom) {
-			Element element = UtilCharacteristicsZone.getElementFromPixelGeomId(pgeom.getPixelGeomId());
+		for (Element element : MainActivity.element) {
 			if (element.getElementType_id() == 0 || element.getMaterial_id() == 0 || element.getElement_color() == null) {
-				pgeomIdToSelect = pgeom.getPixelGeomId();
 				Button button = new Button(getActivity());
-				button.setText("La zone n°" + pgeom.getPixelGeomId() + " n'est pas entièrement défini.");
+				button.setText("L'élément n°" + element.getElement_id() + " n'est pas entièrement défini.");
+				eltIdToSelect = element.getElement_id();
 				button.setOnClickListener(new OnClickListener() {
 
-					private long idToSelect = pgeomIdToSelect;
+					private long idToSelect = eltIdToSelect;
 
 					@Override
 					public void onClick(View v) {
 						UtilCharacteristicsZone.unselectAll();
-						UtilCharacteristicsZone.getPixelGeomFromId(idToSelect).selected = true;
-						for (PixelGeom pg : UtilCharacteristicsZone.getPixelGeomFromId(idToSelect).getLinkedPixelGeom()) {
-							pg.selected = true;
+						Element element = UtilCharacteristicsZone.getElementFromId(idToSelect);
+						element.setSelected(true);
+						for (Element elt : element.getLinkedElement()) {
+							elt.setSelected(true);
 						}
 						CharacteristicsFragment.getMyImage().invalidate();
 						box.dismiss();

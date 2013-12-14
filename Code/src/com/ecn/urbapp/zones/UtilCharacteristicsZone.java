@@ -50,7 +50,6 @@ import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.PixelGeom;
-import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.GetId;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -81,7 +80,7 @@ public final class UtilCharacteristicsZone {
 	 *            the type to set
 	 */
 	public static void setTypeForSelectedZones(String type) {
-		for (Element e : getAllSelectedZones()) {
+		for (Element e : getAllSelectedElements()) {
 			if(type==null){
 				e.setElementType_id(0);
 			}
@@ -102,7 +101,7 @@ public final class UtilCharacteristicsZone {
 	 *            the material to set
 	 */
 	public static void setMaterialForSelectedZones(String material) {
-		for (Element e : getAllSelectedZones()) {
+		for (Element e : getAllSelectedElements()) {
 			if(material==null){
 				e.setMaterial_id(0);
 			}
@@ -123,7 +122,7 @@ public final class UtilCharacteristicsZone {
 	 *            the color to set
 	 */
 	public static void setColorForSelectedZones(int color) {
-		for (Element e : getAllSelectedZones()) {
+		for (Element e : getAllSelectedElements()) {
 			e.setElement_color(""+color);
 		}
 	}
@@ -135,7 +134,7 @@ public final class UtilCharacteristicsZone {
 	 * @return the color as an int
 	 */
 	public static Integer getColorForSelectedZones() {
-		Vector<Element> element = getAllSelectedZones();
+		Vector<Element> element = getAllSelectedElements();
 		if (element != null && !element.isEmpty()) {
 			int color=0;
 			if(element.get(0).getElement_color()!=null){
@@ -154,54 +153,56 @@ public final class UtilCharacteristicsZone {
 	}
 
 	/**
-	 * This method return the position (in the list) of the first zone that
-	 * contains the point in parameter and -1 if no zone is appropriate
+	 * This method return the ID of the first PixelGeom that
+	 * contains the point in parameter and -1 if no PixelGeom is appropriate
 	 * 
 	 * @param point
-	 * @return the number of the smallest zone that contains the point and -1
+	 * @return the ID of the smallest PixelGeom that contains the point and -1
 	 *         otherwise
 	 */
-	public static int isInsideZone(Point point) {
-		int result = -1;
-		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
+	public static long isInsideZone(Point point) {
+		long resultID = -1;
+		for (PixelGeom pgeom : MainActivity.pixelGeom) {
 			Coordinate coord = new Coordinate(point.x, point.y);
 			com.vividsolutions.jts.geom.Point geomPoint = gf.createPoint(coord);
 			try {
-				if (geomPoint.within(wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom()))) {
-					if (result == -1) {
-						result = i;
-					} else  if (wktr.read(MainActivity.pixelGeom.get(i).getPixelGeom_the_geom()).getArea()
-							< wktr.read(MainActivity.pixelGeom.get(result).getPixelGeom_the_geom()).getArea()) {
-						result = i;
+				if (geomPoint.within(wktr.read(pgeom.getPixelGeom_the_geom()))) {
+					if (resultID == -1) {
+						resultID = pgeom.getPixelGeomId();
+					} else  if (wktr.read(pgeom.getPixelGeom_the_geom()).getArea()
+							< wktr.read(UtilCharacteristicsZone.getPixelGeomFromId(resultID).getPixelGeom_the_geom()).getArea()) {
+						resultID = pgeom.getPixelGeomId();
 					}
 				}
 			} catch (ParseException e) {
 			}
 		}
-		return result;
+		return resultID;
 	}
 
 	/**
 	 * Unselect all the zones
 	 */
 	public static void unselectAll() {
-		for (int i = 0; i < MainActivity.pixelGeom.size(); i++) {
-			MainActivity.pixelGeom.get(i).selected = false;
+		for (Element elt : MainActivity.element) {
+			elt.setSelected(false);
 		}
 	}
 
 	/**
-	 * Select the zone whose number is in parameter (if the number is positive)
-	 * and all the linked zones
+	 * Select the Element which is linked to the PixelGeom whose ID is in
+	 * parameter (if the ID is positive) and all the linked Elements.
+	 * If the ID is negative, it unselects all the Elements.
 	 * 
 	 * @param zoneNumber
 	 *            the number of the zone to select
 	 */
-	public static void select(int zoneNumber) {
-		if (zoneNumber >= 0) {
-			MainActivity.pixelGeom.get(zoneNumber).selected = !MainActivity.pixelGeom.get(zoneNumber).selected;
-			for (PixelGeom pg : MainActivity.pixelGeom.get(zoneNumber).getLinkedPixelGeom()) {
-				pg.selected = MainActivity.pixelGeom.get(zoneNumber).selected;
+	public static void select(long pixelGeomID) {
+		if (pixelGeomID >= 0) {
+			Element elementSelected = UtilCharacteristicsZone.getElementFromPixelGeomId(pixelGeomID);
+			elementSelected.setSelected(!elementSelected.isSelected());
+			for (Element elt : elementSelected.getLinkedElement()) {
+				elt.setSelected(elementSelected.isSelected());
 			}
 		} else {
 			unselectAll();
@@ -209,22 +210,33 @@ public final class UtilCharacteristicsZone {
 	}
 
 	/**
-	 * Return a vector with all the selected zones
+	 * Return a vector with all the selected Elements
 	 * 
-	 * @return vector with all the selected zones
+	 * @return vector with all the selected Elements
 	 */
-	public static Vector<Element> getAllSelectedZones() {
+	public static Vector<Element> getAllSelectedElements() {
 		Vector<Element> selectedElements = new Vector<Element>();
-		for(PixelGeom pg: MainActivity.pixelGeom){
-			if(pg.selected){
-				for(Element e : MainActivity.element){
-					if(e.getPixelGeom_id()==pg.getPixelGeomId()){
-						selectedElements.add(e);
-					}
-				}
+		for(Element elt: MainActivity.element){
+			if(elt.isSelected()){
+				selectedElements.add(elt);
 			}
 		}
 		return selectedElements;
+	}
+
+	/**
+	 * Return a vector with all the PixelGeoms binded to selected Elements
+	 * 
+	 * @return vector with all the PixelGeoms binded to selected Elements
+	 */
+	public static Vector<PixelGeom> getAllSelectedPixelGeoms() {
+		Vector<PixelGeom> selectedPixelGeoms = new Vector<PixelGeom>();
+		for(Element elt: MainActivity.element){
+			if(elt.isSelected()){
+				selectedPixelGeoms.add(UtilCharacteristicsZone.getPixelGeomFromId(elt.getPixelGeom_id()));
+			}
+		}
+		return selectedPixelGeoms;
 	}
 
 	/**
@@ -235,7 +247,7 @@ public final class UtilCharacteristicsZone {
 	 * @param res
 	 */
 	public static Map<String, HashMap<String, Float>> getStatsForSelectedZones(Resources res) {
-		Vector<Element> selectedZones = getAllSelectedZones();
+		Vector<Element> selectedZones = getAllSelectedElements();
 		if (selectedZones.isEmpty()) {
 			selectedZones = new Vector<Element>(MainActivity.element);
 		}
@@ -423,7 +435,7 @@ public final class UtilCharacteristicsZone {
 		}
 		return pgeom;
 	}
-	
+
 	/**
 	 * Return the PixelGeom whose id is given in parameter.
 	 * 
@@ -438,12 +450,29 @@ public final class UtilCharacteristicsZone {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Return the Element whose id is given in parameter.
 	 * 
 	 * @param pixelGeomId the id of the Element to get
 	 * @return the Element corresponding to the ID in parameter 
+	 */
+	public static Element getElementFromId(Long elementId) {
+		for (Element elt : MainActivity.element) {
+			if (elt.getElement_id() == elementId) {
+				return elt;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return the (first) Element which has the id is given in parameter as
+	 * pixelGeom_id.
+	 * 
+	 * @param pixelGeomId
+	 *            the id of the PixelGeom used by the Element to get
+	 * @return the Element corresponding to the pixelGeom_id in parameter
 	 */
 	public static Element getElementFromPixelGeomId(Long pixelGeomId) {
 		for (Element element : MainActivity.element) {
@@ -453,7 +482,7 @@ public final class UtilCharacteristicsZone {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Remove all the PixelGeom from the MainActivity List whose ID are included
 	 * in the List in parameter.
