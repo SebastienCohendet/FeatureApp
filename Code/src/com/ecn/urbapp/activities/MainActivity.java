@@ -11,6 +11,7 @@ import android.app.AlertDialog.Builder;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +26,7 @@ import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Material;
+import com.ecn.urbapp.db.MySQLiteHelper;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.db.Project;
@@ -38,6 +40,7 @@ import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.ConnexionCheck;
 import com.ecn.urbapp.utils.Cst;
 import com.ecn.urbapp.utils.Utils;
+import com.google.android.gms.internal.s;
 
 /**
  * @author	COHENDET Sébastien
@@ -215,8 +218,18 @@ public class MainActivity extends Activity {
 		
 		//TODO coordinate with the remote database
 		datasource.open();
-		Sync s = new Sync();
-		s.getTypeAndMaterialsFromExt();
+		datasource.getAllElementType();
+		datasource.getAllMaterial();
+		if (this.elementType.isEmpty()||this.material.isEmpty()){
+			Sync s = new Sync();
+			s.getTypeAndMaterialsFromExt();
+			for (ElementType elmtT : this.elementType){
+				elmtT.saveToLocal(MainActivity.datasource);
+			}
+			for (Material elmtT : this.material){
+				elmtT.saveToLocal(MainActivity.datasource);
+			}
+		}
 		datasource.close();
 	}
 
