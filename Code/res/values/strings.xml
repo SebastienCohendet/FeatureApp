@@ -92,5 +92,6 @@
 	<string name="no_back">Rien à annuler</string>
 	<string name="point_deleting_impossible">Impossible de supprimer le point</string>
 	<string name="delete_zone">Supprimer</string>
+	<string name="validation_not_available">Validation impossible, vérifiez le nombre de points ou les intersections</string>
 	
 </resources>
