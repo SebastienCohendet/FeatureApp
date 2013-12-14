@@ -9,6 +9,7 @@
     <string name="zoneFragment">Définition des zones</string>
     <string name="informationFragment">Informations</string>
     
+    <string name="syncMatAndTypes">charger les matériaux et Types du serveur</string>
     <string name="image_newProject">Image : nouveau projet</string>
     <string name="image_newProject_takePhoto">Image : nouveau projet</string>
     <string name="image_newProject_photo">Image : nouveau projet</string>
