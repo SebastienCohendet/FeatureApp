@@ -12,52 +12,90 @@ import com.ecn.urbapp.syncToExt.Sync;
 
 public class Photo extends DataObject  {
 	
-
-	
-	//Attributes
-	//TODO Adddescription for javadoc
+	/**
+	 * contains the id of the photo
+	 */
 	private long photo_id;
+	/**
+	 * contains the description of the photo
+	 */
 	private String photo_description;
+	/**
+	 * contains the author of the photo
+	 */
 	private String photo_author;
 	/**
 	 * attributes that declare the name of the picture for instance : img1.png
 	 */
 	private String photo_url;
-	
+	/**
+	 * contains the address of the photo
+	 */
 	private String photo_adresse;
-	private long photo_nbrPoints=0;
+	/**
+	 * contains the number of points that have to been set to geolocalized the photo
+	 * set to 2 by default
+	 */
+	private long photo_nbrPoints=2;
+	/**
+	 * contains the last modification
+	 * set to 0 by default
+	 */
+	
 	private int photo_derniereModif=0;
 	
-	
+	/**
+	 * contains the tempurl of the photo
+	 */
 	private String photo_urlTemp;
+	/**
+	 * contains the gpsgeom_id
+	 */
 	private long gpsGeom_id;
 	
 	
 	//Getters
-	//TODO Adddescription for javadoc
+	/**
+	 * contains the localization 
+	 */
 	private String Ext_GpsGeomCoord;
 
 	
 
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the temp url
+	 * @return
+	 */
 	public String getUrlTemp() {
 		return photo_urlTemp;
 	}
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the tempurl
+	 * @param s
+	 */
 	public void setUrlTemp(String s) {
 		photo_urlTemp=s;
 	}
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the photo id
+	 * @return
+	 */
 	public long getPhoto_id() {
 		return photo_id;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the description
+	 * @return
+	 */
 	public String getPhoto_description() {
 		return photo_description;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the author
+	 * @return
+	 */
 	public String getPhoto_author() {
 		return photo_author;
 	}
@@ -66,34 +104,52 @@ public class Photo extends DataObject  {
 	}
 
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the gpsgeom id
+	 * @return
+	 */
 		public long getGpsGeom_id() {
 			return gpsGeom_id;
 		}
 
-		//TODO Adddescription for javadoc
+		/**
+		 * setter for the id of the gpsgeom
+		 * @param gpsGeom_id
+		 */
 		public void setGpsGeom_id(long gpsGeom_id) {
 			this.gpsGeom_id = gpsGeom_id;
 		}
 	
 	
-		//TODO Adddescription for javadoc
+		/**
+		 * getter for localisation fo the photo
+		 * @return
+		 */
 		public String getExt_GpsGeomCoord() {
 			return Ext_GpsGeomCoord;
 		}
 		
 		
-		//TODO Adddescription for javadoc
+		/**
+		 * getter for the date of last modification
+		 * @return
+		 */
 		public int getPhoto_derniereModif() {
 			return photo_derniereModif;
 		}
 		
-		//TODO Adddescription for javadoc
+		/**
+		 * getter for the number of points
+		 * @return
+		 */
 		public long getPhoto_nbrPoints() {
 			return photo_nbrPoints;
 		}
 		
-		//TODO Adddescription for javadoc
+		/**
+		 * getter fr the address
+		 * @return
+		 */
 		public String getPhoto_adresse() {
 			return photo_adresse;
 		}
@@ -102,43 +158,67 @@ public class Photo extends DataObject  {
 		
 		
 	//Setters
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the localization of the photo
+	 * @param ext_GpsGeomCoord
+	 */
 	public void setExt_GpsGeomCoord(String ext_GpsGeomCoord) {
 		Ext_GpsGeomCoord = ext_GpsGeomCoord;
 	}
 
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the url of the photo
+	 * @param photo_url
+	 */
 	public void setPhoto_url(String photo_url) {
 		this.photo_url = photo_url;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the id of the photo
+	 * @param photo_id
+	 */
 	public void setPhoto_id(long photo_id) {
 		this.photo_id = photo_id;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the description
+	 * @param photo_description
+	 */
 	public void setPhoto_description(String photo_description) {
 		this.photo_description = photo_description;
 	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the author
+	 * @param photo_author
+	 */
 	public void setPhoto_author(String photo_author) {
 		this.photo_author = photo_author;
 	}
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the date of last modification
+	 * @param d
+	 */
 	public void setPhoto_derniereModif(int d) {
 		this.photo_derniereModif=d;
 	}
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the number of points that will be geolocalized
+	 * @param nbr
+	 */
 	public void setPhoto_nbrPoints(long nbr) {
 		this.photo_nbrPoints=nbr;
 	}
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * setter for the adresse of the Photo
+	 * @param adresse
+	 */
 	public void setPhoto_adresse(String adresse) {
 		this.photo_adresse=adresse;
 	}
@@ -182,7 +262,7 @@ public class Photo extends DataObject  {
 				this.setPhoto_id(new_id);
 				this.trigger(old_id, new_id, MainActivity.element, MainActivity.composed);
 			}
-			//TODO trigger
+			
 			values.put(MySQLiteHelper.COLUMN_PHOTOID, this.photo_id);
 			values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
 			datasource.getDatabase().insert(MySQLiteHelper.TABLE_PHOTO, null, values);	
@@ -201,7 +281,14 @@ public class Photo extends DataObject  {
 			+" DESC LIMIT 1 ;"
 		;
 
-
+	/**
+	 * trigger method is used to update foreign keys in the dataObjects
+	 * this method is used before saving objects in database thank's to the "saved fragment"
+	 * @param old_id
+	 * @param new_id
+	 * @param list_element
+	 * @param list_composed
+	 */
 	public void trigger(long old_id, long new_id, ArrayList<Element> list_element, ArrayList<Composed> list_composed ){
 
 		if (list_element!=null){

@@ -13,36 +13,68 @@ public class PixelGeom extends DataObject  {
 
 	
 	//Attributes
-	//TODO Adddescription for javadoc
+	/**
+	 * long id attributes of pixelGeom
+	 */
 	private long pixelGeom_id;
+	/**
+	 * String polygon attributes of pixelGeom
+	 */
 	private String pixelGeom_the_geom;
+	/**
+	 * boolean attributes of pixelGeom that determines if a pixelGeom is selected or not
+	 */
+	public boolean selected;
 
-
-
-
+	/**
+	 * linked list of pixelGeom
+	 */
+	private Vector<PixelGeom> linkedPixelGeom = new Vector<PixelGeom>();
+	
 	//Getters
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for pixelGeom id
+	 * @return long pixelGeom_id
+	 */
 	public long getPixelGeomId(){
 		return pixelGeom_id;
 	}
+	/**
+	 * getter for pixelGeom isSelected
+	 * @return boolean isSelected
+	 */
+	public boolean isSelected() {
+		return selected;
+	}
 	
-	//TODO Adddescription for javadoc
+	/**
+	 * getter for the pixelGeom polygon geometry
+	 * @return String geom
+	 */
 	public String getPixelGeom_the_geom() {
 		return pixelGeom_the_geom;
 	}
-	
-	
-	
-	
-	
-	
+		
 	//Setters
-	//TODO Adddescription for javadoc
+	/**
+	 * setter PixelGeom Id
+	 * @param id
+	 */
 	public void setPixelGeomId(long id) {
 		this.pixelGeom_id = id;
 	}
+	/**
+	 * setter PixelGeom Selected
+	 * @param selected
+	 */
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 
-	//TODO Adddescription for javadoc
+	/**
+	 * setter of pixelgeom polygon
+	 * @param pixelGeom_the_geom
+	 */
 	public void setPixelGeom_the_geom(String pixelGeom_the_geom) {
 		this.pixelGeom_the_geom = pixelGeom_the_geom;
 	}
@@ -86,6 +118,7 @@ public class PixelGeom extends DataObject  {
 			datasource.getDatabase().insert(MySQLiteHelper.TABLE_PIXELGEOM, null, values);
 		}
 	}
+	
 	/**
 	 * query to get the biggest photo_id from local db
 	 * 
@@ -98,6 +131,13 @@ public class PixelGeom extends DataObject  {
 			+" DESC LIMIT 1 ;"
 		;
 
+	/**
+	 * trigger method is used to update foreign keys in the dataObjects
+	 * this method is used before saving objects in database thank's to the "saved fragment"
+	 * @param old_id represents the past id of our GpsGeom
+	 * @param new_id represents the new id of our GpsGeom
+	 * @param list_element represents the projects that are related to this gpsGeom
+	 */
 	public void trigger(long old_id, long new_id,  ArrayList<Element> list_element){
 		if (list_element!=null){
 			for (Element e : list_element){
@@ -108,5 +148,20 @@ public class PixelGeom extends DataObject  {
 			
 		}
 		
+	}
+	/**
+	 * setter for the list of pixelGeom
+	 * @param selectedPixelGeom
+	 */
+	public void setLinkedPixelGeom(Vector<PixelGeom> selectedPixelGeom) {
+		linkedPixelGeom = selectedPixelGeom;
+	}
+	
+	/**
+	 * getter for the list of pixelGeom
+	 * @return
+	 */
+	public Vector<PixelGeom> getLinkedPixelGeom() {
+		return linkedPixelGeom;
 	}
 }
