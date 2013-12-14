@@ -592,7 +592,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					le.add(elt);
 				}
 				try {
-					UtilCharacteristicsZone.addInMainActivityZones(pgeom, null);
+					UtilCharacteristicsZone.addNewPixelGeom(pgeom, null);
 					state = IMAGE_SELECTION;
 					exitAction();
 					zone.clearBacks();//remove list of actions backs

@@ -126,7 +126,7 @@ public class CharacteristicsFragment extends Fragment {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			// If the user touch inside a zone, select the zone
-			UtilCharacteristicsZone.select(UtilCharacteristicsZone.isInsideZone(this.convertTouchPoint(event.getX(), event.getY())));
+			UtilCharacteristicsZone.select(UtilCharacteristicsZone.isInsidePixelGeom(this.convertTouchPoint(event.getX(), event.getY())));
 
 			// Ask to draw again
 			myImage.invalidate();
@@ -181,11 +181,11 @@ public class CharacteristicsFragment extends Fragment {
 		@Override
 		public void onClick(View v) {
 			// Unset the type of the zone
-			UtilCharacteristicsZone.setTypeForSelectedZones(null);
+			UtilCharacteristicsZone.setTypeForSelectedElements(null);
 			// Unset the material of the zone
-			UtilCharacteristicsZone.setMaterialForSelectedZones(null);
+			UtilCharacteristicsZone.setMaterialForSelectedElements(null);
 			// Unset the color of the zone
-			UtilCharacteristicsZone.setColorForSelectedZones(0);
+			UtilCharacteristicsZone.setColorForSelectedElements(0);
 			// Unselect all the zones and draw the image again
 			UtilCharacteristicsZone.unselectAll();
 			CharacteristicsFragment.getMyImage().invalidate();
