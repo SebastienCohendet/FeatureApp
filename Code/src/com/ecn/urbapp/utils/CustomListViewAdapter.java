@@ -16,27 +16,48 @@ import android.widget.TextView;
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.utils.RowItem;
  
+/**
+ * Configures the view of photos in Local/External loading
+ * @author Sebastien
+ *
+ */
 public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
 
-	//TODO Adddescription for javadoc
+	/**
+	 * Context to show elements on screen
+	 */
     private Context context;
 
-	//TODO Adddescription for javadoc
+	/**
+	 * Constructor
+	 * @param context
+	 * @param resourceId
+	 * @param items
+	 */
     public CustomListViewAdapter(Context context, int resourceId,
             List<RowItem> items) {
         super(context, resourceId, items);
         this.context = context;
     }
 
-	//TODO Adddescription for javadoc
-    /*private view holder class*/
+	/**
+	 * private view holder class
+	 * @author Sebastien
+	 *
+	 */
     private class ViewHolder {
         ImageView imageView;
         TextView txtTitle;
         TextView txtDesc;
     }
 
-	//TODO Adddescription for javadoc
+    /**
+     * getView methods
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return view
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         RowItem rowItem = getItem(position);
@@ -65,6 +86,13 @@ public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
         return convertView;
     }
     
+    /**
+     * To reduce image quality to prevents OutOfMemory error
+     * @param file
+     * @param width
+     * @param height
+     * @return
+     */
     Bitmap ShrinkBitmap(String file, int width, int height){
     	   
         BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();

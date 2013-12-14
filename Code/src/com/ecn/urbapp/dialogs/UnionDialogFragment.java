@@ -47,6 +47,7 @@ import android.widget.Button;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.fragments.CharacteristicsFragment;
 import com.ecn.urbapp.fragments.ZoneFragment;
@@ -90,16 +91,10 @@ public class UnionDialogFragment extends DialogFragment {
 		
 		@Override
 		public void onClick(View v) {
-			Vector<PixelGeom> selectedPixelGeom = new Vector<PixelGeom>();
-			for(PixelGeom pg: MainActivity.pixelGeom){
-				if(pg.selected){
-					selectedPixelGeom.add(pg);
-				}
-			}
+			Vector<PixelGeom> selectedPixelGeom = UtilCharacteristicsZone.getAllSelectedPixelGeoms();
 			try {
 				UtilCharacteristicsZone.union(selectedPixelGeom);
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			box.dismiss();
@@ -111,16 +106,9 @@ public class UnionDialogFragment extends DialogFragment {
 		
 		@Override
 		public void onClick(View v) {
-			Vector<PixelGeom> selectedPixelGeom = new Vector<PixelGeom>();
-			for(PixelGeom pg: MainActivity.pixelGeom){
-				if(pg.selected){
-					selectedPixelGeom.add(pg);
-				}
-			}
-			for(PixelGeom pg: MainActivity.pixelGeom){
-				if(pg.selected){
-					pg.setLinkedPixelGeom(selectedPixelGeom);
-				}
+			Vector<Element> selectedElements = UtilCharacteristicsZone.getAllSelectedElements();
+			for(Element elt : selectedElements){
+				elt.setLinkedElement(selectedElements);
 			}
 			box.dismiss();
 			CharacteristicsFragment.getMyImage().invalidate();

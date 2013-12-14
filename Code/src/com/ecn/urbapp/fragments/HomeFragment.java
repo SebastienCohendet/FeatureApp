@@ -2,6 +2,7 @@ package com.ecn.urbapp.fragments;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.annotation.SuppressLint;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -22,6 +24,11 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.LoadExternalProjectsActivity;
 import com.ecn.urbapp.activities.LoadLocalProjectsActivity;
 import com.ecn.urbapp.activities.MainActivity;
+import com.ecn.urbapp.db.ElementType;
+import com.ecn.urbapp.db.Material;
+import com.ecn.urbapp.db.MySQLiteHelper;
+import com.ecn.urbapp.db.Project;
+import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.Cst;
 import com.ecn.urbapp.utils.Utils;
 
@@ -57,6 +64,10 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	 * Image button launching the activity LoadDistantProject
 	 */
 	private ImageView imageLoadDistant;
+	/**
+	 * The button for synchronizing materials and types from server
+	 */
+	private Button syncMat = null;
 
 
 	@Override
@@ -81,6 +92,9 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		
 		imageLoadDistant = (ImageView) v.findViewById(R.id.home_image_loadDistantProject);
 		imageLoadDistant.setOnClickListener(this);
+		
+		syncMat = (Button) v.findViewById(R.id.home_syncMatAndTypes);
+		syncMat.setOnClickListener(this);
 		
 		return v;
 	}
@@ -118,7 +132,32 @@ public class HomeFragment extends Fragment implements OnClickListener{
             	 i = new Intent(this.getActivity(), LoadExternalProjectsActivity.class);
                  getActivity().startActivityForResult(i,Cst.CODE_LOAD_EXTERNAL_PROJECT);
                  break;
+			case R.id.home_syncMatAndTypes:
+				MainActivity.datasource.open();
+				String delete_mat = "DELETE FROM "+MySQLiteHelper.TABLE_MATERIAL;
+				String delete_elmtTypes = "DELETE FROM "+MySQLiteHelper.TABLE_ELEMENTTYPE;
+				MainActivity.datasource.getDatabase().rawQuery(delete_mat, null);
+				MainActivity.datasource.getDatabase().rawQuery(delete_elmtTypes, null);
+				MainActivity.elementType.clear();
+				MainActivity.material.clear();
+				Sync s = new Sync();
+				s.getTypeAndMaterialsFromExt();
+				saveElementTypeListToLocal(MainActivity.elementType);
+				saveMaterialListToLocal(MainActivity.material);
+				MainActivity.datasource.close();
+                break;
 
 		}	
+	}
+	public void saveElementTypeListToLocal(ArrayList<ElementType> li){
+		for (ElementType elmtT : li){
+			elmtT.saveToLocal(MainActivity.datasource);
+		}
+	}
+	
+	public void saveMaterialListToLocal(ArrayList<Material> li){
+		for (Material mat : li){
+			mat.saveToLocal(MainActivity.datasource);
+		}
 	}
 }

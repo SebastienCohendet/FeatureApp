@@ -26,27 +26,34 @@
     
     <Button 
         android:id="@+id/definition_button_define"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="85dp"
         android:text="@string/definition_define"/>
     
     <Button 
         android:id="@+id/definition_button_delete"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="85dp"
         android:layout_toRightOf="@+id/definition_button_define"
         android:text="@string/definition_delete"/>
     
     <Button 
         android:id="@+id/definition_button_union"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="85dp"
         android:layout_toRightOf="@+id/definition_button_delete"
         android:text="@string/definition_union"/>
     
     <Button 
+        android:id="@+id/definition_button_divide"
+        android:layout_width="wrap_content"
+        android:layout_height="85dp"
+        android:layout_toRightOf="@+id/definition_button_union"
+        android:text="@string/definition_divide"/>
+
+    <Button
         android:id="@+id/definition_button_recap"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="85dp"
         android:layout_alignParentRight="true"
         android:text="@string/definition_recap"/>

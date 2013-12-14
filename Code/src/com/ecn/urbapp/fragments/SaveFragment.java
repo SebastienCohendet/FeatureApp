@@ -91,6 +91,7 @@ public class SaveFragment extends Fragment{
         		/**
         		 * Sync local
         		 */
+        		//TODO not incremente id if not necessary (already in local db or on server and not in local !)
         		saveGpsGeomListToLocal(MainActivity.gpsGeom);
         		savePixelGeomListToLocal(MainActivity.pixelGeom);
         		MainActivity.photo.saveToLocal(MainActivity.datasource);

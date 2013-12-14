@@ -257,7 +257,15 @@ public class DrawZoneView extends Drawable {
 						}
 					}
 					// Draw the polygon
-					canvas.drawPath(polyPath, paintFillZone);
+					Paint finalPaintFillZone = new Paint(paintFillZone);
+					Element e = UtilCharacteristicsZone.getElementFromPixelGeomId(pgeom.getPixelGeomId());
+                    if(e != null){
+                    	if(e.getElement_color()!=null){
+                            finalPaintFillZone.setColor(Integer.parseInt(e.getElement_color()));
+                            finalPaintFillZone.setAlpha(120);//setting color seems to erase alpha
+                    	}                                
+                    }
+					canvas.drawPath(polyPath, finalPaintFillZone);
 				}
 			}
 		} catch (ParseException e) {

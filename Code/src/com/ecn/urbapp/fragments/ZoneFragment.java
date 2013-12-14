@@ -262,9 +262,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					state = IMAGE_SELECTION;
 					exitAction();
 				}
-				for(PixelGeom pg : MainActivity.pixelGeom){
-					pg.selected=false;
-				}
 				break;
 			}
 			break;
@@ -493,12 +490,16 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					}
 					else{
 						if(state == IMAGE_CREATION && event.getEventTime()-event.getDownTime()<REFERENCE_TIME){
-							if(zone.getPoints().size()>2+1){
+							//TODO replace isEnabled() by a method in Zone's class ! 
+							if(zone.getPoints().size()>2+1 && validate.isEnabled()){
 								float dx=Math.abs(zone.getPoints().get(0).x-selected.x);
 								float dy=Math.abs(zone.getPoints().get(0).y-selected.y);
 								if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){//10 radius tolerance
 									validateCreation();
 								}
+							}else{
+								Toast.makeText(getActivity(), R.string.validation_not_available, Toast.LENGTH_SHORT).show();
+								selected.set(0, 0);
 							}
 						}
 						else{
@@ -561,7 +562,6 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 			for(int j=0; j<MainActivity.pixelGeom.size(); j++){
 				if(MainActivity.pixelGeom.get(j).getPixelGeom_the_geom().equals(ConvertGeom.ZoneToPixelGeom(zoneCache))){
 					geomCache = MainActivity.pixelGeom.get(j);
-					MainActivity.pixelGeom.get(j).selected=true;
 				}
 			}
 			state = IMAGE_EDITION;	drawzoneview.onEditMode();
