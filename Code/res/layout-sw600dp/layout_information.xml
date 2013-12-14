@@ -45,19 +45,11 @@
             android:text="@string/info_text_description" />
 
         <TextView
-            android:id="@+id/info_text_project"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/info_text_description"
-            android:text="@string/info_text_project" />
-
-        <TextView
             android:id="@+id/info_text_adress"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/info_text_project"
+            android:layout_below="@+id/info_text_description"
             android:text="@string/info_text_adress" />
 
         <TextView
@@ -94,20 +86,11 @@
             android:inputType="text" />
 
         <EditText
-            android:id="@+id/info_edit_project"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/info_edit_description"
-            android:hint="@string/info_edit_project"
-            android:inputType="text" />
-
-        <EditText
             android:id="@+id/info_edit_adress"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/info_edit_project"
+            android:layout_below="@+id/info_edit_description"
             android:hint="@string/info_edit_adress"
             android:inputType="text" />
 
@@ -140,6 +123,40 @@
         android:layout_below="@+id/info_button_geo"
         android:text="==>" />
 
+    </RelativeLayout>
+    
+    <RelativeLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/info_layout_edit"
+        android:id="@+id/info_layout_project">
+
+        <TextView
+            android:id="@+id/info_text_project"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/info_text_project" />
+        
+        <EditText
+            android:id="@+id/info_edit_project"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/info_text_project"
+            android:hint="@string/info_edit_project"
+            android:inputType="text" />
+        
+	    <RelativeLayout 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/info_edit_project"
+	        android:layout_alignParentLeft="true"
+	        android:id="@+id/info_layout_listView">
+    	</RelativeLayout>
+        
     </RelativeLayout>
 
 </RelativeLayout>

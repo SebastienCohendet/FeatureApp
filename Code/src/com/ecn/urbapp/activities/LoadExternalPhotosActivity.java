@@ -138,13 +138,14 @@ public class LoadExternalPhotosActivity extends Activity{
 			@Override
 			public void onInfoWindowClick(Marker marker) {
 				
-				MainActivity.project = new ArrayList<Project>();
+				//Unusefull for the multi photo/project
+				/*MainActivity.project = new ArrayList<Project>();
 				for (Project actualProjet:Sync.refreshedValues){
 					if (actualProjet.getProjectId() == project_id)
 						MainActivity.project.add(actualProjet);
-				}
+				}*/
 				
-				Toast.makeText(MainActivity.baseContext, MainActivity.project.get(0).toString(), Toast.LENGTH_LONG).show();
+				//Toast.makeText(MainActivity.baseContext, MainActivity.project.get(0).toString(), Toast.LENGTH_LONG).show();
 
 				//TODO factorize the for in a separated class !
 				for (Photo actualPhoto:Sync.refreshedValuesPhoto) {
