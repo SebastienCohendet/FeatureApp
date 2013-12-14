@@ -581,6 +581,8 @@ public class Sync
 					
 					refreshedValues.add(projectEnCours);
 				}
+				//To obtain all the projects
+				MainActivity.project=refreshedValues;
 				for(int i=0;i<gpsGeomInner.length();i++)
 				{
 					JSONObject gpsgeom = gpsGeomInner.getJSONObject(i);

@@ -295,6 +295,19 @@ public class MainActivity extends Activity {
 						datasource.instanciateAllProject();
 						datasource.instanciateAllpixelGeom();
 						
+						for(Element e : element){
+							e.setRegistredInLocal(true);
+						}
+						for(GpsGeom g : gpsGeom){
+							g.setRegistredInLocal(true);
+						}
+						for(Project p : project){
+							p.setRegistredInLocal(true);
+						}
+						for(PixelGeom p : pixelGeom){
+							p.setRegistredInLocal(true);
+						}
+						
 						MainActivity.photo.setRegistredInLocal(true);
 						MainActivity.photo.setUrlTemp(null);
 						
@@ -302,10 +315,40 @@ public class MainActivity extends Activity {
 					}
 				break;
 				case Cst.CODE_LOAD_EXTERNAL_PROJECT:
-					element = Sync.allElement;
-					gpsGeom = Sync.allGpsGeom;
-					project = Sync.refreshedValues;
-					pixelGeom = Sync.allPixelGeom;
+					ArrayList<Project> project = this.project;
+					
+					datasource.instanciateAllElement();
+					datasource.instanciateAllGpsGeom();
+					datasource.instanciateAllProject();
+					datasource.instanciateAllpixelGeom();
+
+					ArrayList<Element> element = Sync.allElement;
+					ArrayList<GpsGeom> gpsGeom = Sync.allGpsGeom;
+					//ArrayList<Project> project = Sync.refreshedValues;
+					ArrayList<PixelGeom> pixelGeom = Sync.allPixelGeom;
+					this.composed = Sync.allComposed;
+
+					for(Element e : element){
+						if(Utils.getElementById(this.element, e.getElement_id()) != null)
+							e.setRegistredInLocal(true);
+					}
+					for(GpsGeom g : gpsGeom){
+						if(Utils.getElementById(this.gpsGeom, g.getGpsGeomsId()) != null)
+							g.setRegistredInLocal(true);
+					}
+					for(Project p : project){
+						if(Utils.getElementById(this.project, p.getProjectId()) != null)
+							p.setRegistredInLocal(true);
+					}
+					for(PixelGeom p : pixelGeom){
+						if(Utils.getElementById(this.pixelGeom, p.getPixelGeomId()) != null)
+							p.setRegistredInLocal(true);
+					}
+
+					this.element=element;
+					this.gpsGeom=gpsGeom;
+					this.project=project;
+					this.pixelGeom=pixelGeom;
 
 					MainActivity.photo.setRegistredInLocal(true);
 					MainActivity.photo.setUrlTemp(null);
