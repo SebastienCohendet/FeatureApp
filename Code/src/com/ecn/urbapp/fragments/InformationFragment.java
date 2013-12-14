@@ -16,6 +16,7 @@ import com.ecn.urbapp.activities.GeoActivity;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Composed;
 import com.ecn.urbapp.db.Project;
+import com.ecn.urbapp.dialogs.NbPointsGeo;
 import com.ecn.urbapp.utils.GetId;
 
 /**
@@ -74,8 +75,12 @@ public class InformationFragment extends Fragment implements OnClickListener{
 						geo.setChecked(true);
 						next.setVisibility(View.VISIBLE);
 					}
-					Intent i = new Intent(this.getActivity(), GeoActivity.class);
-					startActivityForResult(i, 10);
+					/**
+		    		 * Shows Dialog to select type of picture
+		    		 */
+		    		NbPointsGeo dialogChoiceNbPoint = new NbPointsGeo();
+		    		dialogChoiceNbPoint.show(getFragmentManager(), "Number Points");
+					
 				break;
 				case R.id.info_button_next:
 					this.getActivity().getActionBar().setSelectedNavigationItem(2);

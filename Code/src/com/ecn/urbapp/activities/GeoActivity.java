@@ -36,6 +36,7 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Project;
+import com.ecn.urbapp.dialogs.NbPointsGeo;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.GetId;
 import com.ecn.urbapp.utils.MarkerPos;
@@ -102,7 +103,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	/**
 	 * number of markers to display (4 for a zone, 2 for a facade)
 	 */
-	private int nbPoints=2;
+	public static int nbPoints;
 	
 	/**
 	 * France GPS centered
@@ -130,7 +131,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 	/**
 	* Contains the list of markers defined by user
 	*/
-	private ArrayList<Marker> markers = new ArrayList<Marker>();
+	public ArrayList<Marker> markers = new ArrayList<Marker>();
 	
 	/**
 	* polygone/line option to display the selected area
@@ -231,7 +232,6 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 					*/
                     break;
                 }
-                //TODO do the GPS centered !!
         }
      }
 
@@ -279,7 +279,7 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     	setContentView(R.layout.layout_geo);
 
     	if (servicesConnected()){
-
+    		
     		needCurrentPos=true;
 
     		satellite = (Button)findViewById(R.id.satellite);
@@ -302,22 +302,28 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
 
     		map.setOnMapClickListener(ajoutPoints);
     		map.setOnMarkerDragListener(markerDrag);
+    		
+    		int i=0;
     		for (GpsGeom gps:MainActivity.gpsGeom){
-    			
+
     			for(LatLng point:ConvertGeom.gpsGeomToLatLng(gps)) {
-    				Marker marker = map.addMarker(new MarkerOptions()
-    				.position(point)
-    				.title("Adresse postale")
-    				.draggable(true));
+    				if(i<nbPoints){
+    					Marker marker = map.addMarker(new MarkerOptions()
+    					.position(point)
+    					.title("Adresse postale")
+    					.draggable(true));
 
-    				markers.add(marker);
+    					markers.add(marker);
 
-    				MarkerPos markerpos = new MarkerPos(marker, point);
-    				getAddress(markerpos);
+    					MarkerPos markerpos = new MarkerPos(marker, point);
+    					getAddress(markerpos);
+    				}
+    				i++;
     			}
     		}
+
     	}}
-    
+
     /**
      * Constructor of GeoActivity (needed in case of extern implementation)
      * @param needCurrentPos
@@ -433,39 +439,45 @@ public class GeoActivity extends Activity implements GooglePlayServicesClient.Co
     };
     
     /**
-	* Listener for validation the selection (very simple version, just for the demonstration)
+	* Listener for validation the selection
 	*/
     public void onClick(View v) {
-    	try {
-    		ArrayList<LatLng> ll = new ArrayList<LatLng>();
-    		for(Marker m : markers){
-    			ll.add(m.getPosition());
-    		}
-    		GpsGeom gg = new GpsGeom();
-    		gg.setGpsGeomCoord(ConvertGeom.latLngToGpsGeom(ll));
-    		gg.setGpsGeomId(GetId.GpsGeom());
-    		/**
-    		 * we need to save the adresse in the photo_adresse attribute
-    		 */
-    		MainActivity.photo.setPhoto_adresse(markers.get(markers.size()-1).getSnippet());
-    		if(MainActivity.gpsGeom.size()>=gg.getGpsGeomsId()){
-    			MainActivity.gpsGeom.add((int)gg.getGpsGeomsId(), gg);
-    		}
-    		else{
-    			MainActivity.gpsGeom.add(gg);
-    		}
-    		MainActivity.photo.setGpsGeom_id(gg.getGpsGeomsId());
-    		for(Project p : MainActivity.project){
-    			p.setGpsGeom_id(gg.getGpsGeomsId());
-    		}
-            for(Element el: MainActivity.element){
-            	el.setGpsGeom_id(gg.getGpsGeomsId());
-            }
+    	if (nbPoints==markers.size()){
+	    		
+	    	try {
+	    		ArrayList<LatLng> ll = new ArrayList<LatLng>();
+	    		for(Marker m : markers){
+	    			ll.add(m.getPosition());
+	    		}
+	    		GpsGeom gg = new GpsGeom();
+	    		gg.setGpsGeomCoord(ConvertGeom.latLngToGpsGeom(ll));
+	    		gg.setGpsGeomId(GetId.GpsGeom());
+	    		/**
+	    		 * we need to save the address in the photo_adresse attribute
+	    		 */
+	    		MainActivity.photo.setPhoto_adresse(markers.get(markers.size()-1).getSnippet());
+	    		if(MainActivity.gpsGeom.size()>=gg.getGpsGeomsId()){
+	    			MainActivity.gpsGeom.add((int)gg.getGpsGeomsId(), gg);
+	    		}
+	    		else{
+	    			MainActivity.gpsGeom.add(gg);
+	    		}
+	    		MainActivity.photo.setGpsGeom_id(gg.getGpsGeomsId());
+	    		for(Project p : MainActivity.project){
+	    			p.setGpsGeom_id(gg.getGpsGeomsId());
+	    		}
+	            for(Element el: MainActivity.element){
+	            	el.setGpsGeom_id(gg.getGpsGeomsId());
+	            }
+	    	}
+	    	catch (ArrayIndexOutOfBoundsException e) {
+	    		Log.e(getLocalClassName(), "Pas de points !");
+	    	}
+	    	finish();
     	}
-    	catch (ArrayIndexOutOfBoundsException e) {
-    		Log.e(getLocalClassName(), "Pas de points !");
+    	else{
+    		Toast.makeText(getBaseContext(), "Vous n'avez pas renseigné assez de points", Toast.LENGTH_SHORT).show();
     	}
-    	finish();
     }
         
     /**

@@ -3,7 +3,6 @@
 
     <string name="app_name">UrbApp</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
     <string name="homeFragment">Home</string>
     <string name="definitionFragment">Caractérisation des zones</string>
     <string name="saveFragment">Sauvegarde et synchronisation</string>
@@ -88,11 +87,14 @@
 	<string name="retry">Réessayer</string>
 	<string name="upload_success_title">Envoi réussi</string>
 	<string name="upload_success_message">Réussite de l\'envoi de l\'image</string>
-	<string name="success">Ok</string>
+	<string name="success">OK</string>
+	<string name="dialog_request_nbPoint">Sélectionner le type de la photo :</string>
 	<string name="progress_dialog_title_uploading">progress_dialog_title_uploading</string>
 	<string name="no_back">Rien à annuler</string>
 	<string name="point_deleting_impossible">Impossible de supprimer le point</string>
 	<string name="delete_zone">Supprimer</string>
 	<string name="validation_not_available">Validation impossible, vérifiez le nombre de points ou les intersections</string>
 	
+	<string name="facade">Façade (2 points)</string>
+	<string name="sol">Sol (4 points)</string>
 </resources>
