@@ -11,7 +11,6 @@ import android.app.AlertDialog.Builder;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,7 +25,6 @@ import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.LocalDataSource;
 import com.ecn.urbapp.db.Material;
-import com.ecn.urbapp.db.MySQLiteHelper;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.db.Project;
@@ -40,7 +38,6 @@ import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.ConnexionCheck;
 import com.ecn.urbapp.utils.Cst;
 import com.ecn.urbapp.utils.Utils;
-import com.google.android.gms.internal.s;
 
 /**
  * @author	COHENDET Sébastien
@@ -131,6 +128,11 @@ public class MainActivity extends Activity {
 	 */
 	public static Photo photo=null;
 
+	/**
+	 * Boolean to check if internet is on
+	 */
+	
+	public static boolean internet = true;
 	/**
 	 * Static reference to the ZoneFragment.
 	 */
@@ -268,6 +270,7 @@ public class MainActivity extends Activity {
 	public static void errorConnect() {
 		alertDialog.setTitle("Pas de connexion internet de disponible. Relancer l'application, une fois internet fonctionnel");
 		alertDialog.show();		
+		internet=false;
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

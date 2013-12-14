@@ -27,7 +27,6 @@ import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.MySQLiteHelper;
-import com.ecn.urbapp.db.Project;
 import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.Cst;
 import com.ecn.urbapp.utils.Utils;
@@ -125,8 +124,14 @@ public class HomeFragment extends Fragment implements OnClickListener{
 				getActivity().startActivityForResult(i, Cst.CODE_LOAD_PICTURE);
 				break;
 			case R.id.home_image_loadLocalProject:
-				i = new Intent(this.getActivity(), LoadLocalProjectsActivity.class);
-				getActivity().startActivityForResult(i,Cst.CODE_LOAD_LOCAL_PROJECT);
+				if(MainActivity.internet){
+					i = new Intent(this.getActivity(), LoadExternalProjectsActivity.class);
+					getActivity().startActivityForResult(i,Cst.CODE_LOAD_EXTERNAL_PROJECT);
+				}
+				else{
+					i = new Intent(this.getActivity(), LoadLocalProjectsActivity.class);
+					getActivity().startActivityForResult(i,Cst.CODE_LOAD_LOCAL_PROJECT);
+				}
 				break;
 			case R.id.home_image_loadDistantProject:
             	 i = new Intent(this.getActivity(), LoadExternalProjectsActivity.class);
