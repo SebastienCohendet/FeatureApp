@@ -15,7 +15,7 @@ import com.ecn.urbapp.activities.MainActivity;
  * @author Sebastien
  *
  */
-public class NbPointsGeo extends DialogFragment{
+public class NbPointsGeoDialog extends DialogFragment{
 	
 	public Boolean choosed=false;
 	

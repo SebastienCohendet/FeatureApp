@@ -36,7 +36,6 @@ import com.ecn.urbapp.R;
 import com.ecn.urbapp.db.Element;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Project;
-import com.ecn.urbapp.dialogs.NbPointsGeo;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.GetId;
 import com.ecn.urbapp.utils.MarkerPos;

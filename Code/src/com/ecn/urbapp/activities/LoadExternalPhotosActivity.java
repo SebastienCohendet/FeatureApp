@@ -16,10 +16,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ecn.urbapp.R;
-import com.ecn.urbapp.db.Composed;
 import com.ecn.urbapp.db.GpsGeom;
 import com.ecn.urbapp.db.Photo;
-import com.ecn.urbapp.db.Project;
 import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.ConvertGeom;
 import com.ecn.urbapp.utils.CustomListViewAdapter;
@@ -75,11 +73,15 @@ public class LoadExternalPhotosActivity extends Activity{
 	 */
 	private Button hybrid = null;
 
-	//TODO add description for javadoc
+	/**
+	 * The rows of the custom ListView (with images)
+	 */
 	private ArrayList<RowItem> rowItems;
 
 
-	//TODO add description for javadoc
+	/**
+	 * Contains the project id selected by user in previous activity
+	 */
 	long project_id;
 
 	/**
@@ -93,13 +95,13 @@ public class LoadExternalPhotosActivity extends Activity{
 	private List<GpsGeom> allGpsGeom;
 	
 	/**
-	 * Instanciate the imageDowloader
+	 * Instantiate the imageDowloader
 	 */
 	private ImageDownloader imageDownloader = new ImageDownloader();
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.layout_loadlocalphotos);
+		setContentView(R.layout.layout_loadexternalphotos);
 
 		/**
 		 * extras that contains the project_id
@@ -134,7 +136,6 @@ public class LoadExternalPhotosActivity extends Activity{
 
 		listePhotos.setOnItemClickListener(selectedPhoto);
 		map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
-			@SuppressWarnings("null")
 			@Override
 			public void onInfoWindowClick(Marker marker) {
 				
