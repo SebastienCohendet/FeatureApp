@@ -123,7 +123,6 @@ public class Project extends DataObject {
 			datasource.getDatabase().update(MySQLiteHelper.TABLE_PROJECT, values, str, null);
 		}
 		else{
-			//TODO trigger
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXPROJECTID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
@@ -136,6 +135,7 @@ public class Project extends DataObject {
 			values.put(MySQLiteHelper.COLUMN_PROJECTID, this.project_id);
 			values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
 			datasource.getDatabase().insert(MySQLiteHelper.TABLE_PROJECT, null, values);
+			this.setRegistredInLocal(true);
 		}
 	}	
 	

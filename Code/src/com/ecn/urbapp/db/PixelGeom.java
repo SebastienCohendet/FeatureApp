@@ -103,7 +103,6 @@ public class PixelGeom extends DataObject  {
 			datasource.getDatabase().update(MySQLiteHelper.TABLE_PIXELGEOM, values, str, null);
 		}
 		else{
-			//TODO trigger
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXPIXELGEOMID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
@@ -116,6 +115,7 @@ public class PixelGeom extends DataObject  {
 			}
 			values.put(MySQLiteHelper.COLUMN_PIXELGEOMID, this.pixelGeom_id);
 			datasource.getDatabase().insert(MySQLiteHelper.TABLE_PIXELGEOM, null, values);
+			this.setRegistredInLocal(true);
 		}
 	}
 	
