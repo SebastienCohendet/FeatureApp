@@ -96,6 +96,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		
 		syncMat = (Button) v.findViewById(R.id.home_syncMatAndTypes);
 		syncMat.setOnClickListener(this);
+		syncMat.setVisibility(View.GONE);//need to fix the bug, don't delete but update the table
 		
 		return v;
 	}
