@@ -121,12 +121,18 @@ public class Zone {
 		polys = gf.createMultiPolygon(polygons.toArray(new Polygon[polygons.size()]));
 	}
 
-	//TODO Add description for javadoc
+	/**
+	 * Return points list
+	 * @return points list
+	 */
 	public Vector<Point> getPoints(){
 		return points;
 	}
 
-	//TODO Add description for javadoc
+	/**
+	 * Return middle points list
+	 * @return middle points list
+	 */
 	 public Vector<Point> getMiddles(){
 		buildMiddles();
 		return middles;
@@ -178,17 +184,16 @@ public class Zone {
 	}
 	
 	/**
-	 * 
-	 */
-	
+	 * Declare moving action
+	 * @param oldPoint : the point at the move beginning (possibly null) 
+	 */	
 	public void startMove(Point oldPoint){
 		actions.add(new Action().startMove(oldPoint));
 	}
 	
 	/**
-	 * Declare moving action
-	 * @param oldPoint 
-	 * @param newPoint
+	 * End last moving action
+	 * @param newPoint  
 	 */
 	public void endMove(Point newPoint){
 		actions.lastElement().endMove(newPoint);
@@ -280,30 +285,38 @@ public class Zone {
 	 * @param point
 	 *            point that will be added
 	 */
+	//Currently not used.
 	public void addPoint(Point point) {
 		points.add(point);
 	}
 	
+	/**
+	 * Add a point to the zone.
+	 * Also register in actions list.
+	 * @param point
+	 */
 	public void addPoint2(Point point) {
+		/*** Check method caller ***/
 		Exception exc = new Exception();
 		String className = ((exc.getStackTrace())[1]).getClassName();
 		Class calling = null;
 		try {
 			calling = Class.forName(className);
 		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		//If action don't come from Action, add it to actions' list
 		if(calling != Action.class){
 			actions.add(new Action().create(point));
 		}
-	if(points.size()==0){
-		points.add(point);
-		points.add(point);
-	}else{
-		points.add(points.size()-1, point);
+		/*** Adding point ***/
+		if(points.size()==0){
+			points.add(point);
+			points.add(point);//Looping point
+		}else{
+			points.add(points.size()-1, point);
+		}
 	}
-}
 	
 	/**
 	 * This method return true if the point in parameter is inside the polygon
@@ -335,7 +348,7 @@ public class Zone {
 	 * Create edition points between normal 
 	 */
 	public void buildMiddles() {
-		middles = new Vector<Point>();// points.size());
+		middles = new Vector<Point>();
 		if (points.size() > 3) {
 			actualizePolygon();
 			for (int k = 0; k < polys.getNumGeometries(); k++) {
@@ -360,15 +373,6 @@ public class Zone {
 					(int) (points.get(0).x + points.get(1).x) / 2,
 					(int) (points.get(0).y + points.get(1).y) / 2));
 		}
-		/*
-		if(points.size()>1){
-			middles.add(
-			new Point(
-				(points.lastElement().x + points.get(0).x)/2,
-				(points.lastElement().y + points.get(0).y)/2)
-			);
-		}
-		*/
 	}
 
 	/**
@@ -402,7 +406,7 @@ public class Zone {
 	 * @param end2
 	 * @return intersection flag
 	 */
-	// méthode d'un forum Google
+	// https://groups.google.com/forum/#!searchin/android-developers/line$20intersect/android-developers/6nw7LNz5F7Q/f4G7NphBLfYJ
 	private static boolean intersect(Point start1,
 			Point end1, Point start2, Point end2) {
 
