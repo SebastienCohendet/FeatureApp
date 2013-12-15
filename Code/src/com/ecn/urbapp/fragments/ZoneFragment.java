@@ -57,47 +57,48 @@ import com.vividsolutions.jts.io.ParseException;
 public class ZoneFragment extends Fragment implements OnClickListener, OnTouchListener{
 	
 	/**
-	 * Field defining the radius tolerance on touch
+	 * Constant field defining the radius tolerance on touch reference, in pixels
 	 */
 	private final int REFERENCE_TOUCH_RADIUS_TOLERANCE = 30;
 	
 	/**
-	 * Constant field defining the reference height to correct the size of point for the zone creation
+	 * Constant field defining the reference height to correct the size of point for the zone creation, in pixels
 	 */
 	private final int REFERENCE_HEIGHT = 600;
 	
 	/**
-	 * Constant field defining the reference width to correct the size of point for the zone creation
+	 * Constant field defining the reference width to correct the size of point for the zone creation, in pixels
 	 */
 	private final int REFERENCE_WIDTH = 1200;
 	
 	/**
-	 * Constant field defining the reference time length to force selection
+	 * Constant field defining the reference time length to force selection, in pixels
 	 */
 	private final int REFERENCE_TIME = 150;
 	
 	/**
-	 * Field defining the actual sate of definition of zones
+	 * Field defining the actual state of definition of zones
+	 * Possible states : selection, creation and edition
 	 */
 	public static int state;
 
 	/**
-	 * Button cancel
+	 * Button cancel, to cancel creation or edition
 	 */
 	private Button cancel;
 	
 	/**
-	 * Button back
+	 * Button back, to cancel last point creation or edition
 	 */
 	private Button back;
 	
 	/**
-	 * Button validate
+	 * Button validate, to save last changes made in a zone
 	 */
 	private Button validate;
 	
 	/**
-	 * Button delete
+	 * Button delete, to delete what is selected, zone or point
 	 */
 	private Button delete;
 
@@ -107,7 +108,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	private static ImageView myImage;
 	
 	/**
-	 * Matrix for displaying
+	 * Matrix to transform touch events coordinates in image base
 	 */
 	private Matrix matrix;
 	
@@ -123,17 +124,19 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	public static PixelGeom geomCache;
 	
 	/**
-	 * Zone selected
+	 * Zone the user is currently modifying, edition or creation
+	 * It's a reference used by DrawZoneView in displaying, use .set instead of =
 	 */
 	private Zone zone;
 	
 	/**
 	 * Point selected
+	 * It's a reference used by DrawZoneView in displaying, use .set instead of =
 	 */
 	private Point selected;
 	
 	/**
-	 * Tolerance range on selection
+	 * Tolerance range on selection. Based in radius tolerance reference, adjusted to image size. In pixels 
 	 */
 	private float touchRadiusTolerance;
 	
@@ -153,15 +156,15 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	private int imageWidth;
 	
 	/**
-	 * Constant value
+	 * Constant value : state
 	 */
 	public static final int IMAGE_CREATION = 2;
 	/**
-	 * Constant value
+	 * Constant value : state
 	 */
 	public static final int IMAGE_EDITION = 3;
 	/**
-	 * Constant value
+	 * Constant value : state
 	 */
 	public static final int IMAGE_SELECTION= 1;
 	
@@ -170,34 +173,68 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 */
 	private boolean POINT_SELECTED = false;
 	
+	/**
+	 * Times Android consecutively detects a move action
+	 */
 	private int moving;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
 	
-
+	/**
+	 * All buttons clicks handling method. Different behavior depending on state (selection, creation, edition) 
+	 */
 	@Override
 	public void onClick(View v) {
 		switch(state){
+		
+		/*** ZONE CREATION CASE ***/
 		case IMAGE_CREATION:
 			switch(v.getId()){
 			
+			//Button back is not displayed if less than two points on the currently created zone
 			case R.id.zone_button_back:
 				if(!zone.back()){
 					Toast.makeText(getActivity(), R.string.no_back, Toast.LENGTH_SHORT).show();
 				}
 				refreshDisplay();
 				break;
-				
+			
+			//Button cancel
 			case R.id.zone_button_cancel:
 				state = IMAGE_SELECTION;
 				exitAction();
 				break;
-				
+			
+			//Button delete is only displayed if a point is selected.	
 			case R.id.zone_button_delete:
 				if(POINT_SELECTED){
-					if (!zone.deletePoint(selected)){
+					if (!zone.deletePoint(selected)){//A "middle" point for insertions can't be deleted 
+						Toast.makeText(getActivity(), R.string.point_deleting_impossible, Toast.LENGTH_SHORT).show();
+					}
+					selected.set(0,0);//No selected point now.
+					refreshDisplay();
+					delete.setEnabled(false);
+					POINT_SELECTED = false;
+				}
+				break;
+			
+			//Button validate	
+			case R.id.zone_button_validate:
+				validateCreation();
+				break;
+			}
+			break;
+			
+		/*** ZONE EDTION CASE ***/	
+		case IMAGE_EDITION:
+			switch(v.getId()){
+			//Button delete is only displayed if a point or a zone is selected.
+			case R.id.zone_button_delete:
+				//Point selected case
+				if(POINT_SELECTED){
+					if (!zone.deletePoint(selected)){//A "middle" point for insertions can't be deleted 
 						Toast.makeText(getActivity(), R.string.point_deleting_impossible, Toast.LENGTH_SHORT).show();
 					}
 					selected.set(0,0);
@@ -205,25 +242,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					delete.setEnabled(false);
 					POINT_SELECTED = false;
 				}
-				break;
-				
-			case R.id.zone_button_validate:
-				validateCreation();
-				break;
-			}
-			break;
-		case IMAGE_EDITION:
-			switch(v.getId()){
-			case R.id.zone_button_delete:
-				if(POINT_SELECTED){
-					if (!zone.deletePoint(selected)){
-						Toast.makeText(getActivity(), "Impossible de supprimer ce point", Toast.LENGTH_SHORT).show();
-					}
-					selected.set(0,0);
-					refreshDisplay();
-					delete.setEnabled(false);
-					POINT_SELECTED = false;
-				}
+				//Zone selected case
 				else{
 					int pos;
 					for(pos=0; pos<MainActivity.pixelGeom.size(); pos++){
@@ -238,23 +257,29 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 							break;
 						}
 					}
+					//Deleting zone leads to zone selection page
 					state = IMAGE_SELECTION;
 					exitAction();
 				}
 				break;
+				
+			//Button back	
 			case R.id.zone_button_back:
 				if(!zone.back()){
 					Toast.makeText(getActivity(), R.string.no_back, Toast.LENGTH_SHORT).show();
 				}
 				refreshDisplay();
 				break;
+				
+			//Button cancel	
 			case R.id.zone_button_cancel:
 				exitAction();
 				state = IMAGE_SELECTION;
 				break;
+				
+			//Button validate	
 			case R.id.zone_button_validate:
 				if(!zone.getPoints().isEmpty()){
-					//scf.validation();
 					MainActivity.pixelGeom.remove(geomCache);
 					AddZoneDialogFragment azdf = new AddZoneDialogFragment();
 					azdf.show(getFragmentManager(), "AddZoneDialogFragment");
@@ -268,10 +293,14 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		}
 	}
 
+	/**
+	 * Fragment initialization creating view step. Create all the buttons, set listeners and load picture.
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View v = inflater.inflate(R.layout.layout_zone, null);
 
+		/*** Handling buttons ***/
 		back = (Button) v.findViewById(R.id.zone_button_back);
 		cancel = (Button) v.findViewById(R.id.zone_button_cancel);
 		validate = (Button) v.findViewById(R.id.zone_button_validate);
@@ -287,26 +316,36 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		cancel.setEnabled(false);
 		delete.setEnabled(false);
 
-		zone = new Zone(); selected = new Point(0,0); 
-		myImage = (ImageView) v.findViewById(R.id.image_zone);
+		/*** Creating caches references ***/
+		//Set these references, no =
+		zone = new Zone(); selected = new Point(0,0);
+		
+		/*** Image loading ***/
+		
+		myImage = (ImageView) v.findViewById(R.id.image_zone);//Layouts' ImageView
 		
 		drawzoneview = new DrawZoneView(zone, selected) ;
 
-		DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+		DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();//Get screen size
 
+		//Creating drawable layers. Use picture device's URL. The picture is resized to fill screen availabilities
 		Drawable[] drawables = {
 			new BitmapDrawable(
 				getResources(),
 				BitmapLoader.decodeSampledBitmapFromFile(
 						Environment.getExternalStorageDirectory()+"/featureapp/"+MainActivity.photo.getPhoto_url(),metrics.widthPixels, metrics.heightPixels - 174)),drawzoneview
 		};
-		
 		myImage.setImageDrawable(new LayerDrawable(drawables));
+		
+		//Add listener on the image
 		myImage.setOnTouchListener(this);
 		
 		return v;
 	}
 	
+	/**
+	 * Fragment start operations. Adjust pixels references to image real size. 
+	 */
 	@Override
 	public void onStart(){
 		super.onStart();
@@ -316,6 +355,10 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		imageHeight = myImage.getDrawable().getIntrinsicHeight(); 
 		imageWidth = myImage.getDrawable().getIntrinsicWidth();
 		
+		//Calculate height and width ratios between referenced image and current image sizes and choose the smallest.
+		//The chosen ratio is use to adjust points and lines displaying and touch radius tolerance.
+		//These data are defined for a reference image size, in pixels.
+		//In the adjustments reference pixel sizes are divided by this ratio.
 		float ratioW =((float)REFERENCE_WIDTH/imageWidth);
 		float ratioH =((float)REFERENCE_HEIGHT/imageHeight);
 		float ratio = ratioW < ratioH ? ratioW : ratioH ;
@@ -325,18 +368,24 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	}
 	
 	/**
-	 * Common action to do on exit (cancel or validation)
+	 * Common action to do on exit (cancel or validation) to selection state.
+	 * Refresh displaying and reset cache values.
 	 */
 	private void exitAction(){
 		drawzoneview.onZonePage();
+		
+		//Disable all buttons
 		validate.setEnabled(false);
 		back.setEnabled(false);
 		cancel.setEnabled(false);
 		delete.setEnabled(false);
 		
+		//Reset all caches
 		zone.setZone(new Zone());
 		selected.set(0,0);
 		drawzoneview.setIntersections(new Vector<Point>());
+		
+		//Call DrawZoneView onDraw method
 		myImage.invalidate();
 	}
 	
@@ -344,15 +393,15 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	 * Validation of the create of the drawn zone
 	 */
 	private void validateCreation(){
-		//scf.validation();
 		AddZoneDialogFragment azdf = new AddZoneDialogFragment();
 		azdf.show(getFragmentManager(), "AddZoneDialogFragment");
 	}
 	
 	/**
 	 * The function return the point touch by the user
+	 * If this point is outside the picture points coordinates are projected on the picture.
 	 * @param event
-	 * @return The point touch
+	 * @return The touched point
 	 */
 	public Point getTouchedPoint(MotionEvent event){
 		float[] coord = {event.getX(),event.getY()};//get touched point coord
@@ -360,7 +409,8 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 		getMatrix();
 		matrix.mapPoints(coord);//apply matrix transformation on points coord
 		int pointX = (int)coord[0]; int pointY = (int)coord[1];
-		Log.d("Touch","x:"+pointX+" y:"+pointY);
+		
+		//Outside picture point checking and correction
 		if(pointX<0){
 			pointX=0;
 		}else{
@@ -375,6 +425,7 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				pointY=imageHeight;
 			}
 		}
+		
 		return(new Point(pointX,pointY));
 	}
 	
@@ -387,62 +438,84 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 	}
 	
 	/**
-	 * refresh of the display
+	 * refresh of the display : buttons availabilities and refreshing on image draws
 	 */
 	public void refreshDisplay(){
+		/*** All the points.size() comparisons are written with a +1 to represent the looping point ***/
 		Vector<Point> points = zone.getPoints();
+		//One point or more
 		if(! points.isEmpty()){
 			back.setEnabled(false);
 			validate.setEnabled(false);
+			
+		//Two points or more
 			if(points.size()>1+1){
 				back.setEnabled(true);
+				
+		//Three points or more
+		//It's possible to validate if the polygon isn't self-intersecting					
+		//Cannot be intersections with less than 4 points but needed for refreshing displaying
 				if(points.size()>2+1){
 					validate.setEnabled(true);
-					if(points.size()>2+1){//cannot be intersections with less than 3 points but needed for refreshing displaying
-						zone.actualizePolygon();
-						MultiPolygon polys = zone.getPolygon();
-						for (int i=0; i<polys.getNumGeometries(); i++) {
-							Vector<Point> toCheck = new Vector<Point>();
-							Polygon poly = (Polygon) polys.getGeometryN(i);
-							for (Coordinate c : poly.getExteriorRing().getCoordinates()) {
-								toCheck.add(new Point((int) c.x, (int) c.y));
-							}
-							Vector<Point> intersections = new Vector<Point>(Zone.isSelfIntersecting(toCheck));
+					
+					/*** Intersections checking ***/
+					//Intersections are sequences of 4 points in a list
 
-							if(!intersections.isEmpty()){
-								validate.setEnabled(false);
-							} else {
-								for (int j = 0; j<poly.getNumInteriorRing(); j++) {
-									toCheck = new Vector<Point>();
-									for (Coordinate c : poly.getInteriorRingN(j).getCoordinates()) {
-										toCheck.add(new Point((int) c.x, (int) c.y));
-									}
-									intersections = new Vector<Point>(Zone.isSelfIntersecting(toCheck));
-									if (!intersections.isEmpty()) {
-										validate.setEnabled(false);
-										break;
-									}
+					zone.actualizePolygon();
+					MultiPolygon polys = zone.getPolygon();
+					for (int i=0; i<polys.getNumGeometries(); i++) {
+						Vector<Point> toCheck = new Vector<Point>();
+						Polygon poly = (Polygon) polys.getGeometryN(i);
+						for (Coordinate c : poly.getExteriorRing().getCoordinates()) {
+							toCheck.add(new Point((int) c.x, (int) c.y));
+						}
+						Vector<Point> intersections = new Vector<Point>(Zone.isSelfIntersecting(toCheck));
+
+						if(!intersections.isEmpty()){
+							validate.setEnabled(false);
+							
+						//Multiple lists (zones with holes) checking	
+						} else {
+							for (int j = 0; j<poly.getNumInteriorRing(); j++) {
+								toCheck = new Vector<Point>();
+								for (Coordinate c : poly.getInteriorRingN(j).getCoordinates()) {
+									toCheck.add(new Point((int) c.x, (int) c.y));
+								}
+								intersections = new Vector<Point>(Zone.isSelfIntersecting(toCheck));
+								if (!intersections.isEmpty()) {
+									validate.setEnabled(false);
+									break;
 								}
 							}
-							drawzoneview.setIntersections(intersections);
 						}
+						
+					//Send intersections' list for displaying
+					drawzoneview.setIntersections(intersections);
 					}
+					
 				}
 			}
 		}
+		//Whatever points number
 		myImage.invalidate();
 	}
 
 	/**
 	 * All touches handling method. Override Android API method.
+	 * Different behavior depending on state (selection, creation, edition).
 	 */
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		
+		/*** Zone selection case ***/
 		if(state==IMAGE_SELECTION){
 			if (event.getAction() == MotionEvent.ACTION_UP) { 
-				if(!hasZoneSelected(event)){
+				if(!hasZoneSelected(event)){//Try to select a zone. Works if the user touches, and a long time, a zone.
+					//If no selected zone, it's a zone creation
 		    		getMatrix();
-					zone.addPoint2(getTouchedPoint(event));
+					zone.addPoint2(getTouchedPoint(event));//Add the first point
+					
+					//Switching to creation mode
 					state = IMAGE_CREATION; drawzoneview.onCreateMode();
 					validate.setEnabled(false);
 					back.setEnabled(false);
@@ -450,20 +523,33 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 				}
 			}
 		}
+		
+		/*** Zone creation or edition cases ***/
 		else{
+			//User has just touched down the picture. 
+			//Trying to select a existing (and potential) point. Skipped if a point is already selected.
 			if(event.getAction() == MotionEvent.ACTION_DOWN && !POINT_SELECTED){
+				//Reset all actions values
 				moving = 0;//ACTION_MOVE occurrences
-				selected.set(0, 0);
+				selected.set(0, 0);//no selected point
+				
+				//Get point corrected coordinates
 				Point touch = getTouchedPoint(event);
-				for(Point p : zone.getPoints()){//is the touched point a normal point ?
+				
+				//Check if the touched point is on a zone
+				for(Point p : zone.getPoints()){
+					//All coordinates are positive
 					float dx=Math.abs(p.x-touch.x);
 					float dy=Math.abs(p.y-touch.y);
-					if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){//10 radius tolerance
+					if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){
 						selected.set(p.x,p.y);
 					}
 				}
-				if(selected.x == 0 && selected.y == 0){//is the touched point a middle point ?
+				
+				//Check if the touched point is a middle point
+				if(selected.x == 0 && selected.y == 0){
 					for(Point p : zone.getMiddles()){
+						//All coordinates are positive
 						float dx=Math.abs(p.x-touch.x);
 						float dy=Math.abs(p.y-touch.y);
 						if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){
@@ -472,43 +558,62 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					}
 				}
 			}
+			//User has just released his finger from the picture
 			if (event.getAction() == MotionEvent.ACTION_UP) {
+				
+				//If a point was selected, and for probable deletion, user touched elsewhere instead of deleting. 
+				//Release the selected point. 
 				if(POINT_SELECTED){
 					selected.set(0, 0);
 					POINT_SELECTED = false; delete.setEnabled(false);
 				}
+				//A point may have been selected, but in a moving or selection purpose
 				else{
+					//The user didn't selected a point
 					if(selected.x==0 && selected.y==0){
+						//In zone creation mode, user is currently adding a point
 						if(state == IMAGE_CREATION){
-							zone.addPoint2(getTouchedPoint(event));				
+							zone.addPoint2(getTouchedPoint(event));	
+						//In zone edition mode, user is trying to select an other zone. 	
 						}else{
-							//if the user is touching a long time, and not by moving, a zone, switch zone selected 
+							//If the user is touching a long time, and not by moving, a zone, switch zone selected.  
 							if(moving < 2){
 								hasZoneSelected(event);
 							}
+							//Else, do nothing, it's a mistake.
 						}
 					}
+					
+					//The user selected a point.
 					else{
+						//The user was creating a zone and touched a point shortly.
+						//The user is probably trying to validate by looping the polygon
 						if(state == IMAGE_CREATION && event.getEventTime()-event.getDownTime()<REFERENCE_TIME){
-							//TODO replace isEnabled() by a method in Zone's class ! 
+							//If it's currently possible to validate the creation ?
 							if(zone.getPoints().size()>2+1 && validate.isEnabled()){
 								float dx=Math.abs(zone.getPoints().get(0).x-selected.x);
 								float dy=Math.abs(zone.getPoints().get(0).y-selected.y);
-								if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){//10 radius tolerance
+								//Did the user selected the first point ?
+								if((dx*dx+dy*dy)<touchRadiusTolerance*touchRadiusTolerance){
 									validateCreation();
-								}
-							}else{
+								}	
+							}
+							//It's not currently possible to validate. Inform user.
+							else{
 								Toast.makeText(getActivity(), R.string.validation_not_available, Toast.LENGTH_SHORT).show();
 								selected.set(0, 0);
 							}
 						}
+						//The user was not trying to loop the polygon...
 						else{
 							Point touch = getTouchedPoint(event);
-							if(moving > 2){//if there is a real movement
+							//If the user was moving a point, update its coordinates
+							if(moving > 2){//Check real movements. It's humanly impossible to not move when selecting a point by a long touch.
 								zone.updatePoint(selected, touch);
 								zone.endMove(touch);
 								selected.set(0, 0);//No selected point anymore
 							}
+							//If the user wasn't moving, it touched a point a long time, it tried to select this point
 							else{
 								POINT_SELECTED = true; delete.setEnabled(true);
 								moving=0;
@@ -517,33 +622,42 @@ public class ZoneFragment extends Fragment implements OnClickListener, OnTouchLi
 					}
 				}
 			}
+			//User made a move
 			if (event.getAction() == MotionEvent.ACTION_MOVE && !POINT_SELECTED) {
-				moving ++;
-				Log.d("Move","Action Move");
+				moving ++;//Increase moving count
+				//If a point was selected
 				if(selected.x!=0 || selected.y!=0){
 					Point touch = getTouchedPoint(event);
+					//If it was a real movement, not a point selection trying
 					if (moving==3){
 						if (! zone.updatePoint(selected, touch)){//Is it a normal point ?
-							zone.updateMiddle(selected, touch);//If not it's a "middle" point, and it's upgraded to normal
-							zone.startMove(null);	
+							//If not it's a "middle" point
+							zone.updateMiddle(selected, touch);//The middle point is upgraded to normal
+							zone.startMove(null);//Register the move beginning. Since it's a middle there is no point to go back to.
 						}else{
-							zone.startMove(selected);
+							zone.startMove(selected);//Register the move beginning, the point to go back to.
 						}
-						selected.set(touch.x,touch.y);
+						selected.set(touch.x,touch.y);//Update selected point
 					}
 					else{
-						if(moving>3){
+						if(moving>3){//The movement already started, no action registration, just updating displaying
 							zone.updatePoint(selected, touch);
 							selected.set(touch.x,touch.y);
 						}
+						//If it was not a real movement (or not yet), no action.
 					}
 				}
+				//If no point was selected, it's a mistake. Do nothing.
 			}
 		}
 		refreshDisplay();
-		return true;
+		return true;//return event consumption
 	}
 	
+	/**
+	 * 
+	 * @param i
+	 */
 	public void selectGeom(long i){
 		if(state==IMAGE_CREATION){
 			state = IMAGE_SELECTION;
