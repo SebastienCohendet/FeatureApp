@@ -102,8 +102,7 @@ public class Project extends DataObject {
 	//Override methods
 	@Override
 	public String toString() {
-		return "project_id =" + this.project_id + "&" + " name =" + this.project_name  + "&" + "  position =" + this.gpsGeom_id + "&" + "  position =" + this.Ext_GpsGeomCoord;
-		//print the uuid, need a query to get a position
+		return project_name;
 	}
 
 	@Override

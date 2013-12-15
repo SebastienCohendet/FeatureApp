@@ -159,7 +159,6 @@ public class LoadExternalPhotosActivity extends Activity{
 	}
 
 	
-
 	/**
 	 * creating a list of project and loads in the view
 	 */
@@ -179,15 +178,17 @@ public class LoadExternalPhotosActivity extends Activity{
 		rowItems = new ArrayList<RowItem>();
 		
 		synchronized (refreshedValues) {
+			int i=0;
 			for (Photo image:refreshedValues) {
 				/**
 				 * Download each photo and register it on tablet
 				 */
 				String imageStoredUrl = imageDownloader.download(MainActivity.serverURL+"images/", image.getPhoto_url());
 
-				//TODO ajouter date
-				RowItem item = new RowItem(imageStoredUrl,imageStoredUrl, image.getPhoto_description());
+				
+				RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(),"Photo n°"+i,image.getPhoto_description());
 				rowItems.add(item);
+				i++;
 			}
 		}
 		

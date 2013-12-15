@@ -7,6 +7,7 @@ import java.util.Date;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -68,6 +69,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	 */
 	private Button syncMat = null;
 
+	public static ProgressDialog dialogMater;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -138,6 +140,13 @@ public class HomeFragment extends Fragment implements OnClickListener{
                  getActivity().startActivityForResult(i,Cst.CODE_LOAD_EXTERNAL_PROJECT);
                  break;
 			case R.id.home_syncMatAndTypes:
+				
+				/**
+    			 * Launch the dialog to make user waits
+    			 */
+    			dialogMater = ProgressDialog.show(getActivity(), "", 
+                        "Chargement. Veuillez patienter...", true);
+    			
 				MainActivity.datasource.open();
 				String delete_mat = "DELETE FROM "+MySQLiteHelper.TABLE_MATERIAL;
 				String delete_elmtTypes = "DELETE FROM "+MySQLiteHelper.TABLE_ELEMENTTYPE;

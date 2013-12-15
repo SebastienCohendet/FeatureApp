@@ -46,7 +46,7 @@
     <string name="info_text_author">Auteur :</string>
     <string name="info_text_description">Description de l\'image :</string>
     <string name="info_text_project">Nom du Projet :</string>
-    <string name="info_text_project_hint"> Vous pouvez soit entrer un nom de projetpour en créer un nouveau, ou alors lier l'image a un projet existant parmis ceux ci-dessous.</string>
+    <string name="info_text_project_hint">Vous pouvez soit entrer un nom de projet pour en créer un nouveau, ou alors lier l\'image a un projet existant parmis ceux ci-dessous.</string>
     <string name="info_text_adress">Adresse :</string>
     <string name="info_text_void"></string>
     <string name="info_edit_author">Auteur *</string>
