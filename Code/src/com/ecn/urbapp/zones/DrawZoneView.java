@@ -56,60 +56,71 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
 /**
- * This class is used to draw the zones on the image
+ * @author	COHENDET Sébastien
+ * 			DAVID Nicolas
+ * 			GUILBART Gabriel
+ * 			PALOMINOS Sylvain
+ * 			PARTY Jules
+ * 			RAMBEAU Merwan
  * 
- * @author patrick
+ * ZoneFragment class
  * 
+ * This class is used to draw the zones on the image.
  */
-//la méthode draw dessine en fonction des informations dont elle dispose, qui sont apportées via les différents constructeur
+
 public class DrawZoneView extends Drawable {
 	private Zone zone; private Point selected; private Vector<Point> intersections;
 	private boolean edit; private boolean create; private Paint paintLastPoint; private Paint paintProjection;
 	float ratio = 1;
 	WKTReader wktr = new WKTReader();
-	
-	//TODO Add description for javadoc
-	public DrawZoneView() {
-		super();
-		zone = new Zone();
-	}
 
-	//TODO Add description for javadoc
-	public DrawZoneView(Zone zone) {
-		super();
-		this.zone = zone;
-	}
-
-	//TODO Add description for javadoc
+	/**
+	 * Constructor.
+	 * @param zone : zone user is currently working on
+	 * @param selected : currently selected point
+	 */
 	public DrawZoneView(Zone zone, Point selected) {
 		super();
 		this.zone = zone; this.selected = selected; this.intersections = new Vector<Point>();
 		this.edit = false; this.create = true;
 	}
 
-	//TODO Add description for javadoc
+	/**
+	 * Set intersection list in order to display it
+	 * @param intersections
+	 */
 	public void setIntersections(Vector<Point> intersections){
 		this.intersections = intersections;
 	}
 
-	//TODO Add description for javadoc
+	/**
+	 * Set displaying for zone creation state
+	 */
 	public void onCreateMode(){
 		create = true;
 		edit = false;
 	}
 
-	//TODO Add description for javadoc
+	/**
+	 * Set displaying for zone edition state
+	 */
 	public void onEditMode(){
 		create = false;
 		edit = true;
 	}
 
-	//TODO Add description for javadoc
+	/**
+	 * Set displaying for zone selection state 
+	 */
 	public void onZonePage(){
 		create = false;
 		edit = false;
 	}
 	
+	/**
+	 * Set displaying correcting ratio, in order to adjust points displaying size to image size
+	 * @param ratio
+	 */
 	public void setRatio(float ratio){
 		this.ratio = ratio;
 	}
@@ -119,6 +130,10 @@ public class DrawZoneView extends Drawable {
 	 */
 	@Override
 	public void draw(Canvas canvas) {
+		
+		/*** Paints definitions ***/
+		
+		//normal paint, for points and segments
 		Paint paintNormal = new Paint();
 		paintNormal.setColor(Color.RED);
 		paintNormal.setStyle(Paint.Style.FILL);
@@ -126,45 +141,52 @@ public class DrawZoneView extends Drawable {
 		paintNormal.setStrokeWidth(3/ratio);
 		
 		if(create){
-			
+			//last point paint, for creation state, display first point on its own color
 			paintLastPoint = new Paint();
 			paintLastPoint.setColor(Color.YELLOW);
 			paintLastPoint.setStyle(Paint.Style.FILL);
 			paintLastPoint.setAlpha(255);
 			
+			//projection paint, for segment between last and first point
 			paintProjection = new Paint(paintLastPoint);
-			paintProjection.setPathEffect(new DashPathEffect(new float[] {13/ratio,13/ratio},0));
+			paintProjection.setPathEffect(new DashPathEffect(new float[] {13/ratio,13/ratio},0));//set dash effect
 			paintProjection.setStyle(Paint.Style.STROKE);
 			paintProjection.setStrokeWidth(3/ratio);
 		}else{
-			
+			//on other modes than creation first point is normal
 			paintLastPoint = new Paint(paintNormal);
 			paintProjection = new Paint(paintNormal);
 			paintProjection.setStyle(Paint.Style.STROKE);
 		}
-		
+		//intersections paint, to circle points and segments involved
 		Paint paintIntersections = new Paint();
 		paintIntersections.setColor(Color.BLUE);
 		paintIntersections.setStyle(Paint.Style.STROKE);
 		paintIntersections.setAlpha(255);
 		
+		//filling zones user is not working on paint
 		Paint paintFillZone = new Paint();
 		paintFillZone.setColor(Color.BLUE);
 		paintFillZone.setStyle(Paint.Style.FILL);
 		paintFillZone.setAlpha(20);
 
+		//circling zones user is not working on paint
 		Paint paintBorderZone = new Paint();
 		paintBorderZone.setColor(Color.WHITE);
 		paintBorderZone.setStyle(Paint.Style.STROKE);
 		paintBorderZone.setAlpha(255);
 		paintBorderZone.setStrokeWidth(1/ratio);
 		
+		/*** Displaying ***/
+		//Get points
 		Vector<Point> points = new Vector<Point>(zone.getPoints());//copying the points to display
 		Vector<Point> middles = zone.getMiddles();
 
+		//Display normal points (13-pixel size)
 		for (int i = 0; i < points.size() - 2; i++) {
 			canvas.drawCircle(points.get(i).x, points.get(i).y, 13 / ratio, paintNormal);
 		}
+		//Display middle points (6-pixel size)
 		for (int i = 0; i < middles.size() - 1; i++) {
 			canvas.drawCircle(middles.get(i).x, middles.get(i).y, 6 / ratio, paintNormal);
 		}
@@ -211,16 +233,15 @@ public class DrawZoneView extends Drawable {
 			} catch (ParseException e) {
 			}
 		}
+		//selected point display
 		try {
 			if (selected.x != 0 || selected.y != 0) {
 				canvas.drawCircle(selected.x, selected.y, 33 / ratio, paintNormal);
 			}
 		} catch (Exception e) {
 		}
-		try {
-			Log.d("Intersection", intersections.toString());
-		} catch (Exception e) {
-		}
+
+		//display intersections involved points and segments
 		if (intersections != null && !intersections.isEmpty()) {
 			for (int i = 0; i < intersections.size(); i = i + 2) {
 				canvas.drawCircle(intersections.get(i).x, intersections.get(i).y, 13 / ratio, paintIntersections);
@@ -261,9 +282,9 @@ public class DrawZoneView extends Drawable {
 					Paint finalPaintFillZone = new Paint(paintFillZone);
 					Element e = UtilCharacteristicsZone.getElementFromPixelGeomId(pgeom.getPixelGeomId());
                     if(e != null){
-                    	if(e.getElement_color()!=null){
+                    	if(e.getElement_color()!=null){//get colors set in Characteristics Fragment
                             finalPaintFillZone.setColor(Integer.parseInt(e.getElement_color()));
-                            finalPaintFillZone.setAlpha(120);//setting color seems to erase alpha
+                            finalPaintFillZone.setAlpha(120);//setting color seems to set alpha to 255
                     	}                                
                     }
 					canvas.drawPath(polyPath, finalPaintFillZone);
@@ -273,17 +294,23 @@ public class DrawZoneView extends Drawable {
 		}
 	}
 
-	//TODO Add description for javadoc
+	/**
+	 * Compulsory, but do nothing
+	 */
 	@Override
 	public void setAlpha(int arg0) {
 	}
 
-	//TODO Add description for javadoc
+	/**
+	 * Compulsory, but do nothing
+	 */
 	@Override
 	public void setColorFilter(ColorFilter arg0) {
 	}
 
-	//TODO Add description for javadoc
+	/**
+	 * Compulsory, but do nothing
+	 */
 	@Override
 	public int getOpacity() {
 		return 0;
