@@ -39,6 +39,7 @@ import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.db.Project;
+import com.ecn.urbapp.fragments.HomeFragment;
 import com.ecn.urbapp.fragments.SaveFragment;
 import com.google.gson.Gson;
 
@@ -628,13 +629,7 @@ public class Sync
 	        } ;
 	        return "error";
 	    }
-	    
-	    /**
-		 * The things to execute after the backTask 
-		 */
-	    protected void onPostExecute() {	
-	    	Toast.makeText(mContext, "Projets distants chargés", Toast.LENGTH_SHORT).show();
-	    }
+	   
 	}
 	
 	/**
@@ -859,14 +854,6 @@ public class Sync
 	        return "error";
 	    }
 	    
-	    /**
-		 * The things to execute after the backTask 
-		 */
-	    protected void onPostExecute() {	
-	    	
-	    	Toast.makeText(mContext, "Photos distantes chargées", Toast.LENGTH_SHORT).show();
-
-	    }
 	}
 	
 	
@@ -899,7 +886,6 @@ public class Sync
 		 * @return 
 		 */
 		protected Void doInBackground(Void... params) { 
-//TODO faire le parsage
 			String JSON = getData();
 			try {
 				JSONArray jArr = new JSONArray(JSON); 
@@ -993,9 +979,8 @@ public class Sync
 		 * The things to execute after the backTask 
 		 */
 	    protected void onPostExecute() {	
-	    	
-	    	Toast.makeText(mContext, "Elements chargées dans la base de données", Toast.LENGTH_SHORT).show();
-
+	    	Toast.makeText(MainActivity.baseContext, "Elements chargées dans la base de données", Toast.LENGTH_SHORT).show();
+	    	HomeFragment.dialogMater.dismiss();
 	    }
 	}
 	
