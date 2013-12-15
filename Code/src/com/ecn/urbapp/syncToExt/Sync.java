@@ -988,7 +988,15 @@ public class Sync
 	        } ;
 	        return "error";
 	    }
+	    
+	    /**
+		 * The things to execute after the backTask 
+		 */
+	    protected void onPostExecute() {	
+	    	
+	    	Toast.makeText(mContext, "Elements chargées dans la base de données", Toast.LENGTH_SHORT).show();
 
+	    }
 	}
 	
 }

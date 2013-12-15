@@ -149,9 +149,8 @@ public class LoadExternalProjectsActivity extends Activity {
     		}
     	}
     	
-        ArrayAdapter<Project> adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_list_item_1, refreshedValues);
-        listeProjects.setAdapter(adapter);
-        
+    	List<String> toList = new ArrayList<String>();
+    	
         /**
          * Put markers on the map
          */
@@ -167,8 +166,11 @@ public class LoadExternalProjectsActivity extends Activity {
         	Marker marker = displayedMap.addMarkersColored(i, "Cliquez ici pour charger le projet", coordProjet);
             
         	projectMarkers.put(marker.getId(), i);
+        	toList.add(i+" - "+enCours.getProjectName());
         	i++;
         }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, toList);
+        listeProjects.setAdapter(adapter);
    }
     
     /**

@@ -45,7 +45,7 @@
     
     <string name="info_text_author">Auteur :</string>
     <string name="info_text_description">Description de l\'image :</string>
-    <string name="info_text_project">Projet :</string>
+    <string name="info_text_project">Nom du Projet :</string>
     <string name="info_text_adress">Adresse :</string>
     <string name="info_text_void"></string>
     <string name="info_edit_author">Auteur *</string>
