@@ -19,7 +19,6 @@ import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Composed;
 import com.ecn.urbapp.db.Project;
 import com.ecn.urbapp.dialogs.NbPointsGeoDialog;
-
 /**
  * @author	COHENDET Sébastien
  * 			DAVID Nicolas

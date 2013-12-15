@@ -134,20 +134,29 @@
         <TextView
             android:id="@+id/info_text_project"
             android:layout_width="wrap_content"
-            android:layout_height="35dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="10dp"
             android:text="@string/info_text_project" />
-        
+
         <EditText
             android:id="@+id/info_edit_project"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/info_text_project"
+            android:layout_below="@+id/info_text_project"
             android:hint="@string/info_edit_project"
             android:inputType="text" />
+        <TextView
+            android:id="@+id/info_text_project_hint"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/info_edit_project"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="50dp"
+            android:text="@string/info_text_project_hint" />
+        
         
 	    <LinearLayout 
     		android:orientation="vertical"
@@ -159,5 +168,13 @@
     	</LinearLayout>
         
     </RelativeLayout>
+
+        <TextView
+            android:id="@+id/info_text_project"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/info_text_project" />
 
 </RelativeLayout>
