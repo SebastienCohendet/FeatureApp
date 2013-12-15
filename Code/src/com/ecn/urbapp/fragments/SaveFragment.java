@@ -194,10 +194,10 @@ public class SaveFragment extends Fragment{
 					}
 				}
 				if(ret){
-					for(Project p : MainActivity.project){
-						if(	!(	!p.getProjectName().equals("")&&
-								p.getGpsGeom_id()!=0)){
-							ret=false;
+					ret=false;
+					for(Composed c : MainActivity.composed){
+						if(c.getPhoto_id()==MainActivity.photo.getPhoto_id()){
+							ret=true;
 						}
 					}
 				}
