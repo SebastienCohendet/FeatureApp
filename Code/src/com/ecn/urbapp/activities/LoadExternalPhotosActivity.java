@@ -185,10 +185,8 @@ public class LoadExternalPhotosActivity extends Activity{
 				 */
 				String imageStoredUrl = imageDownloader.download(MainActivity.serverURL+"images/", image.getPhoto_url());
 
-				int date = image.getPhoto_derniereModif();
-				String date1 = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date (date*1000));
 				
-				RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(),"Photo n°"+i,image.getPhoto_description()+"\nDernière modification :"+date1);
+				RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(),"Photo n°"+i,image.getPhoto_description());
 				rowItems.add(item);
 				i++;
 			}

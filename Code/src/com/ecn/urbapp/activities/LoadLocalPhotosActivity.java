@@ -183,10 +183,8 @@ public class LoadLocalPhotosActivity extends Activity{
 		rowItems = new ArrayList<RowItem>();
 		int cajou=0;
 		for (Photo image:refreshedValues) {
-			int date = image.getPhoto_derniereModif();
-			String date1 = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date (date*1000));
-			
-			RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(),"Photo n°"+cajou,image.getPhoto_description()+"\nDernière modification :"+date1);
+		
+			RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(),"Photo n°"+cajou,image.getPhoto_description());
 			rowItems.add(item);
 			cajou++;
 		}
