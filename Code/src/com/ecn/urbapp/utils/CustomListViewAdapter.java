@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ecn.urbapp.R;
-import com.ecn.urbapp.utils.RowItem;
  
 /**
  * Configures the view of photos in Local/External loading

@@ -106,7 +106,8 @@ public class SaveFragment extends Fragment{
         		MainActivity.photo.saveToLocal(MainActivity.datasource);
         		saveProjectListToLocal(MainActivity.project);
         		saveComposedListToLocal(MainActivity.composed);
-        		saveElementListToLocal(MainActivity.element); 		 		
+        		saveElementListToLocal(MainActivity.element); 		
+
         		MainActivity.datasource.close();
 
     		}

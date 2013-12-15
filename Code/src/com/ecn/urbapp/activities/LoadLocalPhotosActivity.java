@@ -122,8 +122,7 @@ public class LoadLocalPhotosActivity extends Activity{
 		map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			@Override
 			public void onInfoWindowClick(Marker marker) {
-				Toast.makeText(MainActivity.baseContext, refreshedValues.get(photosMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
-				
+				Toast.makeText(MainActivity.baseContext, "Chargement de la photo", Toast.LENGTH_SHORT).show();				
 				//TODO Sebastien has to make it more readable
 				MainActivity.datasource.instanciatePhoto(refreshedValues.get(photosMarkers.get(marker.getId())).getPhoto_id());
 				
@@ -241,7 +240,6 @@ public class LoadLocalPhotosActivity extends Activity{
 
 			LatLng GPSCentered = MathOperation.barycenter(photoGPS);
 			displayedMap = new GeoActivity(false, GPSCentered, map);
-			Toast.makeText(getApplicationContext(), refreshedValues.get(position).getPhoto_url(), Toast.LENGTH_LONG).show();                  
 		}
 	};
 }

@@ -111,7 +111,7 @@ public class LoadExternalProjectsActivity extends Activity {
         map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-               Toast.makeText(MainActivity.baseContext, refreshedValues.get(projectMarkers.get(marker.getId())).toString(), Toast.LENGTH_LONG).show();
+               Toast.makeText(MainActivity.baseContext, "Chargement du projet", Toast.LENGTH_SHORT).show();
    				Intent i = new Intent(getApplicationContext(), LoadExternalPhotosActivity.class);
    				i.putExtra("SELECTED_PROJECT_ID", refreshedValues.get(projectMarkers.get(marker.getId())).getProjectId());
    				
@@ -189,7 +189,6 @@ public class LoadExternalProjectsActivity extends Activity {
         	}
 
 			displayedMap = new GeoActivity(false, coordProjet, map);
-    		Toast.makeText(getApplicationContext(), coordProjet.toString(), Toast.LENGTH_LONG).show();                  
 		}
     };
     
