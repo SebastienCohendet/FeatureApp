@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Local photos of the selected project" />
+            android:text="External photos of the selected project" />
            
                     <Button
                  android:id="@+id/satellite"

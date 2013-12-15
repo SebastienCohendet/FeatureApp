@@ -84,7 +84,7 @@ public class LoadExternalProjectsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_loadlocaldb);
+        setContentView(R.layout.layout_loadexternaldb);
         datasource=MainActivity.datasource;
         datasource.open();
         

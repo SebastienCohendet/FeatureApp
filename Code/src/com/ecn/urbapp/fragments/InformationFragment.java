@@ -12,15 +12,13 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
 import com.ecn.urbapp.R;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.Composed;
 import com.ecn.urbapp.db.Project;
-import com.ecn.urbapp.dialogs.NbPointsGeo;
-import com.ecn.urbapp.utils.GetId;
+import com.ecn.urbapp.dialogs.NbPointsGeoDialog;
 
 /**
  * @author	COHENDET Sébastien
@@ -105,7 +103,7 @@ public class InformationFragment extends Fragment implements OnClickListener, On
 					/**
 		    		 * Shows Dialog to select type of picture
 		    		 */
-		    		NbPointsGeo dialogChoiceNbPoint = new NbPointsGeo();
+		    		NbPointsGeoDialog dialogChoiceNbPoint = new NbPointsGeoDialog();
 		    		dialogChoiceNbPoint.show(getFragmentManager(), "Number Points");
 					
 				break;

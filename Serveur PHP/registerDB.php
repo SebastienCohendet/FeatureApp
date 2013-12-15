@@ -26,7 +26,7 @@ if(isset($_POST["myHttpData"])) { //if there is data to import in the database
 				$setInfo='';
 				$allColomn="";
 				foreach($colomn as $colomnName => $colomn){
-					if($colomnName != "registredInLocal" && $colomnName != "selected"){
+					if($colomnName != "registredInLocal" && $colomnName != "selected" && $colomnName != "linkedElement" && $colomnName != "linkedPixelGeom" && $colomnName !="photo_urltemp" && $colomnName !="photo_urlTemp"){
 						$nbValue++;
 						if($colomn =="")
 							$colomn=" ";

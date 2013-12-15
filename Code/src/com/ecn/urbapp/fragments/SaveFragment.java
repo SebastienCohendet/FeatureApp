@@ -3,6 +3,7 @@ package com.ecn.urbapp.fragments;
 import java.util.ArrayList;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ public class SaveFragment extends Fragment{
 	private Button saveToLocal = null;
 	private Button saveToExt = null;
 	private Button maxID = null;
+	public static ProgressDialog dialog;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +71,15 @@ public class SaveFragment extends Fragment{
 			/**
 			 * now we create the connection with the database
 			 */
+    		
     		if(verificationBeforeSave()){
+    			
+    			/**
+    			 * Launch the dialog to make user waits
+    			 */
+    			dialog = ProgressDialog.show(getActivity(), "", 
+                        "Chargement. Veuillez patienter...", true);
+    			
         		MainActivity.datasource.open();
         		
         		Boolean upload_photo = false;
@@ -91,7 +101,6 @@ public class SaveFragment extends Fragment{
         		/**
         		 * Sync local
         		 */
-        		//TODO not incremente id if not necessary (already in local db or on server and not in local !)
         		saveGpsGeomListToLocal(MainActivity.gpsGeom);
         		savePixelGeomListToLocal(MainActivity.pixelGeom);
         		MainActivity.photo.saveToLocal(MainActivity.datasource);
@@ -99,13 +108,7 @@ public class SaveFragment extends Fragment{
         		saveComposedListToLocal(MainActivity.composed);
         		saveElementListToLocal(MainActivity.element); 		 		
         		MainActivity.datasource.close();
-        		
-    			Context context = MainActivity.baseContext;
-    			CharSequence text = "Sauvegarde ...";
-    			int duration = Toast.LENGTH_SHORT;
-    			Toast toast = Toast.makeText(context, text, duration);
-    			toast.show();
-        		
+
     		}
     		else{
     			Context context = MainActivity.baseContext;

@@ -39,6 +39,7 @@ import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.db.Project;
+import com.ecn.urbapp.fragments.SaveFragment;
 import com.google.gson.Gson;
 
 /**
@@ -86,12 +87,12 @@ public class Sync
 	
 	/**
 	 * Launch the sync to external DB (export mode)
+	 * @param upload_photo
 	 * @return Boolean if success of not
 	 */
 	public Boolean doSyncToExt(Boolean upload_photo)
 	{
 		Boolean success = false;
-		
 			try
 			{
 				new BackTaskExportToExt(upload_photo).execute();
@@ -408,6 +409,7 @@ public class Sync
 	    	else {
 		        Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show();
 	    	}
+	    	SaveFragment.dialog.dismiss();
 	    }
 	    
 
@@ -543,14 +545,6 @@ public class Sync
 		}
 
 		/**
-		 * Pre Execution orders
-		 */
-		protected void onPreExecute(){
-			super.onPreExecute();
-			Toast.makeText(MainActivity.baseContext,  "Début de la synchro", Toast.LENGTH_SHORT).show();
-		}
-
-		/**
 		 * Ask the server and save project and gpsGeom on the var
 		 * @return 
 		 */
@@ -643,7 +637,13 @@ public class Sync
 	        } ;
 	        return "error";
 	    }
-
+	    
+	    /**
+		 * The things to execute after the backTask 
+		 */
+	    protected void onPostExecute() {	
+	    	Toast.makeText(mContext, "Projets distants chargés", Toast.LENGTH_SHORT).show();
+	    }
 	}
 	
 	/**
@@ -662,14 +662,6 @@ public class Sync
 		public BackTaskImportPhoto(long project_id){			
 			this.mContext = MainActivity.baseContext;
 			this.project_id = project_id;
-		}
-
-		/**
-		 * Pre Execution orders
-		 */
-		protected void onPreExecute(){
-			super.onPreExecute();
-			Toast.makeText(MainActivity.baseContext,  "Début de la synchro", Toast.LENGTH_SHORT).show();
 		}
 
 		/**
@@ -875,7 +867,15 @@ public class Sync
 	        } ;
 	        return "error";
 	    }
+	    
+	    /**
+		 * The things to execute after the backTask 
+		 */
+	    protected void onPostExecute() {	
+	    	
+	    	Toast.makeText(mContext, "Photos distantes chargées", Toast.LENGTH_SHORT).show();
 
+	    }
 	}
 	
 	
