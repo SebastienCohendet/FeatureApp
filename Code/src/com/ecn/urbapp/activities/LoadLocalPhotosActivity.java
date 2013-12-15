@@ -181,9 +181,14 @@ public class LoadLocalPhotosActivity extends Activity{
 		List<com.ecn.urbapp.db.GpsGeom> allGpsGeom = recupGpsGeom();
 
 		rowItems = new ArrayList<RowItem>();
+		int cajou=0;
 		for (Photo image:refreshedValues) {
-			RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(), image.getPhoto_url(), image.getPhoto_description());
+			int date = image.getPhoto_derniereModif();
+			String date1 = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date (date*1000));
+			
+			RowItem item = new RowItem(Environment.getExternalStorageDirectory()+"/featureapp/"+image.getPhoto_url(),"Photo n°"+cajou,image.getPhoto_description()+"\nDernière modification :"+date1);
 			rowItems.add(item);
+			cajou++;
 		}
 
 		CustomListViewAdapter adapter = new CustomListViewAdapter(this,
