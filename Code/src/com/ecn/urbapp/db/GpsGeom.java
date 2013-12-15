@@ -112,7 +112,8 @@ public class GpsGeom extends DataObject{
 				this.trigger(old_id, new_id, MainActivity.photo, MainActivity.project, MainActivity.element);
 			}
 			values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
-			datasource.getDatabase().insert(MySQLiteHelper.TABLE_GPSGEOM, null, values);	
+			datasource.getDatabase().insert(MySQLiteHelper.TABLE_GPSGEOM, null, values);
+			this.setRegistredInLocal(true);
 		}
 	}		
 	

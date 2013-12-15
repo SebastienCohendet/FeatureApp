@@ -434,15 +434,6 @@ public class Sync
 		}
 
 		/**
-		 * Pre Execution orders
-		 */
-		protected void onPreExecute(){
-			
-			super.onPreExecute();
-			Toast.makeText(MainActivity.baseContext,  "Début du get Id", Toast.LENGTH_SHORT).show();
-		}
-
-		/**
 		 * Ask the server and transform them to HashMap
 		 */
 		protected HashMap<String, Integer> doInBackground(Void... params) { 
@@ -517,7 +508,7 @@ public class Sync
 		 */
 	    protected void onPostExecute(HashMap<String, Integer> result) {	
 	    	try{
-	    		Toast.makeText(mContext, result.toString(), Toast.LENGTH_SHORT).show();
+	    		Toast.makeText(mContext, "Connexion au serveur : OK", Toast.LENGTH_SHORT).show();
 	    	}
 	    	catch (Exception e) {
 		        Toast.makeText(mContext, "Erreur dans la communication avec le serveur", Toast.LENGTH_SHORT).show();
@@ -997,7 +988,15 @@ public class Sync
 	        } ;
 	        return "error";
 	    }
+	    
+	    /**
+		 * The things to execute after the backTask 
+		 */
+	    protected void onPostExecute() {	
+	    	
+	    	Toast.makeText(mContext, "Elements chargées dans la base de données", Toast.LENGTH_SHORT).show();
 
+	    }
 	}
 	
 }

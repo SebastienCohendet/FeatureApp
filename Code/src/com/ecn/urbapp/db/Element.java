@@ -227,7 +227,6 @@ public class Element extends DataObject {
 			datasource.getDatabase().update(MySQLiteHelper.TABLE_ELEMENT, values, str, null);
 		}
 		else{
-			//TODO trigger
 			Cursor cursor = datasource.getDatabase().rawQuery(GETMAXELEMENTID, null);
 			cursor.moveToFirst();
 			if(!cursor.isAfterLast()){
@@ -241,6 +240,7 @@ public class Element extends DataObject {
 			values.put(MySQLiteHelper.COLUMN_PIXELGEOMID, this.pixelGeom_id);
 			values.put(MySQLiteHelper.COLUMN_GPSGEOMID, this.gpsGeom_id);
 			datasource.getDatabase().insert(MySQLiteHelper.TABLE_ELEMENT, null, values);
+			this.setRegistredInLocal(true);
 		}
 	}
 	/**
