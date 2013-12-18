@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment implements OnClickListener{
 	 */
 	private Button syncMat = null;
 
-	public static ProgressDialog dialogMater;
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +96,8 @@ public class HomeFragment extends Fragment implements OnClickListener{
 		
 		syncMat = (Button) v.findViewById(R.id.home_syncMatAndTypes);
 		syncMat.setOnClickListener(this);
-		syncMat.setVisibility(View.GONE);//need to fix the bug, don't delete but update the table
+		
+		//syncMat.setVisibility(View.GONE);//need to fix the bug, don't delete but update the table
 		
 		return v;
 	}
@@ -145,34 +146,33 @@ public class HomeFragment extends Fragment implements OnClickListener{
 				/**
     			 * Launch the dialog to make user waits
     			 */
-    			dialogMater = ProgressDialog.show(getActivity(), "", 
-                        "Chargement. Veuillez patienter...", true);
+
     			
 				MainActivity.datasource.open();
-				String delete_mat = "DELETE FROM "+MySQLiteHelper.TABLE_MATERIAL;
-				String delete_elmtTypes = "DELETE FROM "+MySQLiteHelper.TABLE_ELEMENTTYPE;
-				MainActivity.datasource.getDatabase().rawQuery(delete_mat, null);
-				MainActivity.datasource.getDatabase().rawQuery(delete_elmtTypes, null);
 				MainActivity.elementType.clear();
 				MainActivity.material.clear();
 				Sync s = new Sync();
 				s.getTypeAndMaterialsFromExt();
-				saveElementTypeListToLocal(MainActivity.elementType);
-				saveMaterialListToLocal(MainActivity.material);
+				
+				
+				for (ElementType elmtT : MainActivity.elementType){
+					if(!MainActivity.datasource.existElementTypeWithId(elmtT.getElementType_id())){
+					elmtT.saveToLocal(MainActivity.datasource);
+					}
+				}
+				
+				for (Material mat : MainActivity.material){
+					if(!MainActivity.datasource.existMaterialWithId(mat.getMaterial_id())){
+					mat.saveToLocal(MainActivity.datasource);
+					}
+				}
+				
 				MainActivity.datasource.close();
+				Toast.makeText(getActivity(), "la base de données locale a été mise à jour", Toast.LENGTH_SHORT).show();
                 break;
+                
 
 		}	
 	}
-	public void saveElementTypeListToLocal(ArrayList<ElementType> li){
-		for (ElementType elmtT : li){
-			elmtT.saveToLocal(MainActivity.datasource);
-		}
-	}
-	
-	public void saveMaterialListToLocal(ArrayList<Material> li){
-		for (Material mat : li){
-			mat.saveToLocal(MainActivity.datasource);
-		}
-	}
+
 }

@@ -980,7 +980,7 @@ public class Sync
 		 */
 	    protected void onPostExecute() {	
 	    	Toast.makeText(MainActivity.baseContext, "Elements chargées dans la base de données", Toast.LENGTH_SHORT).show();
-	    	HomeFragment.dialogMater.dismiss();
+	    	
 	    }
 	}
 	

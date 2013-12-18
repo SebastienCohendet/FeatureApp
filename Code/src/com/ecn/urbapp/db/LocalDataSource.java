@@ -709,6 +709,23 @@ public class LocalDataSource {
 	}
 	
 	
+	/**
+	 * knowing an id we test if this element type exists
+	 * @param id is the id of the element type we ask
+	 * @return boolean says if the element type with this id exists or not in the local db
+	 */
+    public Boolean existElementTypeWithId(Long id){
+        Cursor c = database.query(MySQLiteHelper.TABLE_ELEMENTTYPE, allColumnsElementType, MySQLiteHelper.COLUMN_ELEMENTTYPEID + " = \"" + id +"\"", null, null, null, null);
+        if(c.getCount()>0){
+            c.close();
+            return true;
+        }
+        else {
+            c.close();
+            return false;
+        }
+    }
+	
 	//METHODS FOR MATERIALS
 	
 	//Create ellementType in the database
@@ -761,6 +778,23 @@ public class LocalDataSource {
 		cursor.close();
 		MainActivity.material=(ArrayList<Material>) materialList;		
 	}
+	
+	/**
+	 * knowing an id we test if this material exists
+	 * @param id is the id of the material we ask
+	 * @return boolean says if the material with this id exists or not in the local db
+	 */
+    public Boolean existMaterialWithId(Long id){
+        Cursor c = database.query(MySQLiteHelper.TABLE_MATERIAL, allColumnsMaterial, MySQLiteHelper.COLUMN_MATERIALID + " = \"" + id +"\"", null, null, null, null);
+        if(c.getCount()>0){
+            c.close();
+            return true;
+        }
+        else {
+            c.close();
+            return false;
+        }
+    }
 
 	
 	/**
