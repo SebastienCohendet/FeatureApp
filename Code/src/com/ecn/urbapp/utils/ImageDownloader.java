@@ -1,11 +1,8 @@
 package com.ecn.urbapp.utils;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 
@@ -14,9 +11,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -49,10 +43,8 @@ public class ImageDownloader {
 				try {
 					task.execute(url+name).get();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} //download image !
             return path+name;
@@ -61,7 +53,6 @@ public class ImageDownloader {
 	/**
 	 * The task which get the picture on web and save it on memory
 	 * @param url
-	 * @return
 	 */
 static void downloadBitmap(String url) {
     final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");

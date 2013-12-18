@@ -202,7 +202,6 @@ public class LoadExternalPhotosActivity extends Activity{
 		Integer i = Integer.valueOf(0);
 		for (Photo enCours:refreshedValues){
 			
-			//TODO request for GPSGeom
 			ArrayList<LatLng> photoGPS = null;
 			for(GpsGeom gg : allGpsGeom){
 				if(gg.getGpsGeomsId()==enCours.getGpsGeom_id()){

@@ -39,12 +39,11 @@ import com.ecn.urbapp.db.Material;
 import com.ecn.urbapp.db.Photo;
 import com.ecn.urbapp.db.PixelGeom;
 import com.ecn.urbapp.db.Project;
-import com.ecn.urbapp.fragments.HomeFragment;
 import com.ecn.urbapp.fragments.SaveFragment;
 import com.google.gson.Gson;
 
 /**
- * All the maters of 
+ * All the maters of Synchronisation with server in App
  * @author Sebastien
  *
  */
@@ -179,10 +178,8 @@ public class Sync
 			try {
 				maxId = new BackTastMaxId().execute().get();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -203,7 +200,7 @@ public class Sync
 		
 		/**
 		 * Constructor
-		 * @param json
+		 * @param upload_photo
 		 */
 		public BackTaskExportToExt(Boolean upload_photo){
 			super();			
@@ -296,7 +293,6 @@ public class Sync
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        } ;
-	        //TODO catch the nulpointer case
 	        return null;
 	    }
 
@@ -316,7 +312,8 @@ public class Sync
             int bytesRead, bytesAvailable, bufferSize;
             byte[] buffer;
             int maxBufferSize = 1*1024*1024;
-            int sentBytes = 0;
+            @SuppressWarnings("unused")
+			int sentBytes = 0;
             long fileSize = file.length();
 
             // log filesize
@@ -437,6 +434,7 @@ public class Sync
 		/**
 		 * Ask the server and transform them to HashMap
 		 */
+		@SuppressWarnings("finally")
 		protected HashMap<String, Integer> doInBackground(Void... params) { 
 			
 			String JSON = getData();
@@ -525,6 +523,7 @@ public class Sync
 	 */
 	public static class BackTaskImportProject extends AsyncTask<Void, Void, Void> {
 			
+		@SuppressWarnings("unused")
 		private Context mContext;
 			
 		/**
@@ -639,11 +638,13 @@ public class Sync
 	 */
 	public static class BackTaskImportPhoto extends AsyncTask<Void, Void, Void> {
 			
+		@SuppressWarnings("unused")
 		private Context mContext;
 		private long project_id = 1;		
 		
 		/**
 		 * Default constructor
+		 * @param project_id
 		 */
 		public BackTaskImportPhoto(long project_id){			
 			this.mContext = MainActivity.baseContext;
@@ -864,6 +865,7 @@ public class Sync
 	 */
 	public static class BackTaskImportTypeMaterial extends AsyncTask<Void, Void, Void> {
 			
+		@SuppressWarnings("unused")
 		private Context mContext;
 		
 		/**
@@ -982,6 +984,7 @@ public class Sync
 	    	Toast.makeText(MainActivity.baseContext, "Elements chargées dans la base de données", Toast.LENGTH_SHORT).show();
 	    	
 	    }
+
 	}
 	
 }

@@ -2,12 +2,10 @@ package com.ecn.urbapp.fragments;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,7 +25,6 @@ import com.ecn.urbapp.activities.LoadLocalProjectsActivity;
 import com.ecn.urbapp.activities.MainActivity;
 import com.ecn.urbapp.db.ElementType;
 import com.ecn.urbapp.db.Material;
-import com.ecn.urbapp.db.MySQLiteHelper;
 import com.ecn.urbapp.syncToExt.Sync;
 import com.ecn.urbapp.utils.Cst;
 import com.ecn.urbapp.utils.Utils;

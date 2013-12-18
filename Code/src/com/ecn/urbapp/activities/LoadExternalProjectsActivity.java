@@ -196,7 +196,6 @@ public class LoadExternalProjectsActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
         	if(MainActivity.photo.getUrlTemp() != null){
-            //TODO vérifier que l'activité s'est bien terminée
         		setResult(RESULT_OK);
             	finish();
         	}
